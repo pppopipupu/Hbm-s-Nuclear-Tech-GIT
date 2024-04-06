@@ -1,3 +1,4 @@
+
 buildscript {
     repositories {
         maven { url = "https://maven.minecraftforge.net/" }
@@ -78,6 +79,10 @@ repositories {
         url = "https://dvs1.progwml6.com/files/maven/"
     }
     maven {
+        name = "CoFH Maven"
+        url = "http://maven.covers1624.net"
+    }
+    maven {
         // location of a maven mirror for JEI files, as a fallback
         name = "ModMaven"
         url = "https://modmaven.k-4u.nl"
@@ -86,18 +91,16 @@ repositories {
         name = "jared maven"
         url = "http://maven.blamejared.com/"
     }
+
     maven { //GC
         name = "galacticraft"
         url = "https://maven.galacticraft.net/repository/legacy/"
     }
-    maven { //  baubles
-        name = "mcmoddev"
-        url = "https://maven.mcmoddev.com"
-    }
-    maven {
-        name = 'CoFH Maven'
-        url = 'https://maven.covers1624.net'
-    }
+
+
+
+
+
 }
 
 dependencies {
@@ -134,7 +137,7 @@ dependencies {
 
     compileOnly fg.deobf("dev.galacticraft:galacticraft-legacy:${version_gc}")
 
-    compileOnly fg.deobf("com.azanor:Baubles:${version_baubles}")
+  compileOnly fileTree(dir: 'lib', includes: ['*.jar'])
 
     compileOnly fg.deobf("cofh:RedstoneFlux:1.12-${version_redstoneflux}:universal")
 }
