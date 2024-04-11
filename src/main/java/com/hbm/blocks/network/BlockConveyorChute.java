@@ -7,15 +7,12 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.Entity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -34,9 +31,7 @@ public class BlockConveyorChute extends BlockConveyor {
     public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
         super.onEntityCollidedWithBlock(world, pos, state, entity);
 
-        BlockPos belowPos = pos.down();
-        IBlockState belowState = world.getBlockState(belowPos);
-        Block belowBlock = belowState.getBlock();
+        Block belowBlock = world.getBlockState(pos.down()).getBlock();
 
         if (belowBlock instanceof IConveyorBelt || belowBlock instanceof IEnterableBlock) {
             entity.motionX *= 5.0;
@@ -84,7 +79,7 @@ public class BlockConveyorChute extends BlockConveyor {
         world.setBlockState(pos, state.withProperty(TYPE, getUpdatedType(world, pos)));
     }
 
-    private int getUpdatedType(World world, BlockPos pos){
+    public int getUpdatedType(World world, BlockPos pos){
         boolean hasChuteBelow = world.getBlockState(pos.down()).getBlock() instanceof BlockConveyorChute;
         boolean hasInputBelt = false;
         Block inputBlock = world.getBlockState(pos.offset(world.getBlockState(pos).getValue(FACING), 1)).getBlock();
@@ -127,18 +122,14 @@ public class BlockConveyorChute extends BlockConveyor {
         return new BlockStateContainer(this, new IProperty[]{FACING, TYPE});
     }
 
-    @Override
+    @Override //0-3 NSEW (T0) 4-7 NSEW (T1) 8-11 NSEW (T2)
     public int getMetaFromState(IBlockState state) {
         return ((EnumFacing)state.getValue(FACING)).getIndex() - 2 + (state.getValue(TYPE)<<2);
     }
     
     @Override
     public IBlockState getStateFromMeta(int meta) {
-        EnumFacing enumfacing = EnumFacing.getFront((meta+2) % 4);
-
-        if (enumfacing.getAxis() == EnumFacing.Axis.Y) {
-            enumfacing = EnumFacing.NORTH;
-        }
+        EnumFacing enumfacing = EnumFacing.values()[((meta % 4)+2)];
         return this.getDefaultState().withProperty(FACING, enumfacing).withProperty(TYPE, meta>>2);
     }
 }

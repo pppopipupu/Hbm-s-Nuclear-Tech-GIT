@@ -1144,15 +1144,18 @@ public class ModBlocks {
 	public static final Block anvil_murky = new NTMAnvil(Material.IRON, 1916169, "anvil_murky").setCreativeTab(MainRegistry.machineTab);
 	
 	public static final Block conveyor = new BlockConveyor(Material.IRON, "conveyor").setHardness(3.0F).setResistance(2.0F).setCreativeTab(MainRegistry.machineTab);
-	// public static final Block conveyor_double = new BlockConveyorDouble(Material.IRON, "conveyor_double").setHardness(3.0F).setResistance(2.0F).setCreativeTab(MainRegistry.machineTab);
+	public static final Block conveyor_double = new BlockConveyorDouble(Material.IRON, "conveyor_double").setHardness(3.0F).setResistance(2.0F).setCreativeTab(MainRegistry.machineTab);
+	public static final Block conveyor_triple = new BlockConveyorTriple(Material.IRON, "conveyor_triple").setHardness(3.0F).setResistance(2.0F).setCreativeTab(MainRegistry.machineTab);
 	public static final Block conveyor_express = new BlockConveyorExpress(Material.IRON, "conveyor_express").setHardness(3.0F).setResistance(2.0F).setCreativeTab(MainRegistry.machineTab);
 	public static final Block conveyor_chute = new BlockConveyorChute(Material.IRON, "conveyor_chute").setHardness(3.0F).setResistance(2.0F).setCreativeTab(MainRegistry.machineTab);
+	public static final Block conveyor_lift = new BlockConveyorLift(Material.IRON, "conveyor_lift").setHardness(3.0F).setResistance(2.0F).setCreativeTab(MainRegistry.machineTab);
 	public static final Block crane_ejector = new CraneExtractor(Material.IRON, "crane_ejector").setHardness(3.0F).setResistance(2.0F).setCreativeTab(MainRegistry.machineTab);
 	public static final Block crane_inserter = new CraneInserter(Material.IRON, "crane_inserter").setHardness(3.0F).setResistance(2.0F).setCreativeTab(MainRegistry.machineTab);
 	public static final Block crane_splitter = new CraneSplitter(Material.IRON, "crane_splitter").setHardness(3.0F).setResistance(2.0F).setCreativeTab(MainRegistry.machineTab);
 	public static final Block crane_boxer = new CraneBoxer(Material.IRON, "crane_boxer").setHardness(3.0F).setResistance(2.0F).setCreativeTab(MainRegistry.machineTab);
 	public static final Block crane_unboxer = new CraneUnboxer(Material.IRON, "crane_unboxer").setHardness(3.0F).setResistance(2.0F).setCreativeTab(MainRegistry.machineTab);
 	public static final Block crane_router = new CraneRouter(Material.IRON, "crane_router").setHardness(3.0F).setResistance(2.0F).setCreativeTab(MainRegistry.machineTab);
+	public static final Block crane_grabber = new CraneGrabber(Material.IRON, "crane_grabber").setHardness(3.0F).setResistance(2.0F).setCreativeTab(MainRegistry.machineTab);
 	
 	//The usual machines
 	public static final Block machine_nuke_furnace_off = new MachineNukeFurnace(false, "machine_nuke_furnace_off").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab);
