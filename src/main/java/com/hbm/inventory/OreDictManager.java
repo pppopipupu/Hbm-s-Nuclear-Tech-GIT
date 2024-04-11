@@ -292,6 +292,10 @@ public class OreDictManager {
     public static final DictFrame N = new DictFrame("Nickel");
 	public static final DictFrame PLANTINUM = new DictFrame("Platinum");
 	public static final DictFrame M = new DictFrame("Magnesium");
+	public static final DictFrame T = new DictFrame("Tin");
+	//IE
+	public static final DictFrame SILVER = new DictFrame("Silver");
+
 
 
 	
