@@ -7,10 +7,12 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import static com.hbm.inventory.OreDictManager.*;
+
 import com.hbm.blocks.ModBlocks;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.items.ModItems;
 import com.hbm.items.special.ItemBedrockOre;
+
 
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.ingredients.VanillaTypes;
@@ -225,11 +227,13 @@ public class CentrifugeRecipes {
 				new ItemStack(ModItems.powder_fire, 2),
 				new ItemStack(ModItems.ingot_phosphorus),
 				new ItemStack(Blocks.NETHERRACK) });
-		
+		recipes.put(M.crystal(), new ItemStack[] { new ItemStack(OreDictionary.getOres("dustMagnesium").get(0).getItem(),2,OreDictionary.getOres("dustMagnesium").get(0).getMetadata()), new ItemStack(OreDictionary.getOres("dustMagnesium").get(0).getItem(),2,OreDictionary.getOres("dustMagnesium").get(0).getMetadata()), new ItemStack(ModItems.powder_lithium_tiny, 1), new ItemStack(ModItems.powder_iron, 1) });
+		recipes.put(PLANTINUM.crystal(), new ItemStack[] { new ItemStack(OreDictionary.getOres("dustPlatinum").get(0).getItem(),2,OreDictionary.getOres("dustPlatinum").get(0).getMetadata()), new ItemStack(OreDictionary.getOres("dustPlatinum").get(0).getItem(),2,OreDictionary.getOres("dustPlatinum").get(0).getMetadata()), new ItemStack(ModItems.powder_lithium_tiny, 1), new ItemStack(ModItems.powder_iron, 1) });
+		recipes.put(N.crystal(), new ItemStack[] { new ItemStack( OreDictionary.getOres("dustNickel").get(0).getItem(),2, OreDictionary.getOres("dustNickel").get(0).getMetadata()),new ItemStack( OreDictionary.getOres("dustNickel").get(0).getItem(),2,OreDictionary.getOres("dustNickel").get(0).getMetadata()), new ItemStack(ModItems.powder_lithium_tiny, 1), new ItemStack(ModItems.powder_iron, 1) });
 		recipes.put(new ComparableStack(Items.BLAZE_ROD), new ItemStack[] {new ItemStack(Items.BLAZE_POWDER, 1), new ItemStack(Items.BLAZE_POWDER, 1), new ItemStack(ModItems.powder_fire, 1), new ItemStack(ModItems.powder_fire, 1) });
-		
+		recipes.put(DRAGON.crystal(), new ItemStack[] { new ItemStack(OreDictionary.getOres("dustDraconium").get(0).getItem(),2), new ItemStack(OreDictionary.getOres("dustDraconium").get(0).getItem(),2), new ItemStack(Items.ENDER_PEARL, 1) });
 		recipes.put(SRN.ingot(), new ItemStack[] { new ItemStack(ModItems.nugget_schrabidium, 2), new ItemStack(ModItems.nugget_schrabidium, 1), new ItemStack(ModItems.nugget_uranium, 3), new ItemStack(ModItems.nugget_plutonium, 2) });
-		
+		recipes.put(B.crystal(), new ItemStack[] { new ItemStack(ModItems.powder_boron, 2), new ItemStack(ModItems.powder_boron, 2), new ItemStack(ModItems.powder_neodymium_tiny, 1), new ItemStack(ModItems.powder_lithium_tiny, 1) });
 		recipes.put(COAL.crystal(), new ItemStack[] { new ItemStack(ModItems.powder_coal, 3), new ItemStack(ModItems.powder_coal, 3), new ItemStack(ModItems.powder_coal, 3), new ItemStack(ModItems.powder_lithium_tiny, 1) });
 		recipes.put(IRON.crystal(), new ItemStack[] { new ItemStack(ModItems.powder_iron, 2), new ItemStack(ModItems.powder_iron, 2), new ItemStack(ModItems.powder_titanium, 1), new ItemStack(ModItems.powder_lithium_tiny, 1) });
 		recipes.put(GOLD.crystal(), new ItemStack[] { new ItemStack(ModItems.powder_gold, 2), new ItemStack(ModItems.powder_gold, 2), new ItemStack(ModItems.nugget_mercury, 1), new ItemStack(ModItems.powder_lithium_tiny, 1) });
@@ -254,6 +258,7 @@ public class CentrifugeRecipes {
 		recipes.put(CINNABAR.crystal(), new ItemStack[] { new ItemStack(ModItems.cinnebar, 3), new ItemStack(ModItems.cinnebar, 3), new ItemStack(Items.REDSTONE, 2), new ItemStack(ModItems.powder_lithium_tiny, 1) });
 		recipes.put(P_RED.crystal(), new ItemStack[] { new ItemStack(ModItems.powder_fire, 3), new ItemStack(ModItems.powder_fire, 3), new ItemStack(ModItems.ingot_phosphorus, 2), new ItemStack(Items.BLAZE_POWDER, 2) });
 		recipes.put(new ComparableStack(ModItems.crystal_trixite), new ItemStack[] { new ItemStack(ModItems.powder_plutonium, 3), new ItemStack(ModItems.powder_cobalt, 3), new ItemStack(ModItems.powder_spark_mix, 1), new ItemStack(ModItems.powder_nitan_mix, 2) });
+
 		recipes.put(LI.crystal(), new ItemStack[] { new ItemStack(ModItems.powder_lithium, 2), new ItemStack(ModItems.powder_lithium, 2), new ItemStack(ModItems.powder_quartz, 1), new ItemStack(ModItems.fluorite, 1) });
 		recipes.put(STAR.crystal(), new ItemStack[] { new ItemStack(ModItems.powder_dura_steel, 3), new ItemStack(ModItems.powder_cobalt, 3), new ItemStack(ModItems.powder_astatine, 2), new ItemStack(ModItems.nugget_mercury, 5) });
 		recipes.put(CO.crystal(), new ItemStack[] { new ItemStack(ModItems.powder_cobalt, 2), new ItemStack(ModItems.powder_iron, 3), new ItemStack(ModItems.powder_copper, 3), new ItemStack(ModItems.powder_lithium_tiny, 1) });

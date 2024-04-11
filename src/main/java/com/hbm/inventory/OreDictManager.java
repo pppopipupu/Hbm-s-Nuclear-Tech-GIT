@@ -110,7 +110,7 @@ public class OreDictManager {
 	public static final DictFrame U233 = new DictFrame("Uranium233", "U233");
 	public static final DictFrame U235 = new DictFrame("Uranium235", "U235");
 	public static final DictFrame U238 = new DictFrame("Uranium238", "U238");
-	public static final DictFrame TH232 = new DictFrame("Thorium232", "Th232", "Thorium");
+	public static final DictFrame TH232 = new DictFrame("Thorium", "Th232", "Thorium232");
 	public static final DictFrame PU = new DictFrame("Plutonium");
 	public static final DictFrame PURG = new DictFrame("PlutoniumRG");
 	public static final DictFrame PU238 = new DictFrame("Plutonium238", "Pu238");
@@ -285,6 +285,15 @@ public class OreDictManager {
 	public static final DictGroup ANY_TAR = new DictGroup("Tar", KEY_OIL_TAR, KEY_COAL_TAR, KEY_CRACK_TAR);
 	/** Any special psot-RBMK gating material, namely bismuth and arsenic */
 	public static final DictFrame ANY_BISMOID = new DictFrame("AnyBismoid");
+
+	//DE
+	public static final DictFrame DRAGON = new DictFrame("Draconium");
+	//QMD
+    public static final DictFrame N = new DictFrame("Nickel");
+	public static final DictFrame PLANTINUM = new DictFrame("Platinum");
+	public static final DictFrame M = new DictFrame("Magnesium");
+
+
 	
 
 	// order: nugget billet ingot dust dustTiny block crystal plate gem ore oreNether
