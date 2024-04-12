@@ -38,7 +38,7 @@ public class TileEntityCore extends TileEntityMachineBase implements ITickable {
 	public int heat;
 	public int color;
 	public FluidTank[] tanks;
-	public int overload = 0;
+	public int safeTimer = 0;
 	
 	public TileEntityCore() {
 		super(3);
@@ -56,37 +56,40 @@ public class TileEntityCore extends TileEntityMachineBase implements ITickable {
 	public void update() {
 		if(!world.isRemote) {
 			if(heat > 0 && heat >= field) {
-				
-				int fill = tanks[0].getFluidAmount() + tanks[1].getFluidAmount();
-				int max = tanks[0].getCapacity() + tanks[1].getCapacity();
-				int mod = heat * 10;
-				
-				int size = Math.max(Math.min(fill * mod / max, 1000), 50);
-				
-				//System.out.println(fill + " * " + mod + " / " + max + " = " + size);
+				if(safeTimer > 20){
+					int fill = tanks[0].getFluidAmount() + tanks[1].getFluidAmount();
+					int max = tanks[0].getCapacity() + tanks[1].getCapacity();
+					int mod = heat * 10;
+					
+					int size = Math.max(Math.min(fill * mod / max, 1000), 50);
+					
+					//System.out.println(fill + " * " + mod + " / " + max + " = " + size);
 
-	    		world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 100000.0F, 1.0F);
+		    		world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 100000.0F, 1.0F);
 
-				EntityNukeExplosionMK3 exp = new EntityNukeExplosionMK3(world);
-				exp.posX = pos.getX();
-				exp.posY = pos.getY();
-				exp.posZ = pos.getZ();
-				exp.destructionRange = size;
-				exp.speed = 25;
-				exp.coefficient = 1.0F;
-				exp.waste = false;
-				if(overload >= 60 && !EntityNukeExplosionMK3.isJammed(this.world, exp)){
-					world.spawnEntity(exp);
-		    		
-		    		EntityCloudFleijaRainbow cloud = new EntityCloudFleijaRainbow(world, size);
-		    		cloud.posX = pos.getX();
-		    		cloud.posY = pos.getY();
-		    		cloud.posZ = pos.getZ();
-		    		world.spawnEntity(cloud);
+					EntityNukeExplosionMK3 exp = new EntityNukeExplosionMK3(world);
+					exp.posX = pos.getX();
+					exp.posY = pos.getY();
+					exp.posZ = pos.getZ();
+					exp.destructionRange = size;
+					exp.speed = 25;
+					exp.coefficient = 1.0F;
+					exp.waste = false;
+				
+					if(safeTimer > 1200 || !EntityNukeExplosionMK3.isJammed(this.world, exp)){
+						world.spawnEntity(exp);
+			    		
+			    		EntityCloudFleijaRainbow cloud = new EntityCloudFleijaRainbow(world, size);
+			    		cloud.posX = pos.getX();
+			    		cloud.posY = pos.getY();
+			    		cloud.posZ = pos.getZ();
+			    		world.spawnEntity(cloud);
+			    		world.setBlockToAir(pos);
+			    	}
 		    	}
-		    	overload++;
+		    	safeTimer++;
 			} else {
-				if(overload > 0) overload = 0;
+				if(safeTimer > 0) safeTimer--;
 			}
 			
 			if(inventory.getStackInSlot(0).getItem() instanceof ItemCatalyst && inventory.getStackInSlot(2).getItem() instanceof ItemCatalyst){
