@@ -107,10 +107,7 @@ repositories {
         name = "jared maven"
         url = "https://maven.blamejared.com/"
     }
-    maven { //GC
-        name = "galacticraft"
-        url = "https://maven.galacticraft.net/repository/legacy/"
-    }
+
     maven {
         name = 'CoFH Maven'
         url = 'https://maven.covers1624.net'
@@ -146,12 +143,13 @@ dependencies {
     implementation rfg.deobf('curse.maven:had-enough-items-557549:4543375')
     implementation rfg.deobf("curse.maven:groovyscript-687577:4905039")
     implementation rfg.deobf("curse.maven:mekanism-ce-399904:4804509")
-    implementation rfg.deobf("curse.maven:baubles-lts-655747:3916343")
+    implementation files("libs/Baubles-1.12-1.5.2.jar")
     compileOnly "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${version_crafttweaker}"
-    compileOnly rfg.deobf("dev.galacticraft:galacticraft-legacy:${version_gc}")
-    compileOnly rfg.deobf("cofh:RedstoneFlux:1.12-${version_redstoneflux}:universal")
+    compileOnly files("libs/Galacticraft-1.12.2-4.0.6.jar")
+    compileOnly files("libs/OpenComputers-MC1.12.2-1.8.6+cd8851e.jar")
+    compileOnly files("libs/RedstoneFlux-1.12-2.1.1.1-universal.jar")
     compileOnly rfg.deobf("CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${version_crafttweaker}")
-    compileOnly "li.cil.oc:OpenComputers:MC1.12.2-1.7.+:api" 
+
 }
 
 processResources {
