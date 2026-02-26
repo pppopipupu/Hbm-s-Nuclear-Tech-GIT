@@ -1,4 +1,10 @@
 ## Changed
-* The PWR can now be controlled via RoR
-  * The RoR value reader can read core and hull heat as well as fuel depletion in percent
-  * The RoR controller can set the control rod level in percent as well as jetison all loaded fuel
+* Updated russian localization
+* Removed T45 protections entirely
+* The ICF laser controller max output can now be adjusted in the config, both stats for the capacitors and turbochargers can be changed separately
+
+## Fixed
+* Fixed NCRPA and taurun armor not having working gas masks
+* Refactored the armor system, stats like radiation and particle protection are no longer scattered over various registries, making future sets less likely to miss them
+* Fixed crucible smeling one too many items with no template installed, causing the gauge to exceed the boundaries
+* Potentially fixed another issue with artillery rocket targeting

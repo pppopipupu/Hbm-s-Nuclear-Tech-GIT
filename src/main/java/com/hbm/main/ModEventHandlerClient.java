@@ -823,8 +823,7 @@ public class ModEventHandlerClient {
 	//@SubscribeEvent
 	public void onRenderStorm(RenderHandEvent event) {
 
-		if(BlockAshes.ashes == 0)
-			return;
+		if(BlockAshes.ashes <= 0) return;
 
 		GL11.glPushMatrix();
 
@@ -898,7 +897,7 @@ public class ModEventHandlerClient {
 		Minecraft mc = Minecraft.getMinecraft();
 		ArmorNo9.updateWorldHook(mc.theWorld);
 
-		boolean supportsHighRenderDistance = FMLClientHandler.instance().hasOptifine() || Loader.isModLoaded("angelica");
+		boolean supportsHighRenderDistance = FMLClientHandler.instance().hasOptifine() || Loader.isModLoaded(Compat.MOD_ANG);
 
 		if(mc.gameSettings.renderDistanceChunks > 16 && GeneralConfig.enableRenderDistCheck && !supportsHighRenderDistance) {
 			mc.gameSettings.renderDistanceChunks = 16;
@@ -928,7 +927,7 @@ public class ModEventHandlerClient {
 			if(ArmorUtil.isWearingEmptyMask(mc.thePlayer)) {
 				MainRegistry.proxy.displayTooltip(EnumChatFormatting.RED + "Your mask has no filter!", MainRegistry.proxy.ID_FILTER);
 			}
-
+			
 			//prune other entities' muzzle flashes
 			if(mc.theWorld.getTotalWorldTime() % 30 == 0) {
 				long millis = System.currentTimeMillis();

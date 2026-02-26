@@ -399,12 +399,13 @@ public class ResourceManager {
 	public static final IModelCustom zirnox_destroyed = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/zirnox_destroyed.obj")).asVBO();
 
 	//Network
-	public static final IModelCustom connector = AdvancedModelLoader.loadModel(new ResourceLocation(RefStrings.MODID, "models/network/connector.obj"));
-	public static final IModelCustom pylon_medium = AdvancedModelLoader.loadModel(new ResourceLocation(RefStrings.MODID, "models/network/pylon_medium.obj"));
-	public static final IModelCustom pylon_large = AdvancedModelLoader.loadModel(new ResourceLocation(RefStrings.MODID, "models/network/pylon_large.obj"));
-	public static final IModelCustom substation = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/network/substation.obj")).asVBO();
-	public static final IModelCustom pipe_anchor = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/network/pipe_anchor.obj")).asVBO();
-	public static final IModelCustom fluid_pump = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/network/fluid_diode.obj")).asVBO();
+	public static final IModelCustom connector = new HFRWavefrontObject("models/network/connector.obj").noSmooth().asVBO();
+	public static final IModelCustom connector_super = new HFRWavefrontObject("models/network/connector_super.obj").noSmooth().asVBO();
+	public static final IModelCustom pylon_medium = new HFRWavefrontObject("models/network/pylon_medium.obj").noSmooth().asVBO();
+	public static final IModelCustom pylon_large = new HFRWavefrontObject("models/network/pylon_large.obj").noSmooth().asVBO();
+	public static final IModelCustom substation = new HFRWavefrontObject("models/network/substation.obj").asVBO();
+	public static final IModelCustom pipe_anchor = new HFRWavefrontObject("models/network/pipe_anchor.obj").asVBO();
+	public static final IModelCustom fluid_pump = new HFRWavefrontObject("models/network/fluid_diode.obj").asVBO();
 
 	//Radiolysis
 	public static final IModelCustom radiolysis = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/radiolysis.obj"));
@@ -852,6 +853,7 @@ public class ResourceManager {
 
 	//Electricity
 	public static final ResourceLocation connector_tex = new ResourceLocation(RefStrings.MODID, "textures/models/network/connector.png");
+	public static final ResourceLocation connector_super_tex = new ResourceLocation(RefStrings.MODID, "textures/models/network/connector_super.png");
 	public static final ResourceLocation pylon_medium_tex = new ResourceLocation(RefStrings.MODID, "textures/models/network/pylon_medium.png");
 	public static final ResourceLocation pylon_medium_steel_tex = new ResourceLocation(RefStrings.MODID, "textures/models/network/pylon_medium_steel.png");
 	public static final ResourceLocation pylon_large_tex = new ResourceLocation(RefStrings.MODID, "textures/models/network/pylon_large.png");
@@ -968,6 +970,7 @@ public class ResourceManager {
 	public static final IModelCustom armor_steamsuit = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/armor/steamsuit.obj")).asVBO();
 	public static final IModelCustom armor_dieselsuit = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/armor/bnuuy.obj")).asVBO();
 	public static final IModelCustom armor_remnant = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/armor/remnant.obj")).asVBO();
+	public static final IModelCustom armor_ncr = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/armor/ncrpa.obj")).asVBO();
 	public static final IModelCustom armor_bismuth = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/armor/bismuth.obj")).asVBO();
 	public static final IModelCustom armor_mod_tesla = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/armor/mod_tesla.obj")).asVBO();
 	public static final IModelCustom armor_wings = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/armor/murk.obj")).asVBO();
@@ -1041,6 +1044,7 @@ public class ResourceManager {
 	public static final ResourceLocation uzi_saturnite_tex = new ResourceLocation(RefStrings.MODID, "textures/models/weapons/uzi_saturnite.png");
 	public static final ResourceLocation panzerschreck_tex = new ResourceLocation(RefStrings.MODID, "textures/models/weapons/panzerschreck.png");
 	public static final ResourceLocation star_f_tex = new ResourceLocation(RefStrings.MODID, "textures/models/weapons/star_f.png");
+	public static final ResourceLocation star_f_elite_tex = new ResourceLocation(RefStrings.MODID, "textures/models/weapons/star_f_elite.png");
 	public static final ResourceLocation g3_tex = new ResourceLocation(RefStrings.MODID, "textures/models/weapons/g3.png");
 	public static final ResourceLocation g3_zebra_tex = new ResourceLocation(RefStrings.MODID, "textures/models/weapons/g3_zebra.png");
 	public static final ResourceLocation g3_green_tex = new ResourceLocation(RefStrings.MODID, "textures/models/weapons/g3_polymer_green.png");
@@ -1152,6 +1156,11 @@ public class ResourceManager {
 	public static final ResourceLocation rpa_leg = new ResourceLocation(RefStrings.MODID, "textures/armor/rpa_leg.png");
 	public static final ResourceLocation rpa_chest = new ResourceLocation(RefStrings.MODID, "textures/armor/rpa_chest.png");
 	public static final ResourceLocation rpa_arm = new ResourceLocation(RefStrings.MODID, "textures/armor/rpa_arm.png");
+
+	public static final ResourceLocation ncrpa_helmet = new ResourceLocation(RefStrings.MODID, "textures/armor/ncrpa_helmet.png");
+	public static final ResourceLocation ncrpa_leg = new ResourceLocation(RefStrings.MODID, "textures/armor/ncrpa_leg.png");
+	public static final ResourceLocation ncrpa_chest = new ResourceLocation(RefStrings.MODID, "textures/armor/ncrpa_chest.png");
+	public static final ResourceLocation ncrpa_arm = new ResourceLocation(RefStrings.MODID, "textures/armor/ncrpa_arm.png");
 
 	public static final ResourceLocation taurun_helmet = new ResourceLocation(RefStrings.MODID, "textures/armor/taurun_helmet.png");
 	public static final ResourceLocation taurun_leg = new ResourceLocation(RefStrings.MODID, "textures/armor/taurun_leg.png");

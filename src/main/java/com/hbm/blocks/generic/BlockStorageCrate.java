@@ -108,7 +108,7 @@ public class BlockStorageCrate extends BlockContainer implements IBlockMulti, IL
 
 	@Override
 	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest) {
-
+		
 		if(!world.isRemote && !ServerConfig.CRATE_KEEP_CONTENTS.get()) {
 			dropInv = true;
 			if(!player.capabilities.isCreativeMode) {
@@ -155,6 +155,7 @@ public class BlockStorageCrate extends BlockContainer implements IBlockMulti, IL
 			}
 
 			if(!nbt.hasNoTags()) {
+				nbt.setLong("stacklock", world.rand.nextLong());
 				drop.stackTagCompound = nbt;
 			}
 
@@ -165,7 +166,7 @@ public class BlockStorageCrate extends BlockContainer implements IBlockMulti, IL
 				}
 			}
 
-			if (drop.hasTagCompound()) {
+			if(drop.hasTagCompound()) {
 				try {
 					byte[] abyte = CompressedStreamTools.compress(drop.stackTagCompound);
 
