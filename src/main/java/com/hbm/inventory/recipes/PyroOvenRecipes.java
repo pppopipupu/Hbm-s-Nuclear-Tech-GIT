@@ -75,6 +75,8 @@ public class PyroOvenRecipes extends SerializableRecipe {
 			recipes.add(new PyroOvenRecipe(10).in(new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.SOLVENT_BYPRODUCT, type,2))).out(new FluidStack(Fluids.VITRIOL, 100)).out(ItemBedrockOreNew.make(BedrockOreGrade.SOLVENT_ROASTED, type,2)));
 			recipes.add(new PyroOvenRecipe(10).in(new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.RAD_BYPRODUCT, type,2))).out(new FluidStack(Fluids.VITRIOL, 100)).out(ItemBedrockOreNew.make(BedrockOreGrade.RAD_ROASTED, type,2)));
 		}
+// steam to syngas is 1:2, syngas to LPS in this recipe is 2:1, so you can actually cycle this
+		recipes.add(new PyroOvenRecipe(300).in(new FluidStack(Fluids.SYNGAS, 2_000)).in(new OreDictStack(W.dust())).out(new FluidStack(Fluids.SPENTSTEAM, 1_000)).out(new ItemStack(ModItems.ingot_tungsten_carbide)));
 
 		//syngas from coal
 		recipes.add(new PyroOvenRecipe(80)
