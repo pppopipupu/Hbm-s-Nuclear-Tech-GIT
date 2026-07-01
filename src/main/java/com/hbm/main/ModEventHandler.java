@@ -1013,46 +1013,6 @@ public class ModEventHandler {
 		}
 	}
 
-	@SubscribeEvent
-	public void onClickBlock(PlayerInteractEvent event) {
-
-		int x = event.x;
-		int y = event.y;
-		int z = event.z;
-		World world = event.world;
-
-		if(GeneralConfig.enable528ExplosiveEnergistics && !world.isRemote && event.action == Action.RIGHT_CLICK_BLOCK) {
-			Block b = world.getBlock(x, y, z);
-			String name = Block.blockRegistry.getNameForObject(b);
-			if(name != null && name.startsWith("appliedenergistics2")) {
-				world.func_147480_a(x, y, z, false);
-				ExplosionVNT vnt = new ExplosionVNT(world, x + 0.5, y + 0.5, z + 0.5, 5, null);
-				vnt.setEntityProcessor(new EntityProcessorCrossSmooth(1, 20).setupPiercing(5, 0.2F));
-				vnt.setPlayerProcessor(new PlayerProcessorStandard());
-				vnt.setSFX(new ExplosionEffectWeapon(10, 2.5F, 1F));
-				vnt.explode();
-				event.setCanceled(true);
-			}
-		}
-
-		x = event.x;
-		y = event.z;
-		z = event.y;
-
-		if(!world.isRemote && event.action == Action.RIGHT_CLICK_BLOCK && world.getTileEntity(x, y, z) instanceof TileEntitySign) {
-
-			TileEntitySign sign = (TileEntitySign)world.getTileEntity(x, y, z);
-
-			String result = ShadyUtil.smoosh(sign.signText[0], sign.signText[1], sign.signText[2], sign.signText[3]);
-
-			if(ShadyUtil.hashes.contains(result)) {
-				world.func_147480_a(x, y, z, false);
-				EntityItem entityitem = new EntityItem(world, x, y, z, new ItemStack(ModItems.bobmazon_hidden));
-				entityitem.delayBeforeCanPickup = 10;
-				world.spawnEntityInWorld(entityitem);
-			}
-		}
-	}
 
 	@SubscribeEvent
 	public void chatEvent(ServerChatEvent event) {

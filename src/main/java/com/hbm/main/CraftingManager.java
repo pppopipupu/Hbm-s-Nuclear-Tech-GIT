@@ -129,8 +129,6 @@ public class CraftingManager {
 		addRecipeAuto(new ItemStack(ModItems.particle_empty, 2), new Object[] { "STS", "G G", "STS", 'S', PB.plateCast(), 'T', ModItems.coil_gold, 'G', KEY_ANYPANE });
 		addShapelessAuto(new ItemStack(ModItems.particle_copper, 1), new Object[] { ModItems.particle_empty, CU.dust(), ModItems.pellet_charged });
 		addShapelessAuto(new ItemStack(ModItems.particle_lead, 1), new Object[] { ModItems.particle_empty, PB.dust(), ModItems.pellet_charged });
-		addShapelessAuto(new ItemStack(ModItems.cell_antimatter, 1), new Object[] { ModItems.particle_aproton, ModItems.particle_aelectron, ModItems.cell_empty });
-		addShapelessAuto(new ItemStack(ModItems.particle_amat, 1), new Object[] { ModItems.particle_aproton, ModItems.particle_aelectron, ModItems.particle_empty });
 
 		addRecipeAuto(new ItemStack(ModItems.canister_empty, 2), new Object[] { "S ", "AA", "AA", 'S', STEEL.plate(), 'A', AL.plate() });
 		addRecipeAuto(new ItemStack(ModItems.gas_empty, 2), new Object[] { "S ", "AA", "AA", 'A', STEEL.plate(), 'S', CU.plate() });
@@ -990,7 +988,6 @@ public class CraftingManager {
 			addRecipeAuto(new ItemStack(ModItems.reactor_sensor, 1), new Object[] { "WPW", "CMC", "PPP", 'W', W.wireFine(), 'P', PB.plate(), 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.BASIC), 'M', ModItems.magnetron });
 			addRecipeAuto(new ItemStack(ModBlocks.rbmk_console, 1), new Object[] { "BBB", "DGD", "DCD", 'B', B.ingot(), 'D', ModBlocks.deco_rbmk, 'G', KEY_ANYPANE, 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.ANALOG) });
 			addRecipeAuto(new ItemStack(ModBlocks.rbmk_crane_console, 1), new Object[] { "BCD", "DDD", 'B', B.ingot(), 'D', ModBlocks.deco_rbmk, 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.ANALOG) });
-			addRecipeAuto(new ItemStack(ModBlocks.hadron_core, 1), new Object[] { "CCC", "DSD", "CCC", 'C', ModBlocks.hadron_coil_alloy, 'D', ModBlocks.hadron_diode, 'S', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.ADVANCED) });
 			addRecipeAuto(new ItemStack(ModBlocks.rbmk_rod, 1), new Object[] { "C", "R", "C", 'C', STEEL.shell(), 'R', ModBlocks.rbmk_blank });
 			addRecipeAuto(new ItemStack(ModBlocks.rbmk_rod_mod, 1), new Object[] { "BGB", "GRG", "BGB", 'G', GRAPHITE.block(), 'R', ModBlocks.rbmk_rod, 'B', ModItems.nugget_bismuth });
 			addRecipeAuto(new ItemStack(ModBlocks.rbmk_boiler, 1), new Object[] { "CPC", "CRC", "CPC", 'C', CU.pipe(), 'P', CU.shell(), 'R', ModBlocks.rbmk_blank });
@@ -1075,11 +1072,6 @@ public class CraftingManager {
 
 		addRecipeAuto(new ItemStack(ModItems.nothing, 8, 0), "B B", " B ", "B B", 'B', "dyeBlack");
 		addShapelessAuto(new ItemStack(Items.gold_nugget, 1, 0), new Object[] {ModItems.spawn_duck, ModItems.spawn_duck, ModItems.spawn_duck, ModItems.spawn_duck, ModItems.spawn_duck, ModItems.spawn_duck, ModItems.spawn_duck, ModItems.spawn_duck});
-
-        addShapelessAuto(new ItemStack(ModBlocks.machine_assembly_machine, 1), new Object[] { ModBlocks.machine_assembler });
-        addShapelessAuto(new ItemStack(ModBlocks.machine_assembly_factory, 1), new Object[] { ModBlocks.machine_assemfac });
-        addShapelessAuto(new ItemStack(ModBlocks.machine_chemical_plant, 1), new Object[] { ModBlocks.machine_chemplant });
-        addShapelessAuto(new ItemStack(ModBlocks.machine_chemical_factory, 1), new Object[] { ModBlocks.machine_chemfac });
         addShapelessAuto(new ItemStack(ModBlocks.pwr_block, 8), new Object[] { ModBlocks.pwr_casing });
     }
 

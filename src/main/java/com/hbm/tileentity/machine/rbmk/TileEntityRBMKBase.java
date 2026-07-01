@@ -253,11 +253,12 @@ public abstract class TileEntityRBMKBase extends TileEntityLoadedBase {
 	}
 
 	protected void coolPassively(int neighbors) {
-        this.heat -= this.passiveCooling(neighbors);
+        double pCool = this.passiveCooling(neighbors);
+        this.heat -= pCool;
         if(heat < 20) heat = 20D;
 
         this.heat = this.heat < -273 ? -273 : this.heat;
-        this.heat -= MathHelper.clamp_double(this.heat - 20D,passiveCooling * -1, passiveCooling);
+        this.heat -= MathHelper.clamp_double(this.heat - 20D,pCool * -1, pCool);
     }
 
 	public RBMKType getRBMKType() {
