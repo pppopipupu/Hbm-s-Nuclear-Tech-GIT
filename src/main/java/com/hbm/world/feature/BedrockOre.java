@@ -21,6 +21,9 @@ import com.hbm.dim.CelestialBody;
 import com.hbm.dim.SolarSystem;
 import com.hbm.dim.SolarSystem.Body;
 
+import com.hbm.items.ItemEnums.EnumChunkType;
+import com.hbm.blocks.BlockEnums.EnumStoneType;
+
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;

@@ -260,7 +260,7 @@ public class Fluids {
 	public static FluidType COLLOID_HOT;
 	public static FluidType CRYOGEL_MOD;
 	public static FluidType CRYOGEL_MOD_HOT;
-	public static FluidType NITROGEN;
+	//public static FluidType NITROGEN;
 
 	/* Legacy names for compatibility purposes */
 	@Deprecated public static FluidType ACID;	//JAOPCA uses this, apparently

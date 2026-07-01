@@ -40,7 +40,6 @@ public class WorldConfig {
 	public static int bedrockOilSpawn = 200;
 	public static int meteoriteSpawn = 500;
 
-<<<<<<< HEAD
 	// Space oils and ores
 	public static int dunaOilSpawn = 100;
 	public static int eveGasSpawn = 100;
@@ -96,8 +95,6 @@ public class WorldConfig {
 
 	public static boolean newBedrockOres = true;
 
-=======
->>>>>>> ntmc-rfg
 	public static int bedrockIronSpawn = 100;
 	public static int bedrockCopperSpawn = 200;
 	public static int bedrockBoraxSpawn = 50;

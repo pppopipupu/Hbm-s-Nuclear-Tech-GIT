@@ -190,6 +190,12 @@ public class OutgasserRecipes extends SerializableRecipe {
             this.fluxNeeded = flux;
 		}
 
+		public OutgasserRecipe(ItemStack solid, FluidStack liquid) {
+			this.solidOutput = solid;
+			this.liquidOutput = liquid;
+            this.fluxNeeded = 10_000L;
+		}
+
 		public OutgasserRecipe fusionOnly() {
 			this.fusionOnly = true;
 			return this;

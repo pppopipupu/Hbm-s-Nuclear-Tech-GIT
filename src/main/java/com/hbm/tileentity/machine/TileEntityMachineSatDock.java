@@ -172,7 +172,8 @@ public class TileEntityMachineSatDock extends TileEntity implements ISidedInvent
 							AxisAlignedBB.getBoundingBox(xCoord - 0.25 + 0.5, yCoord + 0.75, zCoord - 0.25 + 0.5, xCoord + 0.25 + 0.5, yCoord + 2, zCoord + 0.25 + 0.5),
 							entity -> entity instanceof EntityMinerRocket);
 
-					for(EntityMinerRocket rocket : list) {
+					for(Entity miningRocket : list) {
+                        EntityMinerRocket rocket = (EntityMinerRocket) miningRocket;
 						if(freq != rocket.getDataWatcher().getWatchableObjectInt(17)) {
 							rocket.setDead();
 							ExplosionNukeSmall.explode(worldObj, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, ExplosionNukeSmall.PARAMS_TOTS);

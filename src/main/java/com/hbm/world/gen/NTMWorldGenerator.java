@@ -231,88 +231,88 @@ public class NTMWorldGenerator implements IWorldGenerator {
 		NBTStructure.registerNullWeight(0, StructureConfig.plainsNullWeight, biome -> biome == BiomeGenBase.plains);
 		NBTStructure.registerNullWeight(0, StructureConfig.oceanNullWeight, biome -> BiomeDictionary.isBiomeOfType(biome, Type.OCEAN));
 
-		Map<Block, BlockSelector> bricks = new HashMap<Block, BlockSelector>() {{
-			put(ModBlocks.meteor_brick, new MeteorBricks());
-		}};
-		Map<Block, BlockSelector> crates = new HashMap<Block, BlockSelector>() {{
-			put(ModBlocks.meteor_brick, new MeteorBricks());
-			put(ModBlocks.crate, new SupplyCrates());
-			put(ModBlocks.meteor_spawner, new CrabSpawners());
-		}};
-		Map<Block, BlockSelector> ooze = new HashMap<Block, BlockSelector>() {{
-			put(ModBlocks.meteor_brick, new MeteorBricks());
-			put(ModBlocks.concrete_colored, new GreenOoze());
-		}};
-
-		NBTStructure.registerStructure(0, new SpawnCondition("meteor_dungeon") {{
-			minHeight = 32;
-			maxHeight = 32;
-			sizeLimit = 192;
-			canSpawn = biome -> biome.rootHeight >= 0;
-			startPool = "start";
-			pools = new HashMap<String, JigsawPool>() {{
-				put("start", new JigsawPool() {{
-					add(new JigsawPiece("meteor_core", StructureManager.meteor_core) {{ blockTable = bricks; }}, 1);
-				}});
-				put("spike", new JigsawPool() {{
-					add(new JigsawPiece("meteor_spike", StructureManager.meteor_spike) {{ heightOffset = -3; conformToTerrain = true; }}, 1);
-				}});
-				put("default", new JigsawPool() {{
-					add(new JigsawPiece("meteor_corner", StructureManager.meteor_corner) {{ blockTable = bricks; }}, 2);
-					add(new JigsawPiece("meteor_t", StructureManager.meteor_t) {{ blockTable = bricks; }}, 3);
-					add(new JigsawPiece("meteor_stairs", StructureManager.meteor_stairs) {{ blockTable = bricks; }}, 1);
-					add(new JigsawPiece("meteor_room_base_thru", StructureManager.meteor_room_base_thru) {{ blockTable = bricks; }}, 3);
-					add(new JigsawPiece("meteor_room_base_end", StructureManager.meteor_room_base_end) {{ blockTable = bricks; }}, 4);
-					fallback = "fallback";
-				}});
-				put("10room", new JigsawPool() {{
-					add(new JigsawPiece("meteor_room_basic", StructureManager.meteor_room_basic) {{ blockTable = bricks; }}, 1);
-					add(new JigsawPiece("meteor_room_balcony", StructureManager.meteor_room_balcony) {{ blockTable = bricks; }}, 1);
-					add(new JigsawPiece("meteor_room_dragon", StructureManager.meteor_room_dragon) {{ blockTable = bricks; }}, 1);
-					add(new JigsawPiece("meteor_room_ladder", StructureManager.meteor_room_ladder) {{ blockTable = bricks; }}, 1);
-					add(new JigsawPiece("meteor_room_ooze", StructureManager.meteor_room_ooze) {{ blockTable = ooze; }}, 1);
-					add(new JigsawPiece("meteor_room_split", StructureManager.meteor_room_split) {{ blockTable = bricks; }}, 1);
-					add(new JigsawPiece("meteor_room_stairs", StructureManager.meteor_room_stairs) {{ blockTable = bricks; }}, 1);
-					add(new JigsawPiece("meteor_room_triple", StructureManager.meteor_room_triple) {{ blockTable = bricks; }}, 1);
-					fallback = "roomback";
-				}});
-				put("3x3loot", new JigsawPool() {{
-					add(new JigsawPiece("meteor_3_bale", StructureManager.meteor_3_bale), 1);
-					add(new JigsawPiece("meteor_3_blank", StructureManager.meteor_3_blank), 1);
-					add(new JigsawPiece("meteor_3_block", StructureManager.meteor_3_block), 1);
-					add(new JigsawPiece("meteor_3_crab", StructureManager.meteor_3_crab), 1);
-					add(new JigsawPiece("meteor_3_crab_tesla", StructureManager.meteor_3_crab_tesla), 1);
-					add(new JigsawPiece("meteor_3_crate", StructureManager.meteor_3_crate), 1);
-					add(new JigsawPiece("meteor_3_dirt", StructureManager.meteor_3_dirt), 1);
-					add(new JigsawPiece("meteor_3_lead", StructureManager.meteor_3_lead), 1);
-					add(new JigsawPiece("meteor_3_ooze", StructureManager.meteor_3_ooze), 1);
-					add(new JigsawPiece("meteor_3_pillar", StructureManager.meteor_3_pillar), 1);
-					add(new JigsawPiece("meteor_3_star", StructureManager.meteor_3_star), 1);
-					add(new JigsawPiece("meteor_3_tesla", StructureManager.meteor_3_tesla), 1);
-					add(new JigsawPiece("meteor_3_book", StructureManager.meteor_3_book), 2);
-					add(new JigsawPiece("meteor_3_mku", StructureManager.meteor_3_mku), 1);
-					add(new JigsawPiece("meteor_3_statue", StructureManager.meteor_3_statue), 1);
-					add(new JigsawPiece("meteor_3_glow", StructureManager.meteor_3_glow), 1);
-					fallback = "3x3loot"; // generate loot even if we're at the size limit
-				}});
-				put("headloot", new JigsawPool() {{
-					add(new JigsawPiece("meteor_dragon_chest", StructureManager.meteor_dragon_chest) {{ blockTable = crates; }}, 1);
-					add(new JigsawPiece("meteor_dragon_tesla", StructureManager.meteor_dragon_tesla) {{ blockTable = crates; }}, 1);
-					add(new JigsawPiece("meteor_dragon_trap", StructureManager.meteor_dragon_trap) {{ blockTable = crates; }}, 1);
-					add(new JigsawPiece("meteor_dragon_crate_crab", StructureManager.meteor_dragon_crate_crab) {{ blockTable = crates; }}, 1);
-					fallback = "headback";
-				}});
-				put("fallback", new JigsawPool() {{
-					add(new JigsawPiece("meteor_fallback", StructureManager.meteor_fallback) {{ blockTable = bricks; }}, 1);
-				}});
-				put("roomback", new JigsawPool() {{
-					add(new JigsawPiece("meteor_room_fallback", StructureManager.meteor_room_fallback) {{ blockTable = bricks; }}, 1);
-				}});
-				put("headback", new JigsawPool() {{
-					add(new JigsawPiece("meteor_loot_fallback", StructureManager.meteor_dragon_fallback) {{ blockTable = crates; }}, 1);
-				}});
-			}};
-		}});
+		// Map<Block, BlockSelector> bricks = new HashMap<Block, BlockSelector>() {{
+		// 	put(ModBlocks.meteor_brick, new MeteorBricks());
+		// }};
+		// Map<Block, BlockSelector> crates = new HashMap<Block, BlockSelector>() {{
+		// 	put(ModBlocks.meteor_brick, new MeteorBricks());
+		// 	put(ModBlocks.crate, new SupplyCrates());
+		// 	put(ModBlocks.meteor_spawner, new CrabSpawners());
+		// }};
+		// Map<Block, BlockSelector> ooze = new HashMap<Block, BlockSelector>() {{
+		// 	put(ModBlocks.meteor_brick, new MeteorBricks());
+		// 	put(ModBlocks.concrete_colored, new GreenOoze());
+		// }};
+  //
+		// NBTStructure.registerStructure(0, new SpawnCondition("meteor_dungeon") {{
+		// 	minHeight = 32;
+		// 	maxHeight = 32;
+		// 	sizeLimit = 192;
+		// 	canSpawn = biome -> biome.rootHeight >= 0;
+		// 	startPool = "start";
+		// 	pools = new HashMap<String, JigsawPool>() {{
+		// 		put("start", new JigsawPool() {{
+		// 			add(new JigsawPiece("meteor_core", StructureManager.meteor_core) {{ blockTable = bricks; }}, 1);
+		// 		}});
+		// 		put("spike", new JigsawPool() {{
+		// 			add(new JigsawPiece("meteor_spike", StructureManager.meteor_spike) {{ heightOffset = -3; conformToTerrain = true; }}, 1);
+		// 		}});
+		// 		put("default", new JigsawPool() {{
+		// 			add(new JigsawPiece("meteor_corner", StructureManager.meteor_corner) {{ blockTable = bricks; }}, 2);
+		// 			add(new JigsawPiece("meteor_t", StructureManager.meteor_t) {{ blockTable = bricks; }}, 3);
+		// 			add(new JigsawPiece("meteor_stairs", StructureManager.meteor_stairs) {{ blockTable = bricks; }}, 1);
+		// 			add(new JigsawPiece("meteor_room_base_thru", StructureManager.meteor_room_base_thru) {{ blockTable = bricks; }}, 3);
+		// 			add(new JigsawPiece("meteor_room_base_end", StructureManager.meteor_room_base_end) {{ blockTable = bricks; }}, 4);
+		// 			fallback = "fallback";
+		// 		}});
+		// 		put("10room", new JigsawPool() {{
+		// 			add(new JigsawPiece("meteor_room_basic", StructureManager.meteor_room_basic) {{ blockTable = bricks; }}, 1);
+		// 			add(new JigsawPiece("meteor_room_balcony", StructureManager.meteor_room_balcony) {{ blockTable = bricks; }}, 1);
+		// 			add(new JigsawPiece("meteor_room_dragon", StructureManager.meteor_room_dragon) {{ blockTable = bricks; }}, 1);
+		// 			add(new JigsawPiece("meteor_room_ladder", StructureManager.meteor_room_ladder) {{ blockTable = bricks; }}, 1);
+		// 			add(new JigsawPiece("meteor_room_ooze", StructureManager.meteor_room_ooze) {{ blockTable = ooze; }}, 1);
+		// 			add(new JigsawPiece("meteor_room_split", StructureManager.meteor_room_split) {{ blockTable = bricks; }}, 1);
+		// 			add(new JigsawPiece("meteor_room_stairs", StructureManager.meteor_room_stairs) {{ blockTable = bricks; }}, 1);
+		// 			add(new JigsawPiece("meteor_room_triple", StructureManager.meteor_room_triple) {{ blockTable = bricks; }}, 1);
+		// 			fallback = "roomback";
+		// 		}});
+		// 		put("3x3loot", new JigsawPool() {{
+		// 			add(new JigsawPiece("meteor_3_bale", StructureManager.meteor_3_bale), 1);
+		// 			add(new JigsawPiece("meteor_3_blank", StructureManager.meteor_3_blank), 1);
+		// 			add(new JigsawPiece("meteor_3_block", StructureManager.meteor_3_block), 1);
+		// 			add(new JigsawPiece("meteor_3_crab", StructureManager.meteor_3_crab), 1);
+		// 			add(new JigsawPiece("meteor_3_crab_tesla", StructureManager.meteor_3_crab_tesla), 1);
+		// 			add(new JigsawPiece("meteor_3_crate", StructureManager.meteor_3_crate), 1);
+		// 			add(new JigsawPiece("meteor_3_dirt", StructureManager.meteor_3_dirt), 1);
+		// 			add(new JigsawPiece("meteor_3_lead", StructureManager.meteor_3_lead), 1);
+		// 			add(new JigsawPiece("meteor_3_ooze", StructureManager.meteor_3_ooze), 1);
+		// 			add(new JigsawPiece("meteor_3_pillar", StructureManager.meteor_3_pillar), 1);
+		// 			add(new JigsawPiece("meteor_3_star", StructureManager.meteor_3_star), 1);
+		// 			add(new JigsawPiece("meteor_3_tesla", StructureManager.meteor_3_tesla), 1);
+		// 			add(new JigsawPiece("meteor_3_book", StructureManager.meteor_3_book), 2);
+		// 			add(new JigsawPiece("meteor_3_mku", StructureManager.meteor_3_mku), 1);
+		// 			add(new JigsawPiece("meteor_3_statue", StructureManager.meteor_3_statue), 1);
+		// 			add(new JigsawPiece("meteor_3_glow", StructureManager.meteor_3_glow), 1);
+		// 			fallback = "3x3loot"; // generate loot even if we're at the size limit
+		// 		}});
+		// 		put("headloot", new JigsawPool() {{
+		// 			add(new JigsawPiece("meteor_dragon_chest", StructureManager.meteor_dragon_chest) {{ blockTable = crates; }}, 1);
+		// 			add(new JigsawPiece("meteor_dragon_tesla", StructureManager.meteor_dragon_tesla) {{ blockTable = crates; }}, 1);
+		// 			add(new JigsawPiece("meteor_dragon_trap", StructureManager.meteor_dragon_trap) {{ blockTable = crates; }}, 1);
+		// 			add(new JigsawPiece("meteor_dragon_crate_crab", StructureManager.meteor_dragon_crate_crab) {{ blockTable = crates; }}, 1);
+		// 			fallback = "headback";
+		// 		}});
+		// 		put("fallback", new JigsawPool() {{
+		// 			add(new JigsawPiece("meteor_fallback", StructureManager.meteor_fallback) {{ blockTable = bricks; }}, 1);
+		// 		}});
+		// 		put("roomback", new JigsawPool() {{
+		// 			add(new JigsawPiece("meteor_room_fallback", StructureManager.meteor_room_fallback) {{ blockTable = bricks; }}, 1);
+		// 		}});
+		// 		put("headback", new JigsawPool() {{
+		// 			add(new JigsawPiece("meteor_loot_fallback", StructureManager.meteor_dragon_fallback) {{ blockTable = crates; }}, 1);
+		// 		}});
+		// 	}};
+		// }});
 	}
 
 	private NBTStructure.GenStructure nbtGen = new NBTStructure.GenStructure();
