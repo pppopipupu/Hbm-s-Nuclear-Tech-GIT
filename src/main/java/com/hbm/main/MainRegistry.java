@@ -1549,8 +1549,6 @@ public class MainRegistry {
 		ignoreMappings.add("hbm:tile.block_unobtainium");
 		ignoreMappings.add("hbm:tile.block_daffergon");
 		ignoreMappings.add("hbm:tile.block_verticium");
-		ignoreMappings.add("hbm:tile.machine_schrabidium_transmutator");
-		ignoreMappings.add("hbm:tile.machine_discharger");
 		ignoreMappings.add("hbm:tile.fusion_conductor");
 		ignoreMappings.add("hbm:tile.fusion_center");
 		ignoreMappings.add("hbm:tile.fusion_motor");
@@ -1712,6 +1710,8 @@ public class MainRegistry {
 		ignoreMappings.add("hbm:item.coil_advanced_alloy");
 		ignoreMappings.add("hbm:item.coil_advanced_torus");
 		ignoreMappings.add("hbm:item.blades_advanced_alloy");
+		ignoreMappings.add("hbm:tile.machine_minirtg");
+		ignoreMappings.add("hbm:tile.machine_powerrtg");
 		
 		/// REMAP ///
 		remapItems.put("hbm:item.gadget_explosive8", ModItems.early_explosive_lenses);

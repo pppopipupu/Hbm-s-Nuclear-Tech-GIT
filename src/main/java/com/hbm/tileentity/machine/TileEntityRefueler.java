@@ -10,8 +10,8 @@ import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.TileEntityLoadedBase;
 import com.hbm.util.BobMathUtil;
 
-import api.hbm.fluid.IFluidStandardReceiver;
 import api.hbm.fluidmk2.IFillableItem;
+import api.hbm.fluidmk2.IFluidStandardReceiverMK2;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemArmor;
@@ -20,7 +20,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityRefueler extends TileEntityLoadedBase implements IFluidStandardReceiver {
+public class TileEntityRefueler extends TileEntityLoadedBase implements IFluidStandardReceiverMK2 {
 
 	public double fillLevel;
 	public double prevFillLevel;
@@ -50,10 +50,10 @@ public class TileEntityRefueler extends TileEntityLoadedBase implements IFluidSt
 
 			for(EntityPlayer player : players) {
 				for(int i = 0; i < 5; i++) {
-
+					
 					ItemStack stack = player.getEquipmentInSlot(i);
 					if(stack == null) continue;
-
+					
 					if(fillFillable(stack)) {
 						isOperating = true;
 					}
@@ -94,7 +94,7 @@ public class TileEntityRefueler extends TileEntityLoadedBase implements IFluidSt
 				data.setDouble("mX", -dir.offsetX + rand.nextGaussian() * 0.1);
 				data.setDouble("mZ", -dir.offsetZ + rand.nextGaussian() * 0.1);
 				data.setDouble("mY", 0D);
-
+				
 				MainRegistry.proxy.effectNT(data);
 			}
 
@@ -131,13 +131,13 @@ public class TileEntityRefueler extends TileEntityLoadedBase implements IFluidSt
 		isOperating = buf.readBoolean();
 		tank.deserialize(buf);
 	}
-
+	
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
 		tank.readFromNBT(nbt, "t");
 	}
-
+	
 	@Override
 	public void writeToNBT(NBTTagCompound nbt) {
 		super.writeToNBT(nbt);

@@ -104,7 +104,7 @@ public class BlockCrate extends BlockFalling {
 		BlockCrate.addToListWithWeight(metalList, Item.getItemFromBlock(ModBlocks.machine_reactor_breeding), 6);
 		BlockCrate.addToListWithWeight(metalList, Item.getItemFromBlock(ModBlocks.machine_wood_burner), 10);
 		BlockCrate.addToListWithWeight(metalList, Item.getItemFromBlock(ModBlocks.machine_diesel), 8);
-		BlockCrate.addToListWithWeight(metalList, Item.getItemFromBlock(ModBlocks.machine_rtg_grey), 4);
+		BlockCrate.addToListWithWeight(metalList, Item.getItemFromBlock(ModBlocks.machine_rtg), 4);
 		BlockCrate.addToListWithWeight(metalList, Item.getItemFromBlock(ModBlocks.red_pylon), 9);
 		BlockCrate.addToListWithWeight(metalList, new ItemStack(ModItems.battery_pack, 1, EnumBatteryPack.BATTERY_LEAD.ordinal()), 10);
 		BlockCrate.addToListWithWeight(metalList, Item.getItemFromBlock(ModBlocks.machine_electric_furnace_off), 8);
@@ -126,6 +126,7 @@ public class BlockCrate extends BlockFalling {
 		BlockCrate.addToListWithWeight(redList, new ItemStack(ModItems.ammo_secret, 1, EnumAmmoSecret.M44_EQUESTRIAN.ordinal()), 1);
 		BlockCrate.addToListWithWeight(redList, new ItemStack(ModItems.ammo_secret, 1, EnumAmmoSecret.G12_EQUESTRIAN.ordinal()), 1);
 		BlockCrate.addToListWithWeight(redList, new ItemStack(ModItems.ammo_secret, 1, EnumAmmoSecret.BMG50_EQUESTRIAN.ordinal()), 1);
+		BlockCrate.addToListWithWeight(redList, ModItems.weaponized_starblaster_cell, 1);
 		BlockCrate.addToListWithWeight(redList, ModItems.battery_spark, 1);
 		BlockCrate.addToListWithWeight(redList, ModItems.bottle_sparkle, 1);
 		BlockCrate.addToListWithWeight(redList, ModItems.bottle_rad, 1);

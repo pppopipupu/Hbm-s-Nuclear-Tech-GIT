@@ -58,12 +58,14 @@ public class MixerRecipes extends SerializableRecipe {
 				new MixerRecipe(1000, 50).setStack1(new FluidStack(Fluids.NAPHTHA_CRACK, 500)).setStack2(new FluidStack(Fluids.AROMATICS, 500)),
 				new MixerRecipe(1000, 50).setStack1(new FluidStack(Fluids.NAPHTHA_DS, 500)).setStack2(new FluidStack(Fluids.AROMATICS, 500)),
 				new MixerRecipe(1000, 50).setStack1(new FluidStack(Fluids.NAPHTHA_COKER, 500)).setStack2(new FluidStack(Fluids.AROMATICS, 500)));
-		register(Fluids.SULFURIC_ACID, new MixerRecipe(500, 50).setStack1(new FluidStack(Fluids.PEROXIDE, 800)).setSolid(new OreDictStack(S.dust())));
+
+		register(Fluids.SULFURIC_ACID, new MixerRecipe(2000, 50).setStack1(new FluidStack(Fluids.PEROXIDE, 800)).setSolid(new OreDictStack(S.dust())));
 		register(Fluids.NITRIC_ACID,
 				new MixerRecipe(1_000, 50).setStack1(new FluidStack(Fluids.AMMONIA, 1000)).setStack2(new FluidStack(Fluids.WATER, 500)),
-				new MixerRecipe(1_000, 50).setStack1(new FluidStack(Fluids.SULFURIC_ACID, 500)).setSolid(new OreDictStack(KNO.dust())));
+				new MixerRecipe(2_000, 50).setStack1(new FluidStack(Fluids.SULFURIC_ACID, 2000)).setSolid(new OreDictStack(KNO.dust())));
 		register(Fluids.RADIOSOLVENT, new MixerRecipe(1000, 50).setStack1(new FluidStack(Fluids.REFORMGAS, 750)).setStack2(new FluidStack(Fluids.CHLORINE, 250)),
 				new MixerRecipe(5_000, 20).setStack1(new FluidStack(Fluids.REFORMGAS, 500)).setSolid(new ComparableStack(ModBlocks.geysir_chloric)));
+
 		register(Fluids.SCHRABIDIC, new MixerRecipe(16_000, 100).setStack1(new FluidStack(Fluids.SAS3, 8_000)).setStack2(new FluidStack(Fluids.PEROXIDE, 6_000)).setSolid(new ComparableStack(ModItems.pellet_charged)));
 
 		register(Fluids.PETROIL, new MixerRecipe(1_000, 30).setStack1(new FluidStack(Fluids.RECLAIMED, 800)).setStack2(new FluidStack(Fluids.LUBRICANT, 200)));
@@ -111,13 +113,18 @@ public class MixerRecipes extends SerializableRecipe {
 
 		register(Fluids.SCUTTERBLOOD, new MixerRecipe(550, 50).setStack1(new FluidStack(Fluids.HCL, 300)).setSolid(new ComparableStack(ModItems.scuttertail)));
 
-		register(Fluids.BAUXITE_SOLUTION, new MixerRecipe(300, 80).setStack1(new FluidStack(Fluids.LYE, 50)).setSolid(new ComparableStack(ModBlocks.stone_resource, 1, BlockEnums.EnumStoneType.BAUXITE.ordinal())));
-		register(Fluids.LYE, new MixerRecipe(100, 100).setStack1(new FluidStack(Fluids.WATER, 100)).setSolid(new ComparableStack(ModItems.powder_ash, 1, EnumAshType.WOOD)));
-		register(Fluids.ALUMINA, new MixerRecipe(200, 40).setStack1(new FluidStack(Fluids.SODIUM_ALUMINATE, 150)).setSolid(new OreDictStack(F.dust(), 3)),
-								 new MixerRecipe(300, 40).setStack1(new FluidStack(Fluids.SODIUM_ALUMINATE, 150)).setSolid(new ComparableStack(DictFrame.fromOne(ModItems.chunk_ore, ItemEnums.EnumChunkType.CRYOLITE))));
+
 		register(Fluids.CONGLOMERA, new MixerRecipe(1000, 70).setStack1(new FluidStack(Fluids.AQUEOUS_NICKEL, 250)).setSolid(new ComparableStack(ModBlocks.stone_resource, 1, BlockEnums.EnumStoneType.CONGLOMERATE.ordinal())));
 		register(Fluids.AQUEOUS_NICKEL, new MixerRecipe(1000, 80).setStack1(new FluidStack(Fluids.BRINE, 250)).setSolid(new OreDictStack(NIM.dust())));
 		register(Fluids.AQUEOUS_COPPER, new MixerRecipe(1000, 80).setStack1(new FluidStack(Fluids.BRINE, 250)).setSolid(new ComparableStack(ModItems.chunk_ore, 1, ItemEnums.EnumChunkType.MALACHITE)));
+
+		register(Fluids.BAUXITE_SOLUTION, new MixerRecipe(1_500, 80).setStack1(new FluidStack(Fluids.LYE, 100)).setStack2(new FluidStack(Fluids.WATER, 1_000)).setSolid(new ComparableStack(ModBlocks.stone_resource, 1, BlockEnums.EnumStoneType.BAUXITE.ordinal())));
+		register(Fluids.LYE,
+				new MixerRecipe(50, 100).setStack1(new FluidStack(Fluids.WATER, 500)).setSolid(new ComparableStack(ModItems.powder_ash, 2, EnumAshType.WOOD)),
+				new MixerRecipe(500, 50).setStack1(new FluidStack(Fluids.WATER, 1000)).setSolid(new OreDictStack(NA.dust())),
+				new MixerRecipe(500, 50).setStack1(new FluidStack(Fluids.WATER, 1000)).setSolid(new OreDictStack(LI.dust())));
+		register(Fluids.ALUMINA, new MixerRecipe(1000, 40).setStack1(new FluidStack(Fluids.SODIUM_ALUMINATE, 750)).setSolid(new OreDictStack(F.dust(), 3)),
+								 new MixerRecipe(1500, 40).setStack1(new FluidStack(Fluids.SODIUM_ALUMINATE, 750)).setStack2(new FluidStack(Fluids.LYE, 500)).setSolid(new ComparableStack(DictFrame.fromOne(ModItems.chunk_ore, ItemEnums.EnumChunkType.CRYOLITE))));
 
 		register(Fluids.PERFLUOROMETHYL, new MixerRecipe(1000, 20).setStack1(new FluidStack(Fluids.PETROLEUM, 1000)).setStack2(new FluidStack(Fluids.UNSATURATEDS, 500)).setSolid(new OreDictStack(F.dust())));
 		register(Fluids.VINYL,
@@ -129,6 +136,10 @@ public class MixerRecipes extends SerializableRecipe {
 		register(Fluids.LITHYDRO, new MixerRecipe(1000, 100).setStack1(new FluidStack(Fluids.BRINE, 125)).setSolid(new ComparableStack(ModItems.powder_lithium, 3)));
 
 		register(Fluids.BITUMEN, new MixerRecipe(50, 20).setSolid(new OreDictStack(ANY_TAR.any())));
+
+        //NTMC Special
+		register(Fluids.CRYOGEL_MOD, new MixerRecipe(20000, 40).setStack1(new FluidStack(Fluids.CRYOGEL, 16000)).setStack2(new FluidStack(Fluids.HELIUM4, 2000)).setSolid(new ComparableStack(ModItems.powder_magic)));
+		//register(Fluids.LYE, new MixerRecipe(50, 50).setStack1(new FluidStack(Fluids.WATER, 100)).setSolid(new OreDictStack(NA.dust())));
 	}
 
 	public static void register(FluidType type, MixerRecipe... rec) {

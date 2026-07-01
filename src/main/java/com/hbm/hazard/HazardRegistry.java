@@ -3,6 +3,7 @@ package com.hbm.hazard;
 import static com.hbm.blocks.ModBlocks.*;
 import static com.hbm.items.ModItems.*;
 import static com.hbm.inventory.OreDictManager.*;
+import static com.hbm.items.ModItems.rbmk_pellet_rs3;
 
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.generic.BlockBobble.BobbleType;
@@ -322,7 +323,7 @@ public class HazardRegistry {
 		HazardSystem.register(billet_uranium_fuel, makeData(RADIATION, uf * billet));
 		HazardSystem.register(ingot_uranium_fuel, makeData(RADIATION, uf * ingot));
 		HazardSystem.register(block_uranium_fuel, makeData(RADIATION, uf * block));
-		HazardSystem.register(billet_uzh, makeData(RADIATION, uzh * billet));
+        HazardSystem.register(billet_uzh, makeData(RADIATION, uzh * billet));
 		
 		HazardSystem.register(nugget_plutonium_fuel, makeData(RADIATION, puf * nugget));
 		HazardSystem.register(billet_plutonium_fuel, makeData(RADIATION, puf * billet));
@@ -439,6 +440,11 @@ public class HazardRegistry {
 		registerRBMKRod(rbmk_fuel_mecm, cmrg * 2.2F * rod_rbmk / 3F, wst * rod_rbmk * 3F);
 		registerRBMKRod(rbmk_fuel_hecm, cmrg * 2.2F * rod_rbmk /1.5F, wst * rod_rbmk * 5F);
 		
+		//registerRBMKRod(rbmk_fuel_curve, saf * rod_rbmk * np237 * rod_rbmk, wst * rod_rbmk * 35F);
+		//NTMC Rods
+		registerRBMKRod(rbmk_fuel_rs1, rabe * rod_rbmk * 6, rabe * rod_rbmk * 2.4F, true);
+		registerRBMKRod(rbmk_fuel_rs2, pobe * rod_rbmk * 6, pobe * rod_rbmk * 0.6F, true);
+		registerRBMKRod(rbmk_fuel_rs3, sa327 * rod_rbmk * 100, sa327 * rod_rbmk * 10F, true);
 		
 		registerRBMKPellet(rbmk_pellet_ueu, u * billet, wst * billet * 20F);
 		registerRBMKPellet(rbmk_pellet_meu, uf * billet, wst * billet * 21.5F);
@@ -476,6 +482,10 @@ public class HazardRegistry {
 		registerRBMKPellet(rbmk_pellet_lecm, cmrg * billet, wst * cf252 * 2.5F);
 		registerRBMKPellet(rbmk_pellet_mecm, cmrg * billet, wst * cf252 * 2.6F);
 		registerRBMKPellet(rbmk_pellet_hecm, cmrg * billet, wst * cf252 * 2.7F);
+		//NTMC Rods
+		registerRBMKRod(rbmk_pellet_rs1, rabe * billet * 6, rabe * billet * 2.4F, true);
+		registerRBMKRod(rbmk_pellet_rs2, pobe * billet * 6, pobe * billet * 0.6F, true);
+		registerRBMKRod(rbmk_pellet_rs3, sa327 * billet * 100, sa327 * billet * 10F, true);
 		
 		HazardSystem.register(DictFrame.fromOne(ModItems.watz_pellet, EnumWatzType.SCHRABIDIUM), makeData(RADIATION, sa326 * ingot * 4));
 		HazardSystem.register(DictFrame.fromOne(ModItems.watz_pellet, EnumWatzType.HES), makeData(RADIATION, saf * ingot * 4));

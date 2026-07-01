@@ -65,7 +65,6 @@ public class ItemStarterKit extends Item {
 		
 		if(this == ModItems.nuke_starter_kit)
 		{
-
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.ingot_uranium, 32));
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.powder_yellowcake, 32));
 			player.inventory.addItemStackToInventory(new ItemStack(ModBlocks.machine_press, 1));
@@ -86,8 +85,6 @@ public class ItemStarterKit extends Item {
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.ingot_copper, 64));
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.gas_mask_m65, 1));
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.geiger_counter, 1));
-			
-			giveHaz(world, player, 1);
 		}
 		
 		if(this == ModItems.nuke_advanced_kit)
@@ -108,7 +105,7 @@ public class ItemStarterKit extends Item {
 			player.inventory.addItemStackToInventory(new ItemStack(ModBlocks.reactor_research, 4));
 			player.inventory.addItemStackToInventory(new ItemStack(ModBlocks.machine_turbine, 4));
 			player.inventory.addItemStackToInventory(new ItemStack(ModBlocks.machine_radgen, 1));
-			player.inventory.addItemStackToInventory(new ItemStack(ModBlocks.machine_rtg_grey, 1));
+			player.inventory.addItemStackToInventory(new ItemStack(ModBlocks.machine_rtg, 1));
 			player.inventory.addItemStackToInventory(new ItemStack(ModBlocks.machine_assembly_machine, 3));
 			player.inventory.addItemStackToInventory(new ItemStack(ModBlocks.machine_chemical_plant, 2));
 			player.inventory.addItemStackToInventory(new ItemStack(ModBlocks.machine_fluidtank, 1));
@@ -127,13 +124,10 @@ public class ItemStarterKit extends Item {
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.geiger_counter, 1));
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.survey_scanner, 1));
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.gas_mask_m65, 1));
-			
-			giveHaz(world, player, 2);
 		}
 		
 		if(this == ModItems.nuke_commercially_kit)
 		{
-
 			player.inventory.addItemStackToInventory(new ItemStack(ModBlocks.reactor_research, 8));
 			player.inventory.addItemStackToInventory(new ItemStack(ModBlocks.machine_reactor_breeding, 8));
 			player.inventory.addItemStackToInventory(new ItemStack(ModBlocks.machine_fluidtank, 8));
@@ -159,8 +153,6 @@ public class ItemStarterKit extends Item {
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.gas_mask_filter_combo, 1));
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.gas_mask_filter_combo, 1));
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.gas_mask_filter_combo, 1));
-			
-			giveHaz(world, player, 2);
 		}
 
 		if(this == ModItems.nuke_electric_kit)
@@ -201,8 +193,6 @@ public class ItemStarterKit extends Item {
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.early_explosive_lenses, 1));
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.gadget_wireing, 1));
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.gadget_core, 1));
-			
-			giveHaz(world, player, 0);
 		}
 		
 		if(this == ModItems.boy_kit)
@@ -213,8 +203,6 @@ public class ItemStarterKit extends Item {
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.boy_bullet, 1));
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.boy_propellant, 1));
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.boy_igniter, 1));
-			
-			giveHaz(world, player, 0);
 		}
 		
 		if(this == ModItems.man_kit)
@@ -226,8 +214,6 @@ public class ItemStarterKit extends Item {
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.early_explosive_lenses, 1));
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.man_igniter, 1));
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.man_core, 1));
-			
-			giveHaz(world, player, 0);
 		}
 		
 		if(this == ModItems.mike_kit)
@@ -241,8 +227,6 @@ public class ItemStarterKit extends Item {
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.mike_core, 1));
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.mike_deut, 1));
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.mike_cooling_unit, 1));
-			
-			giveHaz(world, player, 0);
 		}
 		
 		if(this == ModItems.tsar_kit)
@@ -254,8 +238,6 @@ public class ItemStarterKit extends Item {
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.explosive_lenses, 1));
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.man_core, 1));
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.tsar_core, 1));
-			
-			giveHaz(world, player, 0);
 		}
 		
 		if(this == ModItems.multi_kit)
@@ -292,7 +274,7 @@ public class ItemStarterKit extends Item {
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.custom_schrab, 1));
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.custom_fall, 1));
 		}
-		
+
 		if(this == ModItems.fleija_kit)
 		{
 			player.inventory.addItemStackToInventory(new ItemStack(Item.getItemFromBlock(ModBlocks.nuke_fleija), 1));
@@ -307,8 +289,6 @@ public class ItemStarterKit extends Item {
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.fleija_core, 1));
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.fleija_core, 1));
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.fleija_core, 1));
-			
-			giveHaz(world, player, 2);
 		}
 		
 		if(this == ModItems.solinium_kit)
@@ -323,8 +303,6 @@ public class ItemStarterKit extends Item {
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.solinium_propellant, 1));
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.solinium_propellant, 1));
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.solinium_core, 1));
-			
-			giveHaz(world, player, 1);
 		}
 		
 		if(this == ModItems.prototype_kit)
@@ -335,8 +313,6 @@ public class ItemStarterKit extends Item {
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.rod_quad, 4, BreedingRodType.URANIUM.ordinal()));
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.rod_quad, 4, BreedingRodType.LEAD.ordinal()));
 			player.inventory.addItemStackToInventory(new ItemStack(ModItems.rod_quad, 2, BreedingRodType.NP237.ordinal()));
-			
-			giveHaz(world, player, 2);
 		}
 		
 		if(this == ModItems.missile_kit)
@@ -404,36 +380,26 @@ public class ItemStarterKit extends Item {
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean b) {
 
-		if(this == ModItems.nuke_starter_kit ||
-				this == ModItems.nuke_advanced_kit ||
-				this == ModItems.nuke_commercially_kit ||
-				this == ModItems.nuke_electric_kit ||
-				this == ModItems.gadget_kit ||
-				this == ModItems.boy_kit ||
-				this == ModItems.man_kit ||
-				this == ModItems.mike_kit ||
-				this == ModItems.tsar_kit ||
-				this == ModItems.prototype_kit ||
-				this == ModItems.fleija_kit ||
-				this == ModItems.solinium_kit ||
-				this == ModItems.missile_kit ||
-				this == ModItems.multi_kit) {
-			list.add("Please empty inventory before opening!");
-		}
-		if(this == ModItems.nuke_starter_kit ||
-				this == ModItems.nuke_advanced_kit ||
-				this == ModItems.nuke_commercially_kit ||
-				this == ModItems.gadget_kit ||
-				this == ModItems.boy_kit ||
-				this == ModItems.man_kit ||
-				this == ModItems.mike_kit ||
-				this == ModItems.tsar_kit ||
-				this == ModItems.prototype_kit ||
-				this == ModItems.fleija_kit ||
-				this == ModItems.solinium_kit ||
-				this == ModItems.hazmat_kit) {
-			list.add("Armor will be displaced by hazmat suit.");
-		}
-	}
+    	if(
+			this == ModItems.nuke_starter_kit ||
+			this == ModItems.nuke_advanced_kit ||
+			this == ModItems.nuke_commercially_kit ||
+			this == ModItems.nuke_electric_kit ||
+			this == ModItems.gadget_kit ||
+			this == ModItems.boy_kit ||
+			this == ModItems.man_kit ||
+			this == ModItems.mike_kit ||
+			this == ModItems.tsar_kit ||
+			this == ModItems.prototype_kit ||
+			this == ModItems.fleija_kit ||
+			this == ModItems.solinium_kit ||
+			this ==  ModItems.missile_kit ||
+			this == ModItems.multi_kit
+		)
+		{list.add("Please empty inventory before opening!");}
+
+		if(this == ModItems.hazmat_kit)
+		{list.add("Armor will be displaced by hazmat suit.");}
+    }
 
 }

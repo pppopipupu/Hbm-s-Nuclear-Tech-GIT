@@ -78,7 +78,7 @@ public class TileEntityMachineOreSlopper extends TileEntityMachineBase implement
 	public double[] ores = new double[CelestialBedrockOre.getAllTypes().size()];
 	private SolarSystem.Body fromBody;
 
-	public UpgradeManagerNT upgradeManager = new UpgradeManagerNT();
+	public UpgradeManagerNT upgradeManager = new UpgradeManagerNT(this);
 
 	public TileEntityMachineOreSlopper() {
 		super(11);
@@ -112,12 +112,12 @@ public class TileEntityMachineOreSlopper extends TileEntityMachineBase implement
 			for(DirPos pos : getConPos()) {
 				this.trySubscribe(worldObj, pos.getX(), pos.getY(), pos.getZ(), pos.getDir());
 				this.trySubscribe(tanks[0].getTankType(), worldObj, pos.getX(), pos.getY(), pos.getZ(), pos.getDir());
-				if(tanks[1].getFill() > 0) this.sendFluid(tanks[1], worldObj, pos.getX(), pos.getY(), pos.getZ(), pos.getDir());
+				if(tanks[1].getFill() > 0) this.tryProvide(tanks[1], worldObj, pos.getX(), pos.getY(), pos.getZ(), pos.getDir());
 			}
 
 			this.processing = false;
 
-			upgradeManager.checkSlots(this, slots, 9, 10);
+			upgradeManager.checkSlots(slots, 9, 10);
 			int speed = upgradeManager.getLevel(UpgradeType.SPEED);
 			int efficiency = upgradeManager.getLevel(UpgradeType.EFFECT);
 
@@ -125,7 +125,7 @@ public class TileEntityMachineOreSlopper extends TileEntityMachineBase implement
 
 			if(canSlop()) {
 				this.power -= this.consumption;
-				this.progress += 1F / (600 - speed * 150);
+				this.progress += 1F / (480 - speed * 120);
 				this.processing = true;
 				boolean markDirty = false;
 

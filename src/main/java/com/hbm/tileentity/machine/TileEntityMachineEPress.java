@@ -56,7 +56,7 @@ public class TileEntityMachineEPress extends TileEntityMachineBase implements IE
 
 	public ItemStack syncStack;
 
-	public UpgradeManagerNT upgradeManager = new UpgradeManagerNT();
+	public UpgradeManagerNT upgradeManager = new UpgradeManagerNT(this);
 
 	public TileEntityMachineEPress() {
 		super(5);
@@ -88,7 +88,7 @@ public class TileEntityMachineEPress extends TileEntityMachineBase implements IE
 
 				if(delay <= 0) {
 
-					upgradeManager.checkSlots(this, slots, 4, 4);
+					upgradeManager.checkSlots(slots, 4, 4);
 					int speed = 1 + upgradeManager.getLevel(UpgradeType.SPEED);
 
 					int stampSpeed = this.isRetracting ? 20 : 45;

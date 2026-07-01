@@ -367,7 +367,7 @@ public class OreDictManager {
 	public static final DictFrame ANY_CONCRETE = new DictFrame("Concrete");			//no any prefix means that any has to be appended with the any() or anys() getters, registering works with the any (i.e. no shape) setter
 	public static final DictGroup ANY_TAR = new DictGroup("Tar", KEY_OIL_TAR, KEY_COAL_TAR, KEY_CRACK_TAR, KEY_WOOD_TAR);
 	/** Any special post-RBMK gating material, namely bismuth and arsenic */
-	public static final DictFrame ANY_BISMOID = new DictFrame("AnyBismoid");
+	public static final DictGroup ANY_BISMOID = new DictGroup("AnyBismoid", BI, AS);
 	public static final DictFrame ANY_ASH = new DictFrame("Ash");
 
 
@@ -527,7 +527,8 @@ public class OreDictManager {
 		 * HAZARDS, MISC
 		 */
 		LI	.hydro(1F)	.ingot(lithium)	.dustSmall(powder_lithium_tiny)	.dust(powder_lithium)	.block(block_lithium)	.ore(ore_gneiss_lithium) .oreAll(ore_lithium);
-		NA	.hydro(1F)	.hazIngot()										.dust(powder_sodium);
+		NA	.hydro(1F)	.hazIngot()										.dust(powder_sodium).block(block_sodium);
+
 
 		/*
 		 * PHOSPHORUS
@@ -549,7 +550,7 @@ public class OreDictManager {
 		RAREEARTH.ingot(DictFrame.fromOne(ModItems.chunk_ore, EnumChunkType.RARE)).ore(ore_gneiss_rare).oreAll(ore_rare);
 		LA	.nugget(nugget_lanthanium, fragment_lanthanium)	.ingot(ingot_lanthanium)						.dustSmall(powder_lanthanium_tiny)	.dust(powder_lanthanium)	.block(block_lanthanium)	.oreAll(ore_lanthanium);
 		ZR	.nugget(nugget_zirconium)		.ingot(ingot_zirconium)		.billet(billet_zirconium)												.dust(powder_zirconium)		.block(block_zirconium)		.ore(ore_depth_zirconium);
-		ND	.nugget(fragment_neodymium)																		.dustSmall(powder_neodymium_tiny)	.dust(powder_neodymium)									.ore(ore_depth_nether_neodymium)	.oreNether(ore_depth_nether_neodymium);
+		ND	.nugget(fragment_neodymium)																		.dustSmall(powder_neodymium_tiny)	.dust(powder_neodymium)									.ore(ore_depth_nether_neodymium)	.oreNether(ore_depth_nether_neodymium); //.ingot(ingot_neodymium);
 		CE	.nugget(fragment_cerium)																		.dustSmall(powder_cerium_tiny)		.dust(powder_cerium);
 
 		/*
@@ -565,7 +566,7 @@ public class OreDictManager {
 		/*
 		 * FISSION FRAGMENTS
 		 */
-		SR									.hot(1F)	.hydro(1F)	.hazIngot()						.dust(powder_strontium);
+		SR									.hot(1F)	.hydro(1F)	.hazIngot()						.dust(powder_strontium)  .block(block_strontium); //.ingot(ingot_strontium);
 		SR90	.rad(HazardRegistry.sr90)	.hot(1F)	.hydro(1F)	.dustSmall(powder_sr90_tiny)	.dust(powder_sr90)	.ingot(ingot_sr90)	.billet(billet_sr90)	.nugget(nugget_sr90);
 		I131	.rad(HazardRegistry.i131)	.hot(1F)				.dustSmall(powder_i131_tiny)	.dust(powder_i131);
 		XE135	.rad(HazardRegistry.xe135)	.hot(10F)				.dustSmall(powder_xe135_tiny)	.dust(powder_xe135);
@@ -583,7 +584,9 @@ public class OreDictManager {
 		for(int i = 0; i < 16; i++) { ANY_CONCRETE.any(new ItemStack(ModBlocks.concrete_colored, 1, i)); }
 		for(int i = 0; i < 16; i++) { ANY_CONCRETE.any(new ItemStack(ModBlocks.concrete_colored_ext, 1, i)); }
 		ANY_COKE				.gem(fromAll(coke, EnumCokeType.class))	.dust(fromAll(powder_coke, EnumCokeType.class))	.block(fromAll(block_coke, EnumCokeType.class));
-		ANY_BISMOID				.ingot(ingot_bismuth, ingot_arsenic).nugget(nugget_bismuth, nugget_arsenic).block(block_bismuth);
+
+		//ANY_BISMOID             .ingot(ingot_bismuth, "ingot_arsenic").nugget(nugget_bismuth, nugget_arsenic).block(block_bismuth);
+
 		ANY_ASH					.any(fromOne(ModItems.powder_ash, EnumAshType.WOOD), fromOne(ModItems.powder_ash, EnumAshType.COAL), fromOne(ModItems.powder_ash, EnumAshType.MISC), fromOne(ModItems.powder_ash, EnumAshType.FLY), fromOne(ModItems.powder_ash, EnumAshType.SOOT));
 
 		/*
@@ -654,6 +657,8 @@ public class OreDictManager {
 		for(EnumBedrockOre ore : EnumBedrockOre.values()) {
 			OreDictionary.registerOre("ore" + ore.oreName, new ItemStack(ModItems.ore_enriched, 1, ore.ordinal()));
 		}
+
+		OreDictionary.registerOre("oreThorium", new ItemStack(ModItems.ore_enriched, 1, 9));
 
 		OreDictionary.registerOre("itemRubber", ingot_rubber);
 
@@ -790,6 +795,7 @@ public class OreDictManager {
 		ANY_BISMOIDBRONZE.addPrefix(INGOT, true).addPrefix(CASTPLATE, true).addPrefix(LIGHTBARREL, true).addPrefix(HEAVYBARREL, true).addPrefix(LIGHTRECEIVER, true).addPrefix(HEAVYRECEIVER, true);
 		ANY_TAR.addPrefix(ANY, false);
 		ANY_COAL_COKE.addPrefix(DUST, true);
+		ANY_BISMOID.addPrefix(NUGGET, true).addPrefix(INGOT, true).addPrefix(BLOCK, true);
 	}
 
 	private static boolean recursionBrake = false;

@@ -31,10 +31,11 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEntityMachineDrain extends TileEntityLoadedBase implements IFluidStandardReceiver, IFluidCopiable {
 
+
 	public FluidTank tank;
 
 	public TileEntityMachineDrain() {
-		this.tank = new FluidTank(Fluids.NONE, 2_000);
+		this.tank = new FluidTank(Fluids.NONE, 10_000);
 	}
 
 	@Override

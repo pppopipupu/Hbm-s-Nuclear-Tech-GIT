@@ -2,6 +2,7 @@ package com.hbm.tileentity.machine;
 
 import com.hbm.interfaces.IControlReceiver;
 import com.hbm.inventory.container.ContainerOilburner;
+import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTank;
 import com.hbm.inventory.fluid.trait.FT_Flammable;
@@ -102,6 +103,12 @@ public class TileEntityHeaterOilburner extends TileEntityMachinePolluting implem
 		}
 	}
 
+    public boolean setFuelRC(FluidType type) {
+        if(!type.hasTrait(FT_Flammable.class)) return false;
+        tank.setTankType(type);
+        return true;
+    }
+	
 	@Override
 	public void serialize(ByteBuf buf) {
 		super.serialize(buf);
@@ -245,8 +252,8 @@ public class TileEntityHeaterOilburner extends TileEntityMachinePolluting implem
 				PREFIX_VALUE + "fuel",
 				PREFIX_VALUE + "burnRate",
 				PREFIX_VALUE + "state",
-				PREFIX_FUNCTION + "setState" + NAME_SEPARATOR + "active",
-				PREFIX_FUNCTION + "setBurnRate" + NAME_SEPARATOR + "rate"
+				PREFIX_FUNCTION + "setstate" + NAME_SEPARATOR + "active",
+				PREFIX_FUNCTION + "setburnrate" + NAME_SEPARATOR + "rate"
 		};
 	}
 
@@ -254,29 +261,23 @@ public class TileEntityHeaterOilburner extends TileEntityMachinePolluting implem
 	public String provideRORValue(String name) {
 		if((PREFIX_VALUE + "heat").equals(name))		return "" + heatEnergy;
 		if((PREFIX_VALUE + "fuel").equals(name))		return "" + tank.getFill();
-		if((PREFIX_VALUE + "burnRate").equals(name))	return "" + setting;
+		if((PREFIX_VALUE + "burnrate").equals(name))	return "" + setting;
 		if((PREFIX_VALUE + "state").equals(name))		return isOn ? "1" : "0";
 		return null;
 	}
 
 	@Override
 	public String runRORFunction(String name, String[] params) {
-		if((PREFIX_FUNCTION + "setState").equals(name)) {
+		if((PREFIX_FUNCTION + "setstate").equals(name)) {
 			this.isOn = params[0].equals("1");
 			this.markChanged();
 			return null;
 		}
-		if((PREFIX_FUNCTION + "setBurnRate").equals(name)) {
-			try {
-				int rate = Integer.parseInt(params[0]);
-				if(rate < 1) rate = 1;
-				if(rate > 10) rate = 10;
-				this.setting = rate;
-				this.markChanged();
-				return null;
-			} catch (NumberFormatException e) {
-				return "Invalid number";
-			}
+		if((PREFIX_FUNCTION + "setburnrate").equals(name)) {
+			int rate = IRORInteractive.parseInt(params[0], 1, 10);
+			this.setting = rate;
+			this.markChanged();
+			return null;
 		}
 		return null;
 	}

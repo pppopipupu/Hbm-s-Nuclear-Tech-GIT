@@ -12,7 +12,6 @@ import com.hbm.inventory.container.ContainerMachineAssemblyFactory;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTank;
 import com.hbm.inventory.gui.GUIMachineAssemblyFactory;
-import com.hbm.inventory.recipes.AssemblyMachineRecipes;
 import com.hbm.inventory.recipes.loader.GenericRecipe;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemMachineUpgrade;
@@ -33,6 +32,7 @@ import com.hbm.util.i18n.I18nUtil;
 
 import api.hbm.energymk2.IEnergyReceiverMK2;
 import api.hbm.fluidmk2.IFluidStandardTransceiverMK2;
+import api.hbm.redstoneoverradio.IRORValueProvider;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
@@ -47,7 +47,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 // TODO: make a base class because 90% of this is just copy pasted from the chemfac
 @NotableComments
-public class TileEntityMachineAssemblyFactory extends TileEntityMachineBase implements IEnergyReceiverMK2, IFluidStandardTransceiverMK2, IUpgradeInfoProvider, IControlReceiver, IGUIProvider, IProxyDelegateProvider, IConditionalInvAccess {
+public class TileEntityMachineAssemblyFactory extends TileEntityMachineBase implements IEnergyReceiverMK2, IFluidStandardTransceiverMK2, IUpgradeInfoProvider, IControlReceiver, IGUIProvider, IProxyDelegateProvider, IConditionalInvAccess, IRORValueProvider {
 
 	public FluidTank[] allTanks;
 	public FluidTank[] inputTanks;
@@ -57,7 +57,7 @@ public class TileEntityMachineAssemblyFactory extends TileEntityMachineBase impl
 	public FluidTank lps;
 	
 	public long power;
-	public long maxPower = 1_000_000;
+	public long maxPower = 10_000_000;
 	public boolean[] didProcess = new boolean[4];
 
 	public boolean frame = false;
@@ -82,8 +82,8 @@ public class TileEntityMachineAssemblyFactory extends TileEntityMachineBase impl
 			this.outputTanks[i] = new FluidTank(Fluids.NONE, 4_000);
 		}
 
-		this.water = new FluidTank(Fluids.WATER, 4_000);
-		this.lps = new FluidTank(Fluids.SPENTSTEAM, 4_000);
+		this.water = new FluidTank(Fluids.WATER, 16_000);
+		this.lps = new FluidTank(Fluids.SPENTSTEAM, 16_000);
 		
 		this.allTanks = new FluidTank[this.inputTanks.length + this.outputTanks.length + 2];
 		for(int i = 0; i < inputTanks.length; i++) this.allTanks[i] = this.inputTanks[i];
@@ -155,19 +155,21 @@ public class TileEntityMachineAssemblyFactory extends TileEntityMachineBase impl
 		if(maxPower <= 0) this.maxPower = 10_000_000;
 		
 		if(!worldObj.isRemote) {
+            
+            upgradeManager.checkSlots(slots, 1, 3);
+            int overLevel = upgradeManager.getLevel(UpgradeType.OVERDRIVE);
 			
 			long nextMaxPower = 0;
 			for(int i = 0; i < 4; i++) {
-				GenericRecipe recipe = AssemblyMachineRecipes.INSTANCE.recipeNameMap.get(assemblerModule[i].recipe);
+				GenericRecipe recipe = assemblerModule[i].getRecipe();
 				if(recipe != null) {
-					nextMaxPower += recipe.power * 100;
+					nextMaxPower += recipe.power * 2_500;
 				}
 			}
-			this.maxPower = nextMaxPower;
-			this.maxPower = BobMathUtil.max(this.power, this.maxPower, 1_000_000);
+            this.maxPower = overLevel > 3 ? 10 * nextMaxPower : nextMaxPower;
+			this.maxPower = BobMathUtil.max(this.power, this.maxPower, 10_000_000);
 			
 			this.power = Library.chargeTEFromItems(slots, 0, power, maxPower);
-			upgradeManager.checkSlots(slots, 1, 3);
 			
 			for(DirPos pos : getConPos()) {
 				this.trySubscribe(worldObj, pos);
@@ -183,13 +185,15 @@ public class TileEntityMachineAssemblyFactory extends TileEntityMachineBase impl
 
 			double speed = 1D;
 			double pow = 1D;
+			int speedLevel = upgradeManager.getLevel(UpgradeType.SPEED);
 
-			speed += Math.min(upgradeManager.getLevel(UpgradeType.SPEED), 3) / 3D;
-			speed += Math.min(upgradeManager.getLevel(UpgradeType.OVERDRIVE), 3);
+			speed /= (4 - speedLevel) / 4D;
+			speed *= ItemMachineUpgrade.OverdriveSpeeds[overLevel];
 
-			pow -= Math.min(upgradeManager.getLevel(UpgradeType.POWER), 3) * 0.25D;
-			pow += Math.min(upgradeManager.getLevel(UpgradeType.SPEED), 3) * 1D;
-			pow += Math.min(upgradeManager.getLevel(UpgradeType.OVERDRIVE), 3) * 10D / 3D;
+			pow -= upgradeManager.getLevel(UpgradeType.POWER) * 0.25D;
+			pow *= speedLevel + 1D;
+			pow *= ItemMachineUpgrade.OverdriveSpeeds[overLevel];
+            if(overLevel > 3) pow *= 10;
 			boolean markDirty = false;
 			
 			for(int i = 0; i < 4; i++) {
@@ -374,7 +378,7 @@ public class TileEntityMachineAssemblyFactory extends TileEntityMachineBase impl
 			int index = data.getInteger("index");
 			String selection = data.getString("selection");
 			if(index >= 0 && index < 4) {
-				this.assemblerModule[index].recipe = selection;
+				this.assemblerModule[index].setRecipe(selection, false);
 				this.markChanged();
 			}
 		}
@@ -403,8 +407,8 @@ public class TileEntityMachineAssemblyFactory extends TileEntityMachineBase impl
 	public void provideInfo(UpgradeType type, int level, List<String> info, boolean extendedInfo) {
 		info.add(IUpgradeInfoProvider.getStandardLabel(ModBlocks.machine_assembly_factory));
 		if(type == UpgradeType.SPEED) {
-			info.add(EnumChatFormatting.GREEN + I18nUtil.resolveKey(KEY_SPEED, "+" + (level * 100 / 3) + "%"));
-			info.add(EnumChatFormatting.RED + I18nUtil.resolveKey(KEY_CONSUMPTION, "+" + (level * 50) + "%"));
+			info.add(EnumChatFormatting.GREEN + I18nUtil.resolveKey(KEY_SPEED, "+" + (400 / (4 - level) - 100) + "%"));
+			info.add(EnumChatFormatting.RED + I18nUtil.resolveKey(KEY_CONSUMPTION, "+" + (level * 100) + "%"));
 		}
 		if(type == UpgradeType.POWER) {
 			info.add(EnumChatFormatting.GREEN + I18nUtil.resolveKey(KEY_CONSUMPTION, "-" + (level * 25) + "%"));
@@ -419,7 +423,7 @@ public class TileEntityMachineAssemblyFactory extends TileEntityMachineBase impl
 		HashMap<UpgradeType, Integer> upgrades = new HashMap<>();
 		upgrades.put(UpgradeType.SPEED, 3);
 		upgrades.put(UpgradeType.POWER, 3);
-		upgrades.put(UpgradeType.OVERDRIVE, 3);
+		upgrades.put(UpgradeType.OVERDRIVE, 6);
 		return upgrades;
 	}
 
@@ -721,5 +725,35 @@ public class TileEntityMachineAssemblyFactory extends TileEntityMachineBase impl
 		RETRACT,
 		RETIRE, // return to null position for carriage transit
 		WAIT // either waiting for or in the middle of carriage transit
+	}
+
+	@Override
+	public String[] getFunctionInfo() {
+		return new String[] {
+				PREFIX_VALUE + "progress1",
+				PREFIX_VALUE + "progress2",
+				PREFIX_VALUE + "progress3",
+				PREFIX_VALUE + "progress4",
+				PREFIX_VALUE + "recipe1",
+				PREFIX_VALUE + "recipe2",
+				PREFIX_VALUE + "recipe3",
+				PREFIX_VALUE + "recipe4",
+				PREFIX_VALUE + "anyactive",
+				PREFIX_VALUE + "active1",
+				PREFIX_VALUE + "active2",
+				PREFIX_VALUE + "active3",
+				PREFIX_VALUE + "active4",
+		};
+	}
+
+	@Override
+	public String provideRORValue(String name) {
+		if((PREFIX_VALUE + "anyactive").equals(name))			return "" + ((this.didProcess[0] || this.didProcess[1] || this.didProcess[2] || this.didProcess[3]) ? 1 : 0);
+		for(int i = 0; i < 4; i++) {
+			if((PREFIX_VALUE + "progress" + i).equals(name))	return "" + (int) Math.round(this.assemblerModule[i].progress * 100);
+			if((PREFIX_VALUE + "recipe" + i).equals(name))		return this.assemblerModule[i].getRecipeName();
+			if((PREFIX_VALUE + "active" + i).equals(name))		return "" + (this.didProcess[i] ? 1 : 0);
+		}
+		return null;
 	}
 }

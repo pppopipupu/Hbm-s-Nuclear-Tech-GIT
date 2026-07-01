@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.lwjgl.input.Keyboard;
+
 import com.hbm.config.GeneralConfig;
 import com.hbm.inventory.FluidStack;
+import com.hbm.inventory.OreDictManager;
 import com.hbm.inventory.RecipesCommon.AStack;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.inventory.recipes.loader.GenericRecipes.ChanceOutput;
@@ -13,6 +16,7 @@ import com.hbm.inventory.recipes.loader.GenericRecipes.ChanceOutputMulti;
 import com.hbm.inventory.recipes.loader.GenericRecipes.IOutput;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemFluidIcon;
+import com.hbm.items.machine.ItemRecipeIcon;
 import com.hbm.util.BobMathUtil;
 import com.hbm.util.i18n.I18nUtil;
 
@@ -59,6 +63,7 @@ public class GenericRecipe {
 	public GenericRecipe setNameWrapper(String wrapper) { this.nameWrapper = wrapper; return this; }
 	public GenericRecipe setIcon(ItemStack icon) { this.icon = icon; this.writeIcon = true; return this; }
 	public GenericRecipe setIcon(Item item, int meta) { return this.setIcon(new ItemStack(item, 1, meta)); }
+	public GenericRecipe setIcon(Item item, Enum en) { return this.setIcon(OreDictManager.DictFrame.fromOne(item, en)); }
 	public GenericRecipe setIcon(Item item) { return this.setIcon(new ItemStack(item)); }
 	public GenericRecipe setIcon(Block block) { return this.setIcon(new ItemStack(block)); }
 	public GenericRecipe setNamed() { this.customLocalization = true; return this; }
@@ -148,8 +153,8 @@ public class GenericRecipe {
 
 	public List<String> print() {
 		List<String> list = new ArrayList();
-		list.add(EnumChatFormatting.YELLOW + this.getLocalizedName());
 
+		header(list);
 		autoSwitch(list);
 		duration(list);
 		power(list);
@@ -157,6 +162,11 @@ public class GenericRecipe {
 		output(list);
 
 		return list;
+	}
+	
+	protected void header(List<String> list) {
+		list.add(EnumChatFormatting.YELLOW + this.getLocalizedName());
+		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) list.add(EnumChatFormatting.DARK_GRAY + "Internal: " + this.getInternalName());
 	}
 	
 	protected void autoSwitch(List<String> list) {

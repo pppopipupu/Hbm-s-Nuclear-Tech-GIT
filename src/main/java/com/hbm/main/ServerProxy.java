@@ -77,6 +77,8 @@ public class ServerProxy {
 		return null;
 	}
 
+	public boolean advancedTooltips() { return false; }
+
 	public boolean isVanished(Entity e) {
 		return false;
 	}

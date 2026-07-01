@@ -185,12 +185,12 @@ public class CompatRecipeRegistry {
 
 	//TBI mixer
 
-	@Deprecated public static void registerOutgasser(AStack input, ItemStack output, FluidStack fluid) {
-		OutgasserRecipes.recipes.put(input, new OutgasserRecipe(output, fluid));
-	}
-	
-	public static void registerOutgasser(AStack input, ItemStack output, FluidStack fluid, boolean fusionOnly) {
-		OutgasserRecipe recipe = new OutgasserRecipe(output, fluid);
+    //Fallback method if there is ever an NTM extension that uses this...
+    public static void registerOutgasser(AStack input, ItemStack output, FluidStack fluid, boolean fusionOnly) {
+        registerOutgasser(input, output, fluid, 10_000, fusionOnly);
+    }
+	public static void registerOutgasser(AStack input, ItemStack output, FluidStack fluid, long flux, boolean fusionOnly) {
+		OutgasserRecipe recipe = new OutgasserRecipe(output, fluid, flux);
 		if(fusionOnly) recipe.fusionOnly();
 		OutgasserRecipes.recipes.put(input, recipe);
 	}

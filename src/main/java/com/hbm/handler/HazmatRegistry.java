@@ -19,7 +19,6 @@ import com.hbm.items.armor.ItemModCladding;
 import com.hbm.main.MainRegistry;
 import com.hbm.potion.HbmPotion;
 import com.hbm.util.Compat;
-import com.hbm.util.ShadyUtil;
 import com.hbm.util.Tuple.Pair;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,14 +29,14 @@ import net.minecraft.item.ItemStack;
 public class HazmatRegistry {
 	
 	public static List<Pair<Item, Double>> external = new ArrayList();
-	
+
 	public static double helmet = 0.2D;
 	public static double chest = 0.4D;
 	public static double legs = 0.3D;
 	public static double boots = 0.1D;
-	
+
 	public static void initDefault() {
-		
+
 		for(Pair<Item, Double> pair : external) {
 			HazmatRegistry.registerHazmat(pair.getKey(), pair.getValue());
 		}
@@ -201,11 +200,7 @@ public class HazmatRegistry {
 	public static float getResistance(EntityPlayer player) {
 		
 		float res = 0.0F;
-		
-		if(player.getUniqueID().toString().equals(ShadyUtil.Pu_238)) {
-			res += 0.4F;
-		}
-		
+
 		for(int i = 0; i < 4; i++) {
 			res += getResistance(player.inventory.armorInventory[i]);
 		}

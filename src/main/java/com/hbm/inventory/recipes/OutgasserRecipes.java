@@ -20,6 +20,7 @@ import com.hbm.items.ModItems;
 import com.hbm.items.ItemEnums.EnumTarType;
 import com.hbm.items.machine.ItemFluidIcon;
 
+import com.hbm.util.Tuple;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -32,15 +33,15 @@ public class OutgasserRecipes extends SerializableRecipe {
 	public void registerDefaults() {
 
 		/* lithium to tritium */
-		recipes.put(new OreDictStack(LI.block()),		new OutgasserRecipe(null, new FluidStack(Fluids.TRITIUM, 10_000)));
-		recipes.put(new OreDictStack(LI.ingot()),		new OutgasserRecipe(null, new FluidStack(Fluids.TRITIUM, 1_000)));
-		recipes.put(new OreDictStack(LI.dust()),		new OutgasserRecipe(null, new FluidStack(Fluids.TRITIUM, 1_000)));
-		recipes.put(new OreDictStack(LI.dustTiny()),	new OutgasserRecipe(null, new FluidStack(Fluids.TRITIUM, 100)));
+		recipes.put(new OreDictStack(LI.block()),		new OutgasserRecipe(null, new FluidStack(Fluids.TRITIUM, 10_000), 10_000L));
+		recipes.put(new OreDictStack(LI.ingot()),		new OutgasserRecipe(null, new FluidStack(Fluids.TRITIUM, 1_000), 10_000L));
+		recipes.put(new OreDictStack(LI.dust()),		new OutgasserRecipe(null, new FluidStack(Fluids.TRITIUM, 1_000), 10_000L));
+		recipes.put(new OreDictStack(LI.dustTiny()),	new OutgasserRecipe(null, new FluidStack(Fluids.TRITIUM, 100), 10_000L));
 
 		/* gold to gold-198 */
-		recipes.put(new OreDictStack(GOLD.ingot()),		new OutgasserRecipe(new ItemStack(ModItems.ingot_au198), null));
-		recipes.put(new OreDictStack(GOLD.nugget()),	new OutgasserRecipe(new ItemStack(ModItems.nugget_au198), null));
-		recipes.put(new OreDictStack(GOLD.dust()),		new OutgasserRecipe(new ItemStack(ModItems.powder_au198), null));
+		recipes.put(new OreDictStack(GOLD.ingot()),		new OutgasserRecipe(new ItemStack(ModItems.ingot_au198), null, 10_000L));
+		recipes.put(new OreDictStack(GOLD.nugget()),	new OutgasserRecipe(new ItemStack(ModItems.nugget_au198), null, 10_000L));
+		recipes.put(new OreDictStack(GOLD.dust()),		new OutgasserRecipe(new ItemStack(ModItems.powder_au198), null, 10_000L));
 
 		/* cobalt to cobalt-60 */
 		recipes.put(new OreDictStack(CO.ingot()),		new OutgasserRecipe(new ItemStack(ModItems.ingot_co60), null));
@@ -53,24 +54,26 @@ public class OutgasserRecipes extends SerializableRecipe {
 		recipes.put(new OreDictStack(BI.dust()),		new OutgasserRecipe(new ItemStack(ModItems.powder_polonium), null));
 
 		/* thorium to thorium fuel */
-		recipes.put(new OreDictStack(TH232.ingot()),	new OutgasserRecipe(new ItemStack(ModItems.ingot_thorium_fuel), null));
-		recipes.put(new OreDictStack(TH232.nugget()),	new OutgasserRecipe(new ItemStack(ModItems.nugget_thorium_fuel), null));
-		recipes.put(new OreDictStack(TH232.billet()),	new OutgasserRecipe(new ItemStack(ModItems.billet_thorium_fuel), null));
+		recipes.put(new OreDictStack(TH232.ingot()),	new OutgasserRecipe(new ItemStack(ModItems.ingot_thorium_fuel), null, 10_000L));
+		recipes.put(new OreDictStack(TH232.nugget()),	new OutgasserRecipe(new ItemStack(ModItems.nugget_thorium_fuel), null, 10_000L));
+		recipes.put(new OreDictStack(TH232.billet()),	new OutgasserRecipe(new ItemStack(ModItems.billet_thorium_fuel), null, 10_000L));
 
 		/* mushrooms to glowing mushrooms */
-		recipes.put(new ComparableStack(Blocks.brown_mushroom),	new OutgasserRecipe(new ItemStack(ModBlocks.mush), null));
-		recipes.put(new ComparableStack(Blocks.red_mushroom),	new OutgasserRecipe(new ItemStack(ModBlocks.mush), null));
-		recipes.put(new ComparableStack(Items.mushroom_stew),	new OutgasserRecipe(new ItemStack(ModItems.glowing_stew), null));
+		recipes.put(new ComparableStack(Blocks.brown_mushroom),	new OutgasserRecipe(new ItemStack(ModBlocks.mush), null, 10_000L));
+		recipes.put(new ComparableStack(Blocks.red_mushroom),	new OutgasserRecipe(new ItemStack(ModBlocks.mush), null, 10_000L));
+		recipes.put(new ComparableStack(Items.mushroom_stew),	new OutgasserRecipe(new ItemStack(ModItems.glowing_stew), null, 10_000L));
 
-		recipes.put(new OreDictStack(COAL.gem()),		new OutgasserRecipe(DictFrame.fromOne(ModItems.oil_tar, EnumTarType.COAL, 1), new FluidStack(Fluids.SYNGAS, 50)));
-		recipes.put(new OreDictStack(COAL.dust()),		new OutgasserRecipe(DictFrame.fromOne(ModItems.oil_tar, EnumTarType.COAL, 1), new FluidStack(Fluids.SYNGAS, 50)));
-		recipes.put(new OreDictStack(COAL.block()),		new OutgasserRecipe(DictFrame.fromOne(ModItems.oil_tar, EnumTarType.COAL, 9), new FluidStack(Fluids.SYNGAS, 500)));
+		recipes.put(new OreDictStack(COAL.gem()),		new OutgasserRecipe(DictFrame.fromOne(ModItems.oil_tar, EnumTarType.COAL, 1), new FluidStack(Fluids.SYNGAS, 50), 10_000L));
+		recipes.put(new OreDictStack(COAL.dust()),		new OutgasserRecipe(DictFrame.fromOne(ModItems.oil_tar, EnumTarType.COAL, 1), new FluidStack(Fluids.SYNGAS, 50), 10_000L));
+		recipes.put(new OreDictStack(COAL.block()),		new OutgasserRecipe(DictFrame.fromOne(ModItems.oil_tar, EnumTarType.COAL, 9), new FluidStack(Fluids.SYNGAS, 500), 10_000L));
 
-		recipes.put(new OreDictStack(PVC.ingot()),		new OutgasserRecipe(new ItemStack(ModItems.ingot_c4), new FluidStack(Fluids.COLLOID, 250)));
+		recipes.put(new OreDictStack(PVC.ingot()),		new OutgasserRecipe(new ItemStack(ModItems.ingot_c4), new FluidStack(Fluids.COLLOID, 250), 10_000L));
 
-		recipes.put(new ComparableStack(DictFrame.fromOne(ModItems.oil_tar, EnumTarType.COAL)),	new OutgasserRecipe(null, new FluidStack(Fluids.COALOIL, 100)));
-		recipes.put(new ComparableStack(DictFrame.fromOne(ModItems.oil_tar, EnumTarType.WAX)),	new OutgasserRecipe(null, new FluidStack(Fluids.RADIOSOLVENT, 100)));
-	}
+		recipes.put(new ComparableStack(DictFrame.fromOne(ModItems.oil_tar, EnumTarType.COAL)),	new OutgasserRecipe(null, new FluidStack(Fluids.COALOIL, 100), 10_000L));
+		recipes.put(new ComparableStack(DictFrame.fromOne(ModItems.oil_tar, EnumTarType.WAX)),	new OutgasserRecipe(null, new FluidStack(Fluids.RADIOSOLVENT, 100), 10_000L));
+
+        recipes.put(new ComparableStack(ModItems.book_of_),	new OutgasserRecipe(new ItemStack(ModItems.book_lemegeton), null, 34_560_000_000L));
+    }
 
 	public static OutgasserRecipe getOutput(ItemStack input) {
 
@@ -127,11 +130,16 @@ public class OutgasserRecipes extends SerializableRecipe {
 		AStack input = this.readAStack(obj.get("input").getAsJsonArray());
 		ItemStack solidOutput = null;
 		FluidStack fluidOutput = null;
+		Long fluxNeeded = 10_000L;
 
 		if(obj.has("solidOutput")) solidOutput = this.readItemStack(obj.get("solidOutput").getAsJsonArray());
 		if(obj.has("fluidOutput")) fluidOutput = this.readFluidStack(obj.get("fluidOutput").getAsJsonArray());
+		if(obj.has("fluxNeeded")) {
+			fluxNeeded = this.readValue(obj.get("fluxNeeded").getAsJsonArray());
+			if(fluxNeeded == 0) fluxNeeded = 10_000L;
+		}
 
-		OutgasserRecipe or = new OutgasserRecipe(solidOutput, fluidOutput);
+		OutgasserRecipe or = new OutgasserRecipe(solidOutput, fluidOutput, fluxNeeded);
 		if(obj.has("fusionOnly") && obj.get("fusionOnly").getAsBoolean()) or.fusionOnly();
 
 		if(solidOutput != null || fluidOutput != null) {
@@ -156,6 +164,11 @@ public class OutgasserRecipes extends SerializableRecipe {
 			this.writeFluidStack(rec.getValue().liquidOutput, writer);
 		}
 
+		if(rec.getValue().fluxNeeded != 0L) {
+			writer.name("fluxNeeded");
+			this.writeValue(rec.getValue().fluxNeeded, writer);
+		}
+
 		writer.name("fusionOnly").value(rec.getValue().fusionOnly);
 	}
 
@@ -168,11 +181,13 @@ public class OutgasserRecipes extends SerializableRecipe {
 
 		public ItemStack solidOutput;
 		public FluidStack liquidOutput;
+        public long fluxNeeded;
 		public boolean fusionOnly = false;
 
-		public OutgasserRecipe(ItemStack solid, FluidStack liquid) {
+		public OutgasserRecipe(ItemStack solid, FluidStack liquid, long flux) {
 			this.solidOutput = solid;
 			this.liquidOutput = liquid;
+            this.fluxNeeded = flux;
 		}
 
 		public OutgasserRecipe fusionOnly() {

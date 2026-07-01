@@ -63,6 +63,7 @@ import com.hbm.tileentity.machine.storage.*;
 import com.hbm.tileentity.network.*;
 import com.hbm.tileentity.network.pneumatic.TileEntityPneumoStorageAccess;
 import com.hbm.tileentity.network.pneumatic.TileEntityPneumoStorageClutter;
+import com.hbm.tileentity.network.pneumatic.TileEntityPneumoStorageMono;
 import com.hbm.tileentity.network.pneumatic.TileEntityPneumoTube;
 import com.hbm.tileentity.turret.*;
 import com.hbm.util.Compat;
@@ -197,7 +198,6 @@ public class TileMappings {
 		put(TileEntityNukeBalefire.class, "tileentity_nuke_fstbmb");
 		put(TileEntityAntimatter.class, "tileentity_nuke_Antimatter");
 		put(TileEntityMicrowave.class, "tileentity_microwave");
-		put(TileEntityMachineMiniRTG.class, "tileentity_mini_rtg");
 		put(TileEntityBlockICF.class, "tileentity_block_icf");
 		put(TileEntityICFPress.class, "tileentity_icf_press");
 		put(TileEntityICFController.class, "tileentity_icf_controller");
@@ -529,6 +529,7 @@ public class TileMappings {
 		put(TileEntityPneumoTubePaintable.class, "tileentity_pneumatic_tube_paintable");
 		put(TileEntityPneumoStorageAccess.class, "tileentity_pneumatic_storage_access");
 		put(TileEntityPneumoStorageClutter.class, "tileentity_pneumatic_storage_clutter");
+		put(TileEntityPneumoStorageMono.class, "tileentity_pneumatic_storage_mono");
 
 		put(TileEntityRadioTorchSender.class, "tileentity_rtty_sender");
 		put(TileEntityRadioTorchReceiver.class, "tileentity_rtty_rec");
@@ -549,6 +550,8 @@ public class TileMappings {
 		put(TileEntityRailSwitch.class, "tileentity_rail_switch");
 
 		put(TileEntityRebar.class, "tileentity_rebar");
+
+        put(TileEntityMachineSchrabidiumTransmutator.class, "tileentity_schrab_transmutator");
 
 		// OC Compat items
 		boolean ocPresent = Loader.isModLoaded("OpenComputers");

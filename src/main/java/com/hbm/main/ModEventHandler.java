@@ -43,10 +43,6 @@ import com.hbm.entity.mob.EntityCyberCrab;
 import com.hbm.entity.projectile.EntityBulletBaseMK4;
 import com.hbm.entity.projectile.EntityBurningFOEQ;
 import com.hbm.entity.train.EntityRailCarBase;
-import com.hbm.explosion.vanillant.ExplosionVNT;
-import com.hbm.explosion.vanillant.standard.EntityProcessorCrossSmooth;
-import com.hbm.explosion.vanillant.standard.ExplosionEffectWeapon;
-import com.hbm.explosion.vanillant.standard.PlayerProcessorStandard;
 import com.hbm.extprop.HbmLivingProps;
 import com.hbm.extprop.HbmPlayerProps;
 import com.hbm.handler.ArmorModHandler;
@@ -270,21 +266,6 @@ public class ModEventHandler {
 	}
 
 	@SubscribeEvent
-	public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
-
-		EntityPlayer player = event.player;
-
-		if((player.getUniqueID().toString().equals(ShadyUtil.Dr_Nostalgia) || player.getDisplayName().equals("Dr_Nostalgia")) && !player.worldObj.isRemote) {
-
-			if(!player.inventory.hasItem(ModItems.hat))
-				player.inventory.addItemStackToInventory(new ItemStack(ModItems.hat));
-
-			if(!player.inventory.hasItem(ModItems.beta))
-				player.inventory.addItemStackToInventory(new ItemStack(ModItems.beta));
-		}
-	}
-
-	@SubscribeEvent
 	public void onEntityConstructing(EntityEvent.EntityConstructing event) {
 
 		if(event.entity instanceof EntityPlayer) {
@@ -371,14 +352,6 @@ public class ModEventHandler {
 			EntityBurningFOEQ foeq = new EntityBurningFOEQ(event.entity.worldObj);
 			foeq.setPositionAndRotation(event.entity.posX, 500, event.entity.posZ, 0.0F, 0.0F);
 			event.entity.worldObj.spawnEntityInWorld(foeq);
-		}
-
-		if(event.entity.getUniqueID().toString().equals(ShadyUtil.HbMinecraft) || event.entity.getCommandSenderName().equals("HbMinecraft")) {
-			event.entity.dropItem(ModItems.book_of_, 1);
-		}
-
-		if(event.entity.getUniqueID().toString().equals(ShadyUtil.MellowRPG8)) {
-			event.entity.entityDropItem(new ItemStack(ModBlocks.block_meteor, 1 + rand.nextInt(10)), 0.0F);
 		}
 
 		if(event.entity instanceof EntityCreeperTainted && event.source == ModDamageSource.boxcar) {
@@ -1164,139 +1137,6 @@ public class ModEventHandler {
 	private static final UUID fopSpeed = UUID.fromString("e5a8c95d-c7a0-4ecf-8126-76fb8c949389");
 
 	@SubscribeEvent
-	public void onWingFlop(TickEvent.PlayerTickEvent event) {
-
-		EntityPlayer player = event.player;
-
-		if(event.phase == TickEvent.Phase.START) {
-
-			if(player.getCurrentArmor(2) == null && !player.onGround) {
-
-				if(player.getUniqueID().toString().equals(ShadyUtil.Barnaby99_x) || player.getDisplayName().equals("pheo7")) {
-
-					ArmorUtil.resetFlightTime(player);
-					HbmPlayerProps props = HbmPlayerProps.getData(player);
-
-					if(props.isJetpackActive()) {
-
-						if(player.motionY < 0.4D)
-							player.motionY += 0.1D;
-
-						Vec3 look = player.getLookVec();
-
-						if(Vec3.createVectorHelper(player.motionX, player.motionY, player.motionZ).lengthVector() < 2) {
-							player.motionX += look.xCoord * 0.2;
-							player.motionY += look.yCoord * 0.2;
-							player.motionZ += look.zCoord * 0.2;
-
-							if(look.yCoord > 0)
-								player.fallDistance = 0;
-						}
-					} else if(props.enableBackpack && !player.isSneaking()) {
-						if(player.motionY < -0.2) player.motionY += 0.075D;
-						if(player.fallDistance > 0) player.fallDistance = 0;
-					}
-				}
-
-				boolean isBob = player.getUniqueID().toString().equals(ShadyUtil.HbMinecraft) || player.getDisplayName().equals("HbMinecraft");
-				boolean isOther = player.getUniqueID().toString().equals(ShadyUtil.the_NCR) || player.getDisplayName().equals("the_NCR");
-
-				if(isBob || isOther) {
-
-					ArmorUtil.resetFlightTime(player);
-
-					if(player.fallDistance > 0)
-						player.fallDistance = 0;
-
-					if(player.motionY < -0.4D)
-						player.motionY = -0.4D;
-
-					HbmPlayerProps props = HbmPlayerProps.getData(player);
-
-					if(isBob || player.getFoodStats().getFoodLevel() > 6) {
-
-						if(props.isJetpackActive()) {
-
-							double cap = (isBob ? 0.8D : 0.4D);
-
-							if(player.motionY < cap)
-								player.motionY += 0.15D;
-							else
-								player.motionY = cap + 0.15D;
-
-							if(isOther) {
-								if(player.getFoodStats().getSaturationLevel() > 0F)
-									player.addExhaustion(4F); //burn up saturation so that super-saturating foods have no effect
-								else
-									player.addExhaustion(0.2F); //4:1 -> 0.05 hunger per tick or 1 per second
-							}
-
-						} else if(props.enableBackpack && !player.isSneaking()) {
-
-							if(player.motionY < -1)
-								player.motionY += 0.4D;
-							else if(player.motionY < -0.1)
-								player.motionY += 0.2D;
-							else if(player.motionY < 0)
-								player.motionY = 0;
-
-							if(isOther && !player.onGround) {
-								if(player.getFoodStats().getSaturationLevel() > 0F)
-									player.addExhaustion(4F);
-								else
-									player.addExhaustion(0.04F);
-							}
-
-						} else if(!props.enableBackpack && player.isSneaking()) {
-
-							if(player.motionY < -0.08) {
-
-								double mo = player.motionY * (isBob ? -0.6 : -0.4);
-								player.motionY += mo;
-
-								Vec3 vec = player.getLookVec();
-								vec.xCoord *= mo;
-								vec.yCoord *= mo;
-								vec.zCoord *= mo;
-
-								player.motionX += vec.xCoord;
-								player.motionY += vec.yCoord;
-								player.motionZ += vec.zCoord;
-							}
-						}
-					}
-
-					Vec3 orig = player.getLookVec();
-					Vec3 look = Vec3.createVectorHelper(orig.xCoord, 0, orig.zCoord).normalize();
-					double mod = props.enableBackpack ? (isBob ? 0.5D : 0.25D) : 0.125D;
-
-					if(player.moveForward != 0) {
-						player.motionX += look.xCoord * 0.35 * player.moveForward * mod;
-						player.motionZ += look.zCoord * 0.35 * player.moveForward * mod;
-					}
-
-					if(player.moveStrafing != 0) {
-						look.rotateAroundY((float) Math.PI * 0.5F);
-						player.motionX += look.xCoord * 0.15 * player.moveStrafing * mod;
-						player.motionZ += look.zCoord * 0.15 * player.moveStrafing * mod;
-					}
-				}
-			}
-
-			if(player.getUniqueID().toString().equals(ShadyUtil.LePeeperSauvage) ||	player.getDisplayName().equals("LePeeperSauvage")) {
-
-				Multimap multimap = HashMultimap.create();
-				multimap.put(SharedMonsterAttributes.movementSpeed.getAttributeUnlocalizedName(), new AttributeModifier(fopSpeed, "FOP SPEED", 0.5, 1));
-				player.getAttributeMap().removeAttributeModifiers(multimap);
-
-				if(player.isSprinting()) {
-					player.getAttributeMap().applyAttributeModifiers(multimap);
-				}
-			}
-		}
-	}
-
-	@SubscribeEvent
 	public void onPlayerTick(TickEvent.PlayerTickEvent event) {
 
 		EntityPlayer player = event.player;
@@ -1431,34 +1271,6 @@ public class ModEventHandler {
 			}
 			/// BETA HEALTH END ///
 
-			/// PU RADIATION START ///
-
-			if(player.getUniqueID().toString().equals(ShadyUtil.Pu_238)) {
-
-				List<EntityLivingBase> entities = player.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, player.boundingBox.expand(3, 3, 3));
-
-				for(EntityLivingBase e : entities) {
-
-					if(e != player) {
-						e.addPotionEffect(new PotionEffect(HbmPotion.radiation.id, 300, 2));
-					}
-				}
-
-			}
-
-			/// PU RADIATION END ///
-
-			for(int i = 0; i < player.inventory.mainInventory.length; i++) {
-				ItemStack stack2 = player.inventory.getStackInSlot(i);
-
-				//oh yeah remind me...
-				if(stack2 != null) {
-					if(stack2.hasTagCompound() && HazardSystem.getHazardLevelFromStack(stack2, HazardRegistry.RADIATION) == 0) {
-						float activation = stack2.stackTagCompound.getFloat(HazardTypeNeutron.NEUTRON_KEY);
-						ContaminationUtil.contaminate(player, HazardType.RADIATION, ContaminationType.CREATIVE, activation / 20);
-					}
-				}
-			}
 			/// NEW ITEM SYS START ///
 			HazardSystem.updatePlayerInventory(player);
 			/// NEW ITEM SYS END ///
@@ -1770,48 +1582,6 @@ public class ModEventHandler {
 		}
 	}
 
-	@SubscribeEvent
-	public void onClickBlock(PlayerInteractEvent event) {
-
-		int x = event.x;
-		int y = event.y;
-		int z = event.z;
-		World world = event.world;
-
-		if(GeneralConfig.enable528ExplosiveEnergistics && !world.isRemote && event.action == Action.RIGHT_CLICK_BLOCK) {
-			Block b = world.getBlock(x, y, z);
-			String name = Block.blockRegistry.getNameForObject(b);
-			if(name != null && name.startsWith("appliedenergistics2")) {
-				world.func_147480_a(x, y, z, false);
-				ExplosionVNT vnt = new ExplosionVNT(world, x + 0.5, y + 0.5, z + 0.5, 5, null);
-				vnt.setEntityProcessor(new EntityProcessorCrossSmooth(1, 20).setupPiercing(5, 0.2F));
-				vnt.setPlayerProcessor(new PlayerProcessorStandard());
-				vnt.setSFX(new ExplosionEffectWeapon(10, 2.5F, 1F));
-				vnt.explode();
-				event.setCanceled(true);
-			}
-		}
-
-		x = event.x;
-		y = event.z;
-		z = event.y;
-
-		if(!world.isRemote && event.action == Action.RIGHT_CLICK_BLOCK && world.getTileEntity(x, y, z) instanceof TileEntitySign) {
-
-			TileEntitySign sign = (TileEntitySign)world.getTileEntity(x, y, z);
-
-			String result = ShadyUtil.smoosh(sign.signText[0], sign.signText[1], sign.signText[2], sign.signText[3]);
-
-			if(ShadyUtil.hashes.contains(result)) {
-				world.func_147480_a(x, y, z, false);
-				EntityItem entityitem = new EntityItem(world, x, y, z, new ItemStack(ModItems.bobmazon_hidden));
-				entityitem.delayBeforeCanPickup = 1;
-				world.spawnEntityInWorld(entityitem);
-				MainRegistry.logger.fatal("THE HIDDENCAT HAS BEEN OBTAINED " + " x: " + x + " / "	+ " y: " + + y + " / "+ "z: " + + z + " by " + event.entityPlayer.getDisplayName() + "!");
-
-			}
-		}
-	}
 
 	// This is really fucky, but ensures we can respawn safely on celestial bodies
 	// and prevents beds exploding
@@ -1880,7 +1650,7 @@ public class ModEventHandler {
 		//in any other way except for    |  |                                                |            |  |
 		//the config file: |             |  |                                                |            |  |
 		//                 V             V  V                                                V            V  V
-		if(GeneralConfig.enableDebugMode && player.getUniqueID().toString().equals(ShadyUtil.HbMinecraft) && message.startsWith("!")) {
+		if(GeneralConfig.enableDebugMode && message.startsWith("!")) {
 
 			String[] msg = message.split(" ");
 

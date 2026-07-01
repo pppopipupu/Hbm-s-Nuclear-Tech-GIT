@@ -134,7 +134,7 @@ public class TileEntityMachineRefinery extends TileEntityMachineBase implements 
 
 		if(!worldObj.isRemote) {
 			this.checkTilt(TiltType.CONFIG, false);
-			
+
 			this.isOn = false;
 			
 			if(this.getBlockMetadata() < 12) {
@@ -166,7 +166,7 @@ public class TileEntityMachineRefinery extends TileEntityMachineBase implements 
 				for(DirPos pos : getConPos()) {
 					for(int i = 1; i < 5; i++) {
 						if(tanks[i].getFill() > 0) {
-							this.sendFluid(tanks[i], worldObj, pos.getX(), pos.getY(), pos.getZ(), pos.getDir());
+							this.tryProvide(tanks[i], worldObj, pos.getX(), pos.getY(), pos.getZ(), pos.getDir());
 						}
 					}
 				}
@@ -224,7 +224,7 @@ public class TileEntityMachineRefinery extends TileEntityMachineBase implements 
 	
 	@Override public int getFloorCount() { return 2 * 2; }
 	@Override public BlockPos getFloorPosFromIndex(int index) { return this.standardFloor3x3(index); }
-	
+
 	@Override
 	public AudioWrapper createAudioLoop() {
 		return MainRegistry.proxy.getLoopedSound("hbm:block.boiler", xCoord, yCoord, zCoord, 0.25F, 15F, 1.0F, 20);
@@ -319,7 +319,14 @@ public class TileEntityMachineRefinery extends TileEntityMachineBase implements 
 		if(worldObj.getTotalWorldTime() % 20 == 0) PollutionHandler.incrementPollution(worldObj, xCoord, yCoord, zCoord, PollutionType.SOOT, PollutionHandler.SOOT_PER_SECOND * 5);
 		this.power -= 5;
 	}
-	
+
+    public boolean setOilRC(FluidType type) {
+        RefineryRecipe recipe = RefineryRecipes.getRefinery(type);
+        if(recipe == null) return false;
+        tanks[0].setTankType(type);
+        return true;
+    }
+
 	private void updateConnections() {
 		for(DirPos pos : getConPos()) {
 			this.trySubscribe(worldObj, pos.getX(), pos.getY(), pos.getZ(), pos.getDir());

@@ -18,6 +18,7 @@ import com.hbm.inventory.recipes.loader.SerializableRecipe;
 import com.hbm.items.ItemEnums.EnumTarType;
 import com.hbm.items.machine.ItemFluidIcon;
 import com.hbm.items.ModItems;
+import com.hbm.util.Compat;
 import com.hbm.util.Tuple.Pair;
 
 import net.minecraft.block.Block;
@@ -69,7 +70,7 @@ public class SolidificationRecipes extends SerializableRecipe {
 		registerRecipe(BLOOD,		1280,			new ItemStack(ModItems.flesh_wafer, 8));
 		registerRecipe(ENDERJUICE,	100,			Items.ender_pearl);
 		registerRecipe(WATZ,		1000,			ModItems.ingot_mud);
-		registerRecipe(REDMUD,		450,			Items.iron_ingot);
+		registerRecipe(REDMUD,		1500,			Items.iron_ingot);
 		registerRecipe(SODIUM,		100,			ModItems.powder_sodium);
 		registerRecipe(LEAD,		100,			ModItems.ingot_lead);
 		registerRecipe(SLOP,		250,			ModBlocks.ore_oil_sand);
@@ -118,6 +119,10 @@ public class SolidificationRecipes extends SerializableRecipe {
 		registerSFAuto(REFORMATE);
 		registerSFAuto(XYLENE);
 		registerSFAuto(BALEFIRE, 24_000_000L, ModItems.solid_fuel_bf); //holy shit this is energy dense*/
+
+		//NTMC Special: AA Compat
+		Item aaSolidifiedXP = Compat.tryLoadItem(Compat.MOD_AA, "itemSolidifiedExperience");
+		if(aaSolidifiedXP != null) registerRecipe(XPJUICE, 8, aaSolidifiedXP);
 
 	}
 

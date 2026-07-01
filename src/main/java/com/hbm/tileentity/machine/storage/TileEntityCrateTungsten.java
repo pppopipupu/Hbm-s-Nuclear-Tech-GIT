@@ -68,6 +68,9 @@ public class TileEntityCrateTungsten extends TileEntityCrateBase implements ILas
 		if(itemStack.getItem() == ModItems.billet_polonium)
 			return false;
 
+		if(itemStack.getItem() == ModItems.book_of_)
+			return false;
+
 		if(itemStack.getItem() == ModItems.crucible && itemStack.getItemDamage() > 0)
 			return false;
 
@@ -90,6 +93,9 @@ public class TileEntityCrateTungsten extends TileEntityCrateBase implements ILas
 
 			if(slots[i].getItem() == ModItems.billet_polonium && energy > 10000000)
 				result = new ItemStack(ModItems.billet_yharonite);
+
+			if(slots[i].getItem() == ModItems.book_lemegeton && energy > 2100000000000L)
+				result = new ItemStack(ModItems.bobmazon_hidden);
 
 			if(slots[i].getItem() == ModItems.crucible && slots[i].getItemDamage() > 0 && energy > 10000000)
 				result = new ItemStack(ModItems.crucible, 1, 0);

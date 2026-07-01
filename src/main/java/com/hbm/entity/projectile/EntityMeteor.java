@@ -64,7 +64,7 @@ public class EntityMeteor extends Entity {
 		} else {
 			// Found solid block
 			if(hardness < 0 || hardness > 5F) return;
-
+			
 			if(rand.nextInt(6) == 1) {
 				// Turn blocks into damaged variants
 				if(block == Blocks.dirt) {
@@ -137,10 +137,10 @@ public class EntityMeteor extends Entity {
 
 		// Sound
 		if(worldObj.isRemote) {
-
+			
 			if(this.isDead) {
 				if(this.audioFly != null) this.audioFly.stopSound();
-
+				
 			} else {
 
 				if(this.audioFly == null) this.audioFly = MainRegistry.proxy.getLoopedSound("hbm:entity.meteoriteFallingLoop", 0, 0, 0, 1F, 200F, 0.9F + this.rand.nextFloat() * 0.2F, 10);
@@ -179,7 +179,7 @@ public class EntityMeteor extends Entity {
 	@Override @SideOnly(Side.CLIENT) public boolean isInRangeToRenderDist(double distance) { return true; }
 	@Override @SideOnly(Side.CLIENT) public int getBrightnessForRender(float f) { return 15728880; }
 	@Override public float getBrightness(float f) { return 1.0F; }
-
+	
 	@Override protected void entityInit() { }
 	@Override protected void readEntityFromNBT(NBTTagCompound nbt) { this.safe = nbt.getBoolean("safe"); }
 	@Override protected void writeEntityToNBT(NBTTagCompound nbt) { nbt.setBoolean("safe", safe); }

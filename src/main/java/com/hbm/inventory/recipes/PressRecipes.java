@@ -70,6 +70,8 @@ public class PressRecipes extends SerializableRecipe {
 		makeRecipe(StampType.FLAT, new OreDictStack(COAL.dust()),							DictFrame.fromOne(ModItems.briquette, EnumBriquetteType.COAL));
 		makeRecipe(StampType.FLAT, new OreDictStack(LIGNITE.dust()),						DictFrame.fromOne(ModItems.briquette, EnumBriquetteType.LIGNITE));
 		makeRecipe(StampType.FLAT, new ComparableStack(ModItems.powder_sawdust),			DictFrame.fromOne(ModItems.briquette, EnumBriquetteType.WOOD));
+		makeRecipe(StampType.FLAT, new ComparableStack(DictFrame.fromOne(ModItems.briquette, EnumBriquetteType.COAL)), 		Items.coal);
+		makeRecipe(StampType.FLAT, new ComparableStack(DictFrame.fromOne(ModItems.briquette, EnumBriquetteType.LIGNITE)), 	ModItems.lignite);
 
 		makeRecipe(StampType.PLATE, new OreDictStack(IRON.ingot()),			ModItems.plate_iron);
 		makeRecipe(StampType.PLATE, new OreDictStack(GOLD.ingot()),			ModItems.plate_gold);

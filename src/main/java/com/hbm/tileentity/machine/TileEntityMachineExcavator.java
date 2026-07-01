@@ -20,6 +20,7 @@ import com.hbm.inventory.recipes.ShredderRecipes;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemDrillbit;
 import com.hbm.items.machine.ItemDrillbit.EnumDrillType;
+import com.hbm.items.machine.ItemMachineUpgrade;
 import com.hbm.items.machine.ItemMachineUpgrade.UpgradeType;
 import com.hbm.items.special.ItemBedrockOreBase;
 import com.hbm.lib.Library;
@@ -29,6 +30,7 @@ import com.hbm.tileentity.IUpgradeInfoProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.Compat;
 import com.hbm.util.EnumUtil;
+import com.hbm.util.BobMathUtil;
 import com.hbm.util.InventoryUtil;
 import com.hbm.util.ItemStackUtil;
 import com.hbm.util.fauxpointtwelve.BlockPos;
@@ -37,7 +39,7 @@ import com.hbm.util.i18n.I18nUtil;
 
 import api.hbm.conveyor.IConveyorBelt;
 import api.hbm.energymk2.IEnergyReceiverMK2;
-import api.hbm.fluid.IFluidStandardReceiver;
+import api.hbm.fluidmk2.IFluidStandardReceiverMK2;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -59,9 +61,9 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityMachineExcavator extends TileEntityMachineBase implements IEnergyReceiverMK2, IFluidStandardReceiver, IControlReceiver, IGUIProvider, IUpgradeInfoProvider, IFluidCopiable {
+public class TileEntityMachineExcavator extends TileEntityMachineBase implements IEnergyReceiverMK2, IFluidStandardReceiverMK2, IControlReceiver, IGUIProvider, IUpgradeInfoProvider, IFluidCopiable {
 
-	public static final long maxPower = 1_000_000;
+	public long maxPower = 1_000_000;
 	public long power;
 	public boolean operational = false;
 
@@ -89,7 +91,7 @@ public class TileEntityMachineExcavator extends TileEntityMachineBase implements
 
 	public FluidTank tank;
 
-	public UpgradeManagerNT upgradeManager = new UpgradeManagerNT();
+	public UpgradeManagerNT upgradeManager = new UpgradeManagerNT(this);
 
 	public TileEntityMachineExcavator() {
 		super(14);
@@ -105,12 +107,14 @@ public class TileEntityMachineExcavator extends TileEntityMachineBase implements
 	public void updateEntity() {
 
 		//needs to happen on client too for GUI rendering
-		upgradeManager.checkSlots(this, slots, 2, 3);
+		upgradeManager.checkSlots(slots, 2, 3);
 		int speedLevel = upgradeManager.getLevel(UpgradeType.SPEED);
 		int powerLevel = upgradeManager.getLevel(UpgradeType.POWER);
+        int over = ItemMachineUpgrade.OverdriveSpeeds[upgradeManager.getLevel(UpgradeType.OVERDRIVE)];;
 
 		consumption = baseConsumption * (1 + speedLevel);
 		consumption /= (1 + powerLevel);
+		long intendedMaxPower = 1_000_000L * over;
 
 		if(!worldObj.isRemote) {
 
@@ -138,7 +142,7 @@ public class TileEntityMachineExcavator extends TileEntityMachineBase implements
 				this.power -= this.getPowerConsumption();
 
 				this.speed = type.speed;
-				this.speed *= (1 + speedLevel / 2D);
+				this.speed *= (1 + speedLevel / 2D) * over;
 
 				int maxDepth = this.yCoord - 4;
 
@@ -152,6 +156,8 @@ public class TileEntityMachineExcavator extends TileEntityMachineBase implements
 			} else {
 				this.targetDepth = 0;
 			}
+
+			this.maxPower = Math.max(intendedMaxPower, power);
 
 			this.networkPackNT(150);
 
@@ -175,10 +181,10 @@ public class TileEntityMachineExcavator extends TileEntityMachineBase implements
 			this.prevCrusherRotation = this.crusherRotation;
 
 			if(this.operational) {
-				this.drillRotation += 15F;
+				this.drillRotation += 10F * (speedLevel / 2F + 1);
 
 				if(this.enableCrusher) {
-					this.crusherRotation += 15F;
+					this.crusherRotation += 10F;
 				}
 			}
 
@@ -217,6 +223,7 @@ public class TileEntityMachineExcavator extends TileEntityMachineBase implements
 		buf.writeBoolean(operational);
 		buf.writeInt(targetDepth);
 		buf.writeInt(chuteTimer);
+		buf.writeLong(maxPower);
 		buf.writeLong(power);
 		tank.serialize(buf);
 	}
@@ -232,6 +239,7 @@ public class TileEntityMachineExcavator extends TileEntityMachineBase implements
 		operational = buf.readBoolean();
 		targetDepth = buf.readInt();
 		chuteTimer = buf.readInt();
+		maxPower = buf.readLong();
 		power = buf.readLong();
 		tank.deserialize(buf);
 	}
@@ -265,7 +273,8 @@ public class TileEntityMachineExcavator extends TileEntityMachineBase implements
 
 						if(b == ModBlocks.ore_bedrock) {
 							combinedHardness = 60 * 20;
-							if(WorldConfig.newBedrockOres) combinedHardness *= 5;
+							if(WorldConfig.newBedrockOres) combinedHardness *= 3;
+
 							bedrockOre = new BlockPos(x, y, z);
 							bedrockDrilling = true;
 							enableCrusher = false;
@@ -782,6 +791,7 @@ public class TileEntityMachineExcavator extends TileEntityMachineBase implements
 		this.enableVeinMiner = nbt.getBoolean("v");
 		this.enableSilkTouch = nbt.getBoolean("s");
 		this.targetDepth = nbt.getInteger("t");
+		this.maxPower = nbt.getLong("m");
 		this.power = nbt.getLong("p");
 		this.tank.readFromNBT(nbt, "tank");
 	}
@@ -796,6 +806,7 @@ public class TileEntityMachineExcavator extends TileEntityMachineBase implements
 		nbt.setBoolean("v", enableVeinMiner);
 		nbt.setBoolean("s", enableSilkTouch);
 		nbt.setInteger("t", targetDepth);
+		nbt.setLong("m", maxPower);
 		nbt.setLong("p", power);
 		tank.writeToNBT(nbt, "tank");
 	}
@@ -868,7 +879,7 @@ public class TileEntityMachineExcavator extends TileEntityMachineBase implements
 
 	@Override
 	public boolean canProvideInfo(UpgradeType type, int level, boolean extendedInfo) {
-		return type == UpgradeType.SPEED || type == UpgradeType.POWER;
+		return type == UpgradeType.SPEED || type == UpgradeType.POWER || type == UpgradeType.EFFECT || type == UpgradeType.OVERDRIVE;
 	}
 
 	@Override
@@ -881,6 +892,12 @@ public class TileEntityMachineExcavator extends TileEntityMachineBase implements
 		if(type == UpgradeType.POWER) {
 			info.add(EnumChatFormatting.GREEN + I18nUtil.resolveKey(this.KEY_CONSUMPTION, "-" + (100 - 100 / (level + 1)) + "%"));
 		}
+		if(type == UpgradeType.EFFECT) {
+			info.add(EnumChatFormatting.GREEN + I18nUtil.resolveKey(this.KEY_RANGE, "+" + (level * 2) + " Blocks"));
+		}
+		if(type == UpgradeType.OVERDRIVE) {
+			info.add((BobMathUtil.getBlink() ? EnumChatFormatting.RED : EnumChatFormatting.DARK_GRAY) + "YES");
+		}
 	}
 
 	@Override
@@ -889,6 +906,7 @@ public class TileEntityMachineExcavator extends TileEntityMachineBase implements
 		upgrades.put(UpgradeType.SPEED, 3);
 		upgrades.put(UpgradeType.POWER, 3);
 		upgrades.put(UpgradeType.EFFECT, 3);
+		upgrades.put(UpgradeType.OVERDRIVE, 3);
 		return upgrades;
 	}
 

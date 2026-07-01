@@ -12,6 +12,8 @@ import com.hbm.saveddata.satellites.SatelliteMiner;
 import com.hbm.tileentity.IGUIProvider;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.IEntityMultiPart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -166,7 +168,7 @@ public class TileEntityMachineSatDock extends TileEntity implements ISidedInvent
 					}
 
 					@SuppressWarnings("unchecked")
-					List<EntityMinerRocket> list = worldObj.getEntitiesWithinAABBExcludingEntity(null,
+					List<Entity> list = worldObj.getEntitiesWithinAABBExcludingEntity(null,
 							AxisAlignedBB.getBoundingBox(xCoord - 0.25 + 0.5, yCoord + 0.75, zCoord - 0.25 + 0.5, xCoord + 0.25 + 0.5, yCoord + 2, zCoord + 0.25 + 0.5),
 							entity -> entity instanceof EntityMinerRocket);
 

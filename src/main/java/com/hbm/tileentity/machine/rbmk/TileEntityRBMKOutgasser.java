@@ -16,6 +16,7 @@ import com.hbm.inventory.recipes.OutgasserRecipes;
 import com.hbm.inventory.recipes.OutgasserRecipes.OutgasserRecipe;
 import com.hbm.lib.Library;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKConsole.ColumnType;
+import com.hbm.util.Tuple.Triplet;
 import com.hbm.util.fauxpointtwelve.DirPos;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
@@ -36,7 +37,8 @@ public class TileEntityRBMKOutgasser extends TileEntityRBMKSlottedBase implement
 
 	public FluidTank gas;
 	public double progress;
-	public static final int duration = 10000;
+	public long duration = 10000L;
+	public boolean idct = false;
 
 	public TileEntityRBMKOutgasser() {
 		super(2);
@@ -52,9 +54,21 @@ public class TileEntityRBMKOutgasser extends TileEntityRBMKSlottedBase implement
 	public void updateEntity() {
 
 		if(!worldObj.isRemote) {
+			if(slots[0] != null){
+				OutgasserRecipe output = OutgasserRecipes.getOutput(slots[0]);
+				if(output != null) this.duration = output.fluxNeeded;
+			} else {
+				this.duration = 10000L;
+				this.progress = 0;
+			}
 
 			if(!canProcess()) this.progress = 0;
 			for(DirPos pos : getOutputPos()) if(this.gas.getFill() > 0) this.tryProvide(gas, worldObj, pos);
+			if(!canProcess()) {
+				this.progress = 0;
+			}
+
+			this.idct = false;
 		}
 
 		super.updateEntity();
@@ -90,6 +104,17 @@ public class TileEntityRBMKOutgasser extends TileEntityRBMKSlottedBase implement
 
 	@Override
 	public void receiveFlux(NeutronStream stream) {
+
+		if(!this.idct) {
+			if(slots[0] != null){
+				OutgasserRecipe output = OutgasserRecipes.getOutput(slots[0]);
+				if(output != null) this.duration = output.fluxNeeded;
+			} else {
+				this.duration = 10_000L;
+				this.progress = 0;
+			}
+			this.idct = true;
+		}
 
 		if(canProcess()) {
 
@@ -134,7 +159,7 @@ public class TileEntityRBMKOutgasser extends TileEntityRBMKSlottedBase implement
 
 		OutgasserRecipe output = OutgasserRecipes.getOutput(slots[0]);
 		this.decrStackSize(0, 1);
-		this.progress = 0;
+		this.progress -= this.duration;
 
 		if(output.liquidOutput != null) {
 			gas.setFill(gas.getFill() + output.liquidOutput.fill);
@@ -180,6 +205,7 @@ public class TileEntityRBMKOutgasser extends TileEntityRBMKSlottedBase implement
 		data.setInteger("maxGas", this.gas.getMaxFill());
 		data.setShort("type", (short)this.gas.getTankType().getID());
 		data.setDouble("progress", this.progress);
+		data.setLong("fluxNeeded", this.duration);
 		return data;
 	}
 
@@ -189,6 +215,7 @@ public class TileEntityRBMKOutgasser extends TileEntityRBMKSlottedBase implement
 
 		this.progress = nbt.getDouble("progress");
 		this.gas.readFromNBT(nbt, "gas");
+		this.duration = nbt.getLong("fluxNeeded");
 	}
 
 	@Override
@@ -197,6 +224,7 @@ public class TileEntityRBMKOutgasser extends TileEntityRBMKSlottedBase implement
 
 		nbt.setDouble("progress", this.progress);
 		this.gas.writeToNBT(nbt, "gas");
+		nbt.setLong("fluxNeeded",this.duration);
 	}
 
 	@Override
@@ -204,6 +232,7 @@ public class TileEntityRBMKOutgasser extends TileEntityRBMKSlottedBase implement
 		super.serialize(buf);
 		this.gas.serialize(buf);
 		buf.writeDouble(this.progress);
+		buf.writeLong(this.duration);
 	}
 
 	@Override
@@ -211,6 +240,7 @@ public class TileEntityRBMKOutgasser extends TileEntityRBMKSlottedBase implement
 		super.deserialize(buf);
 		this.gas.deserialize(buf);
 		this.progress = buf.readDouble();
+		this.duration = buf.readLong();
 	}
 
 	@Override

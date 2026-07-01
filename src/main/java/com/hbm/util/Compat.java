@@ -43,6 +43,9 @@ public class Compat {
 	public static final String MOD_TOR = "Torcherino";
 	public static final String MOD_OC = "OpenComputers";
 
+	public static final String MOD_AA = "ActuallyAdditions";
+	public static final String MOD_AE = "appliedenergistics2";
+
 	public static Item tryLoadItem(String domain, String name) {
 		return (Item) Item.itemRegistry.getObject(getReg(domain, name));
 	}

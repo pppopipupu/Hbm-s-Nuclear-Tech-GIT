@@ -50,14 +50,14 @@ import java.util.*;
  */
 public abstract class TileEntityRBMKBase extends TileEntityLoadedBase {
 
-	public double heat;
+	public double heat = 20D;
 
 	public int reasimWater;
 	public static final int maxWater = 16000;
 	public int reasimSteam;
 	public static final int maxSteam = 16000;
 	public int craneIndicator;
-	
+
 	public static boolean explodeOnBroken = true;
 
 	public boolean hasLid() {
@@ -106,7 +106,7 @@ public abstract class TileEntityRBMKBase extends TileEntityLoadedBase {
 	public void updateEntity() {
 
 		if(!worldObj.isRemote) {
-			
+
 			if(this.craneIndicator > 0) this.craneIndicator--;
 
 			this.worldObj.theProfiler.startSection("rbmkBase_heat_movement");
@@ -156,6 +156,7 @@ public abstract class TileEntityRBMKBase extends TileEntityLoadedBase {
 	 */
 	private void moveHeat() {
 
+		if(heat == 20) return;
 		boolean reasim = RBMKDials.getReasimBoilers(worldObj);
 
 		List<TileEntityRBMKBase> rec = new ArrayList<>();
@@ -252,9 +253,13 @@ public abstract class TileEntityRBMKBase extends TileEntityLoadedBase {
 	}
 
 	protected void coolPassively(int neighbors) {
-		this.heat -= this.passiveCooling(neighbors);
-		if(heat < 20) heat = 20D;
-	}
+        double pCool = this.passiveCooling(neighbors);
+        this.heat -= pCool;
+        if(heat < 20) heat = 20D;
+
+        this.heat = this.heat < -273 ? -273 : this.heat;
+        this.heat -= MathHelper.clamp_double(this.heat - 20D,pCool * -1, pCool);
+    }
 
 	public RBMKType getRBMKType() {
 		return RBMKType.OTHER;

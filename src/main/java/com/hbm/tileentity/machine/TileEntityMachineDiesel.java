@@ -170,6 +170,12 @@ public class TileEntityMachineDiesel extends TileEntityMachinePolluting implemen
 		}
 	}
 
+    public boolean setFuelRC(FluidType type) {
+        if(!type.hasTrait(FT_Combustible.class)) return false;
+        tank.setTankType(type);
+        return true;
+    }
+
 	@Override
 	public AudioWrapper createAudioLoop() {
 		return MainRegistry.proxy.getLoopedSound(NTMSounds.ENGINE_LOOP, xCoord, yCoord, zCoord, 1.0F, 10F, 1.0F, 10);

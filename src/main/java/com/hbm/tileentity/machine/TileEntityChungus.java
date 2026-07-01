@@ -68,7 +68,7 @@ public class TileEntityChungus extends TileEntityLoadedBase implements IEnergyPr
 	//Configurable values
 	public static int inputTankSize = 1_000_000_000;
 	public static int outputTankSize = 1_000_000_000;
-	public static double efficiency = 0.85D;
+	public static double efficiency = 0.95D;
 
 	public boolean damaged;
 	public Explosion lastExplosion;

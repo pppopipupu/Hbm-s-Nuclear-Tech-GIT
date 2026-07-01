@@ -74,26 +74,25 @@ public class PyroOvenRecipes extends SerializableRecipe {
 		for(CelestialBedrockOreType type : CelestialBedrockOre.getAllTypes()) {
 			recipes.add(new PyroOvenRecipe(10).in(new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.BASE, type))).out(new FluidStack(Fluids.VITRIOL, 50)).out(ItemBedrockOreNew.make(BedrockOreGrade.BASE_ROASTED, type)));
 			recipes.add(new PyroOvenRecipe(10).in(new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.PRIMARY, type))).out(new FluidStack(Fluids.VITRIOL, 50)).out(ItemBedrockOreNew.make(BedrockOreGrade.PRIMARY_ROASTED, type)));
-			recipes.add(new PyroOvenRecipe(10).in(new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.SULFURIC_BYPRODUCT, type))).out(new FluidStack(Fluids.VITRIOL, 50)).out(ItemBedrockOreNew.make(BedrockOreGrade.SULFURIC_ROASTED, type)));
-			recipes.add(new PyroOvenRecipe(10).in(new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.SOLVENT_BYPRODUCT, type))).out(new FluidStack(Fluids.VITRIOL, 50)).out(ItemBedrockOreNew.make(BedrockOreGrade.SOLVENT_ROASTED, type)));
-			recipes.add(new PyroOvenRecipe(10).in(new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.RAD_BYPRODUCT, type))).out(new FluidStack(Fluids.VITRIOL, 50)).out(ItemBedrockOreNew.make(BedrockOreGrade.RAD_ROASTED, type)));
+			recipes.add(new PyroOvenRecipe(10).in(new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.SULFURIC_BYPRODUCT, type,2))).out(new FluidStack(Fluids.VITRIOL, 100)).out(ItemBedrockOreNew.make(BedrockOreGrade.SULFURIC_ROASTED, type,2)));
+			recipes.add(new PyroOvenRecipe(10).in(new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.SOLVENT_BYPRODUCT, type,2))).out(new FluidStack(Fluids.VITRIOL, 100)).out(ItemBedrockOreNew.make(BedrockOreGrade.SOLVENT_ROASTED, type,2)));
+			recipes.add(new PyroOvenRecipe(10).in(new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.RAD_BYPRODUCT, type,2))).out(new FluidStack(Fluids.VITRIOL, 100)).out(ItemBedrockOreNew.make(BedrockOreGrade.RAD_ROASTED, type,2)));
 		}
-		
-		// steam to syngas is 1:2, syngas to LPS in this recipe is 2:1, so you can actually cycle this
+// steam to syngas is 1:2, syngas to LPS in this recipe is 2:1, so you can actually cycle this
 		recipes.add(new PyroOvenRecipe(300).in(new FluidStack(Fluids.SYNGAS, 2_000)).in(new OreDictStack(W.dust())).out(new FluidStack(Fluids.SPENTSTEAM, 1_000)).out(new ItemStack(ModItems.ingot_tungsten_carbide)));
 		
 		//syngas from coal
-		recipes.add(new PyroOvenRecipe(100)
+		recipes.add(new PyroOvenRecipe(80)
 				.in(new FluidStack(Fluids.STEAM, 500)).in(new OreDictStack(COAL.gem()))
 				.out(new FluidStack(Fluids.SYNGAS, 1_000)));
-		recipes.add(new PyroOvenRecipe(100)
+		recipes.add(new PyroOvenRecipe(80)
 				.in(new FluidStack(Fluids.STEAM, 500)).in(new OreDictStack(COAL.dust()))
 				.out(new FluidStack(Fluids.SYNGAS, 1_000)));
-		recipes.add(new PyroOvenRecipe(100)
+		recipes.add(new PyroOvenRecipe(80)
 				.in(new FluidStack(Fluids.STEAM, 250)).in(new OreDictStack(ANY_COKE.gem()))
 				.out(new FluidStack(Fluids.SYNGAS, 1_000)));
 		//syngas from biomass
-		recipes.add(new PyroOvenRecipe(100)
+		recipes.add(new PyroOvenRecipe(80)
 				.in(new ComparableStack(ModItems.biomass, 4))
 				.out(new FluidStack(Fluids.SYNGAS, 1_000)).out(new ItemStack(Items.coal, 1, 1)));
 		//soot from tar
@@ -101,20 +100,20 @@ public class PyroOvenRecipes extends SerializableRecipe {
 				.out(new FluidStack(Fluids.HYDROGEN, 250)).in(new OreDictStack(ANY_TAR.any(), 4))
 				.out(new FluidStack(Fluids.CARBONDIOXIDE, 1_000)).out(DictFrame.fromOne(ModItems.powder_ash, EnumAshType.SOOT)));
 		//heavyoil from coal
-		recipes.add(new PyroOvenRecipe(100)
+		recipes.add(new PyroOvenRecipe(80)
 				.in(new FluidStack(Fluids.HYDROGEN, 500)).in(new OreDictStack(COAL.gem()))
 				.out(new FluidStack(Fluids.HEAVYOIL, 1_000)));
-		recipes.add(new PyroOvenRecipe(100)
+		recipes.add(new PyroOvenRecipe(80)
 				.in(new FluidStack(Fluids.HYDROGEN, 500)).in(new OreDictStack(COAL.dust()))
 				.out(new FluidStack(Fluids.HEAVYOIL, 1_000)));
 		//coalgas from coal
-		recipes.add(new PyroOvenRecipe(50)
+		recipes.add(new PyroOvenRecipe(40)
 				.in(new FluidStack(Fluids.HEAVYOIL, 500)).in(new OreDictStack(COAL.gem()))
 				.out(new FluidStack(Fluids.COALGAS, 1_000)));
-		recipes.add(new PyroOvenRecipe(50)
+		recipes.add(new PyroOvenRecipe(40)
 				.in(new FluidStack(Fluids.HEAVYOIL, 500)).in(new OreDictStack(COAL.dust()))
 				.out(new FluidStack(Fluids.COALGAS, 1_000)));
-		recipes.add(new PyroOvenRecipe(50)
+		recipes.add(new PyroOvenRecipe(40)
 				.in(new FluidStack(Fluids.HEAVYOIL, 500)).in(new OreDictStack(ANY_COKE.gem()))
 				.out(new FluidStack(Fluids.COALGAS, 1_000)));
 		//refgas from coker gas

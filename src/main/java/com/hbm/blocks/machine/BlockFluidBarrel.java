@@ -11,6 +11,7 @@ import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTank;
 import com.hbm.items.machine.IItemFluidIdentifier;
+import com.hbm.items.machine.ItemFluidIDMulti;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.IPersistentNBT;
 import com.hbm.tileentity.machine.storage.TileEntityBarrel;
@@ -29,15 +30,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.stats.StatList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class BlockFluidBarrel extends BlockContainer implements ITooltipProvider, IPersistentInfoProvider {
-	
+
 	int capacity;
 
 	public BlockFluidBarrel(Material p_i45386_1_, int capacity) {
@@ -61,11 +59,11 @@ public class BlockFluidBarrel extends BlockContainer implements ITooltipProvider
 		if(this == ModBlocks.barrel_corroded) return false;
 		if(world.isRemote) {
 			return true;
-			
+
 		} else if(!player.isSneaking()) {
 			FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, x, y, z);
 			return true;
-			
+
 		} else if(player.isSneaking()){
 			TileEntityBarrel mileEntity = (TileEntityBarrel) world.getTileEntity(x, y, z);
 
@@ -74,7 +72,7 @@ public class BlockFluidBarrel extends BlockContainer implements ITooltipProvider
 
 				mileEntity.tank.setTankType(type);
 				mileEntity.markDirty();
-				player.addChatComponentMessage(new ChatComponentText("Changed type to ").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)).appendSibling(new ChatComponentTranslation(type.getConditionalName())).appendSibling(new ChatComponentText("!")));
+                ItemFluidIDMulti.chatOnChangeType(player, "container.barrel", type);
 				}
 			return true;
 
@@ -102,7 +100,7 @@ public class BlockFluidBarrel extends BlockContainer implements ITooltipProvider
 	@Override
 	public void breakBlock(World p_149749_1_, int p_149749_2_, int p_149749_3_, int p_149749_4_, Block p_149749_5_, int p_149749_6_) {
 		if(this == ModBlocks.barrel_corroded) return;
-		
+
 		if(!keepInventory) {
 			ISidedInventory tileentityfurnace = (ISidedInventory) p_149749_1_.getTileEntity(p_149749_2_, p_149749_3_, p_149749_4_);
 
@@ -150,7 +148,7 @@ public class BlockFluidBarrel extends BlockContainer implements ITooltipProvider
 		super.onBlockPlacedBy(world, x, y, z, player, stack);
 		IPersistentNBT.restoreData(world, x, y, z, stack);
 	}
-	
+
 	@Override
 	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune) {
 		return IPersistentNBT.getDrops(world, x, y, z, this);
@@ -158,14 +156,14 @@ public class BlockFluidBarrel extends BlockContainer implements ITooltipProvider
 
 	@Override
 	public void onBlockHarvested(World world, int x, int y, int z, int meta, EntityPlayer player) {
-		
+
 		if(!player.capabilities.isCreativeMode) {
 			harvesters.set(player);
 			this.dropBlockAsItem(world, x, y, z, meta, 0);
 			harvesters.set(null);
 		}
 	}
-	
+
 	@Override
 	public void harvestBlock(World world, EntityPlayer player, int x, int y, int z, int meta) {
 		player.addStat(StatList.mineBlockStatArray[getIdFromBlock(this)], 1);
@@ -194,14 +192,14 @@ public class BlockFluidBarrel extends BlockContainer implements ITooltipProvider
 
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean ext) {
-		
+
 		if(this == ModBlocks.barrel_plastic) {
 			list.add(EnumChatFormatting.AQUA + "Capacity: 12,000mB");
 			list.add(EnumChatFormatting.YELLOW + "Cannot store hot fluids");
 			list.add(EnumChatFormatting.YELLOW + "Cannot store corrosive fluids");
 			list.add(EnumChatFormatting.YELLOW + "Cannot store antimatter");
 		}
-		
+
 		if(this == ModBlocks.barrel_corroded) {
 			list.add(EnumChatFormatting.AQUA + "Capacity: 6,000mB");
 			list.add(EnumChatFormatting.GREEN + "Can store hot fluids");
@@ -217,14 +215,14 @@ public class BlockFluidBarrel extends BlockContainer implements ITooltipProvider
 			list.add(EnumChatFormatting.YELLOW + "Cannot store highly corrosive fluids properly");
 			list.add(EnumChatFormatting.YELLOW + "Cannot store antimatter");
 		}
-		
+
 		if(this == ModBlocks.barrel_antimatter) {
 			list.add(EnumChatFormatting.AQUA + "Capacity: 16,000mB");
 			list.add(EnumChatFormatting.GREEN + "Can store hot fluids");
 			list.add(EnumChatFormatting.GREEN + "Can store highly corrosive fluids");
 			list.add(EnumChatFormatting.GREEN + "Can store antimatter");
 		}
-		
+
 		if(this == ModBlocks.barrel_tcalloy) {
 			list.add(EnumChatFormatting.AQUA + "Capacity: 24,000mB");
 			list.add(EnumChatFormatting.GREEN + "Can store hot fluids");

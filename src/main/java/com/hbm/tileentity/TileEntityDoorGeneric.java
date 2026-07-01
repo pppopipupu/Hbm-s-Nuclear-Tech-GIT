@@ -48,6 +48,7 @@ public class TileEntityDoorGeneric extends TileEntityLockableBase {
 
 	@Override
 	public void updateEntity() {
+		if(this.getBlockMetadata() < 12) return;
 		
 		if(getDoorType().onDoorUpdate() != null) {
 			getDoorType().onDoorUpdate().accept(this);

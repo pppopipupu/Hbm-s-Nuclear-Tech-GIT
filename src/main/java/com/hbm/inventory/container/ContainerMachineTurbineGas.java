@@ -14,29 +14,29 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 public class ContainerMachineTurbineGas extends Container {
-
+	
 	private TileEntityMachineTurbineGas turbinegas;
-
+	
 	public ContainerMachineTurbineGas(InventoryPlayer invPlayer, TileEntityMachineTurbineGas te) {
-
+		
 		turbinegas = te;
-
+		
 		//Battery
 		this.addSlotToContainer(new Slot(te, 0, 8, 109));
 		//Fluid ID
 		this.addSlotToContainer(new Slot(te, 1, 36, 17));
-
-		for(int i = 0; i < 3; i++) {
+		
+		for(int i = 0; i < 3; i++) { 
 			for(int j = 0; j < 9; j++) {
 				this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 8 + j * 18, 141 + i * 18)); //player's inventory
 			}
 		}
 
-		for(int i = 0; i < 9; i++) {
+		for(int i = 0; i < 9; i++) { 
 			this.addSlotToContainer(new Slot(invPlayer, i, 8 + i * 18, 199)); //shit in the hotbar
 		}
 	}
-
+	
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer p_82846_1_, int par2) { //shit for shift clicking that works and idk how
 		ItemStack var3 = null;
@@ -50,15 +50,15 @@ public class ContainerMachineTurbineGas extends Container {
 				if(!this.mergeItemStack(var5, 2, this.inventorySlots.size(), true)) return null;
 			} else if(var5.getItem() instanceof IBatteryItem) { //only yeets batteries in the battery slot
 				if(!this.mergeItemStack(var5, 0, 1, true)) return null;
-			} else if(var5.getItem() instanceof IItemFluidIdentifier) {
-
+			} else if(var5.getItem() instanceof IItemFluidIdentifier) { 
+				
 				IItemFluidIdentifier id = (IItemFluidIdentifier) var5.getItem();
 				FluidType type = id.getType(turbinegas.getWorldObj(), turbinegas.xCoord, turbinegas.yCoord, turbinegas.zCoord, var5);
 				if(!(type.hasTrait(FT_Combustible.class) && type.getTrait(FT_Combustible.class).getGrade() == FuelGrade.GAS)) // redundant restriction that does nothing at best and at worst breaks shit but i'm not questioning pvn on this one
 					return null;
 
 				if(!this.mergeItemStack(var5, 1, 2, true)) return null;
-
+				
 			} else {
 				return null;
 			}

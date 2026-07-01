@@ -86,7 +86,7 @@ public class ArcFurnaceRecipes extends SerializableRecipe {
 			int in = material.convIn;
 			int out = material.convOut;
 			NTMMaterial convert = material.smeltsInto;
-			if(convert.smeltable == SmeltingBehavior.SMELTABLE) {
+			if(convert.smeltable == SmeltingBehavior.SMELTABLE || convert.smeltable == SmeltingBehavior.ADDITIVE) {
 				for(MaterialShapes shape : MaterialShapes.allShapes) {
 					if(!shape.noAutogen) {
 						String name = shape.name() + material.names[0];

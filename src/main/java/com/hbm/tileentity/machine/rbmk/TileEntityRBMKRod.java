@@ -89,16 +89,17 @@ public class TileEntityRBMKRod extends TileEntityRBMKSlottedBase implements IRBM
 		fluxFastRatio = (fastFlux + fastFluxIn) / fluxQuantity;
 	}
 
+    //CrpBnrz: HEY FUCK U BOB I STILL WANT TO REMOVE THE ROD AT ANY TIME AND ANY TEMPERATURE
 	public boolean coldEnoughForAutoloader() {
-		if(slots[0] != null && slots[0].getItem() instanceof ItemRBMKRod) {
-			return ItemRBMKRod.getHullHeat(slots[0]) <= 1_000;
-		}
+		//if(slots[0] != null && slots[0].getItem() instanceof ItemRBMKRod) {
+		//	return ItemRBMKRod.getHullHeat(slots[0]) <= 1_000;
+		//}
 		return true;
 	}
 	public boolean coldEnoughForManual() {
-		if(slots[0] != null && slots[0].getItem() instanceof ItemRBMKRod) {
-			return ItemRBMKRod.getHullHeat(slots[0]) <= 200;
-		}
+		//if(slots[0] != null && slots[0].getItem() instanceof ItemRBMKRod) {
+		//	return ItemRBMKRod.getHullHeat(slots[0]) <= 200;
+		//}
 		return true;
 	}
 
@@ -200,6 +201,7 @@ public class TileEntityRBMKRod extends TileEntityRBMKSlottedBase implements IRBM
 		case SLOW: return slowFlux + fastFlux * 0.5;
 		case FAST: return fastFlux + slowFlux * 0.3;
 		case ANY: return this.fluxQuantity;
+		case NONE: return 0.0D;
 		}
 
 		return 0.0D;

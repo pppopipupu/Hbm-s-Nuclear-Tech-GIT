@@ -25,7 +25,9 @@ import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemArcElectrode.EnumElectrodeType;
 import com.hbm.items.machine.ItemCircuit.EnumCircuitType;
 import com.hbm.items.machine.ItemFluidIcon;
+import com.hbm.util.Compat;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class ArcWelderRecipes extends SerializableRecipe {
@@ -44,6 +46,10 @@ public class ArcWelderRecipes extends SerializableRecipe {
 				new OreDictStack(TI.plate(), 2), new OreDictStack(FIBER.ingot(), 4), new OreDictStack(ANY_HARDPLASTIC.ingot())));
 		recipes.add(new ArcWelderRecipe(new ItemStack(ModItems.neutron_reflector, 2), 400, 50_000L,
 				new OreDictStack(WC.ingot(), 2), new OreDictStack(DURA.plate())));
+
+        //TODO: Find out what happened
+        // recipes.add(new ArcWelderRecipe(DictFrame.fromOne(ModItems.part_generic, EnumPartType.HDE, 2), 1200, 25_000_000L, new FluidStack(Fluids.STELLAR_FLUX, 4_000),
+		//		new OreDictStack(ANY_BISMOIDBRONZE.plateCast(), 4), new OreDictStack(CMB.plateWelded(), 2), new ComparableStack(ModItems.ingot_cft)));
 
 		//Dense Wires
 		recipes.add(new ArcWelderRecipe(new ItemStack(ModItems.wire_dense, 1, Mats.MAT_COPPER.id), 100, 10_000L,
@@ -136,6 +142,9 @@ public class ArcWelderRecipes extends SerializableRecipe {
 
 		recipes.add(new ArcWelderRecipe(new ItemStack(ModItems.circuit, 1, EnumCircuitType.AVIONICS.ordinal()), 250, 25_000L, new OreDictStack(AL.plateCast(), 2), new ComparableStack(ModItems.circuit, 2, EnumCircuitType.AERO)));
 
+		//Written by CrpBnrz: This is the best machine I could think of for charging certus crystals
+		Item certus = Compat.tryLoadItem(Compat.MOD_AE, "item.ItemMultiMaterial");
+		if(certus != null) recipes.add(new ArcWelderRecipe(new ItemStack(certus, 1, 1), 10, 1_000L, new OreDictStack("crystalCertusQuartz")));
 	}
 
 	public static HashMap getRecipes() {

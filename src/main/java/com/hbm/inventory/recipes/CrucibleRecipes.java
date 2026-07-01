@@ -57,12 +57,13 @@ public class CrucibleRecipes extends GenericRecipes<CrucibleRecipe> {
 	@Override
 	public void registerDefaults() {
 
+		int q = MaterialShapes.QUANTUM.q(1);
 		int n = MaterialShapes.NUGGET.q(1);
 		int i = MaterialShapes.INGOT.q(1);
 		
 		this.register(new CrucibleRecipe("crucible.steel").setup(20, new ItemStack(ModItems.ingot_steel))
-				.inputs(new MaterialStack(Mats.MAT_IRON, n * 2), new MaterialStack(Mats.MAT_CARBON, n * 3), new MaterialStack(Mats.MAT_FLUX, n))
-				.outputs(new MaterialStack(Mats.MAT_STEEL, n * 2)));
+				.inputs(new MaterialStack(Mats.MAT_IRON, n), new MaterialStack(Mats.MAT_CARBON, n * 3 / 2), new MaterialStack(Mats.MAT_FLUX, n))
+				.outputs(new MaterialStack(Mats.MAT_STEEL, n)));
 
 		if(Compat.isModLoaded(Compat.MOD_GT6)) {
 			this.register(new CrucibleRecipe("crucible.steelWrought").setup(20, new ItemStack(ModItems.ingot_steel))

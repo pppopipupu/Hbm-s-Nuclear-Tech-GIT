@@ -11,6 +11,7 @@ import com.hbm.interfaces.IControlReceiver;
 import com.hbm.inventory.UpgradeManagerNT;
 import com.hbm.inventory.container.ContainerElectrolyserFluid;
 import com.hbm.inventory.container.ContainerElectrolyserMetal;
+import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTank;
 import com.hbm.inventory.gui.GUIElectrolyserFluid;
@@ -22,6 +23,7 @@ import com.hbm.inventory.recipes.ElectrolyserFluidRecipes;
 import com.hbm.inventory.recipes.ElectrolyserFluidRecipes.ElectrolysisRecipe;
 import com.hbm.inventory.recipes.ElectrolyserMetalRecipes;
 import com.hbm.inventory.recipes.ElectrolyserMetalRecipes.ElectrolysisMetalRecipe;
+import com.hbm.items.machine.ItemMachineUpgrade;
 import com.hbm.items.machine.ItemMachineUpgrade.UpgradeType;
 import com.hbm.lib.Library;
 import com.hbm.main.MainRegistry;
@@ -61,7 +63,7 @@ public class TileEntityElectrolyser extends TileEntityMachineBase implements IEn
 	public int progressFluid;
 	public int processFluidTime = 100;
 	public int progressOre;
-	public int processOreTime = 600;
+	public int processOreTime = 400;
 
 	public MaterialStack leftStack;
 	public MaterialStack rightStack;
@@ -71,7 +73,7 @@ public class TileEntityElectrolyser extends TileEntityMachineBase implements IEn
 
 	public FluidTank[] tanks;
 
-	public UpgradeManagerNT upgradeManager = new UpgradeManagerNT();
+	public UpgradeManagerNT upgradeManager = new UpgradeManagerNT(this);
 
 	public TileEntityElectrolyser() {
 		//0: Battery
@@ -85,9 +87,9 @@ public class TileEntityElectrolyser extends TileEntityMachineBase implements IEn
 		//15-20: Outputs
 		super(21);
 		tanks = new FluidTank[4];
-		tanks[0] = new FluidTank(Fluids.WATER, 16000);
-		tanks[1] = new FluidTank(Fluids.HYDROGEN, 16000);
-		tanks[2] = new FluidTank(Fluids.OXYGEN, 16000);
+		tanks[0] = new FluidTank(Fluids.WATER, 64000);
+		tanks[1] = new FluidTank(Fluids.HYDROGEN, 64000);
+		tanks[2] = new FluidTank(Fluids.OXYGEN, 64000);
 		tanks[3] = new FluidTank(Fluids.NITRIC_ACID, 16000);
 	}
 
@@ -129,41 +131,46 @@ public class TileEntityElectrolyser extends TileEntityMachineBase implements IEn
 					this.trySubscribe(tanks[0].getTankType(), worldObj, pos.getX(), pos.getY(), pos.getZ(), pos.getDir());
 					this.trySubscribe(tanks[3].getTankType(), worldObj, pos.getX(), pos.getY(), pos.getZ(), pos.getDir());
 
-					if(tanks[1].getFill() > 0) this.sendFluid(tanks[1], worldObj, pos.getX(), pos.getY(), pos.getZ(), pos.getDir());
-					if(tanks[2].getFill() > 0) this.sendFluid(tanks[2], worldObj, pos.getX(), pos.getY(), pos.getZ(), pos.getDir());
+					if(tanks[1].getFill() > 0) this.tryProvide(tanks[1], worldObj, pos.getX(), pos.getY(), pos.getZ(), pos.getDir());
+					if(tanks[2].getFill() > 0) this.tryProvide(tanks[2], worldObj, pos.getX(), pos.getY(), pos.getZ(), pos.getDir());
 				}
 			}
 
-			upgradeManager.checkSlots(this, slots, 1, 2);
+            this.updateDuration();
+
+			upgradeManager.checkSlots(slots, 1, 2);
 			int speedLevel = upgradeManager.getLevel(UpgradeType.SPEED);
 			int powerLevel = upgradeManager.getLevel(UpgradeType.POWER);
+			int overLevel = upgradeManager.getLevel(UpgradeType.OVERDRIVE);
 
-			usageOre = usageOreBase - usageOreBase * powerLevel / 4 + usageOreBase * speedLevel;
-			usageFluid = usageFluidBase - usageFluidBase * powerLevel / 4 + usageFluidBase * speedLevel;
+			usageOre = usageOreBase * (4 - powerLevel) / 4 * (speedLevel + 1);
+			usageFluid = usageFluidBase * (4 - powerLevel) / 4 * (speedLevel + 1);
+            this.processOreTime = this.processOreTime * ((4 - speedLevel) / 4);
+            this.processFluidTime = this.processFluidTime * ((4 - speedLevel) / 4);
 
-			for(int i = 0; i < getCycleCount(); i++) {
-				if (this.canProcessFluid()) {
-					this.progressFluid++;
-					this.power -= this.usageFluid;
+            for(int i = 0; i < ItemMachineUpgrade.OverdriveSpeeds[overLevel]; i++) {
+                if (this.canProcessFluid()) {
+                    this.progressFluid++;
+                    this.power -= this.usageFluid;
 
-					if (this.progressFluid >= this.getDurationFluid()) {
-						this.processFluids();
-						this.progressFluid = 0;
-						this.markChanged();
-					}
-				}
+                    if (this.progressFluid >= this.processFluidTime) {
+                        this.processFluids();
+                        this.progressFluid = 0;
+                        this.markChanged();
+                    }
+                }
 
-				if (this.canProcessMetal()) {
-					this.progressOre++;
-					this.power -= this.usageOre;
+                if (this.canProcessMetal()) {
+                    this.progressOre++;
+                    this.power -= this.usageOre;
 
-					if (this.progressOre >= this.getDurationMetal()) {
-						this.processMetal();
-						this.progressOre = 0;
-						this.markChanged();
-					}
-				}
-			}
+                    if (this.progressOre >= this.processOreTime) {
+                        this.processMetal();
+                        this.progressOre = 0;
+                        this.markChanged();
+                    }
+                }
+            }    
 
 			if(this.leftStack != null) {
 
@@ -172,7 +179,7 @@ public class TileEntityElectrolyser extends TileEntityMachineBase implements IEn
 				toCast.add(this.leftStack);
 
 				Vec3 impact = Vec3.createVectorHelper(0, 0, 0);
-				MaterialStack didPour = CrucibleUtil.pourFullStack(worldObj, xCoord + 0.5D + dir.offsetX * 5.875D, yCoord + 2D, zCoord + 0.5D + dir.offsetZ * 5.875D, 6, true, toCast, MaterialShapes.NUGGET.q(3) * Math.max (getCycleCount() * speedLevel, 1), impact);
+				MaterialStack didPour = CrucibleUtil.pourFullStack(worldObj, xCoord + 0.5D + dir.offsetX * 5.875D, yCoord + 2D, zCoord + 0.5D + dir.offsetZ * 5.875D, 6, true, toCast, MaterialShapes.INGOT.q(overLevel > 0 ? overLevel * 3 : 1), impact);
 
 				if(didPour != null) {
 					NBTTagCompound data = new NBTTagCompound();
@@ -195,7 +202,7 @@ public class TileEntityElectrolyser extends TileEntityMachineBase implements IEn
 				toCast.add(this.rightStack);
 
 				Vec3 impact = Vec3.createVectorHelper(0, 0, 0);
-				MaterialStack didPour = CrucibleUtil.pourFullStack(worldObj, xCoord + 0.5D + dir.offsetX * 5.875D, yCoord + 2D, zCoord + 0.5D + dir.offsetZ * 5.875D, 6, true, toCast, MaterialShapes.NUGGET.q(3) * Math.max (getCycleCount() * speedLevel, 1), impact);
+				MaterialStack didPour = CrucibleUtil.pourFullStack(worldObj, xCoord + 0.5D + dir.offsetX * 5.875D, yCoord + 2D, zCoord + 0.5D + dir.offsetZ * 5.875D, 6, true, toCast, MaterialShapes.INGOT.q(overLevel > 0 ? overLevel * 3 : 1), impact);
 
 				if(didPour != null) {
 					NBTTagCompound data = new NBTTagCompound();
@@ -241,8 +248,8 @@ public class TileEntityElectrolyser extends TileEntityMachineBase implements IEn
 		buf.writeInt(this.progressOre);
 		buf.writeInt(this.usageOre);
 		buf.writeInt(this.usageFluid);
-		buf.writeInt(this.getDurationFluid());
-		buf.writeInt(this.getDurationMetal());
+		buf.writeInt(this.processFluidTime);
+		buf.writeInt(this.processOreTime);
 		for(int i = 0; i < 4; i++) tanks[i].serialize(buf);
 		buf.writeBoolean(this.leftStack != null);
 		buf.writeBoolean(this.rightStack != null);
@@ -394,24 +401,19 @@ public class TileEntityElectrolyser extends TileEntityMachineBase implements IEn
 		this.decrStackSize(14, 1);
 	}
 
-	public int getDurationMetal() {
-		ElectrolysisMetalRecipe result = ElectrolyserMetalRecipes.getRecipe(slots[14]);
-		int base = result != null ? result.duration : 600;
-		int speed = upgradeManager.getLevel(UpgradeType.SPEED) - Math.min(upgradeManager.getLevel(UpgradeType.POWER), 1);
-		return (int) Math.ceil((base * Math.max(1F - 0.25F * speed, 0.2)));
-	}
-	public int getDurationFluid() {
-		ElectrolysisRecipe result = ElectrolyserFluidRecipes.getRecipe(tanks[0].getTankType());
-		int base = result != null ? result.duration : 100;
-		int speed = upgradeManager.getLevel(UpgradeType.SPEED) - Math.min(upgradeManager.getLevel(UpgradeType.POWER), 1);
-		return (int) Math.ceil((base * Math.max(1F - 0.25F * speed, 0.2)));
+    public void updateDuration() {
+        ElectrolysisMetalRecipe metal = ElectrolyserMetalRecipes.getRecipe(slots[14]);
+        ElectrolysisRecipe fluid = ElectrolyserFluidRecipes.getRecipe(tanks[0].getTankType());
+        this.processOreTime = metal != null ? metal.duration : 400;
+        this.processFluidTime = fluid != null ? fluid.duration : 100;
+    }
 
-	}
-
-	public int getCycleCount() {
-		int speed = upgradeManager.getLevel(UpgradeType.OVERDRIVE);
-		return Math.min(1 + speed * 2, 7);
-	}
+    public boolean setFluidRC(FluidType type) {
+        ElectrolysisRecipe recipe = ElectrolyserFluidRecipes.recipes.get(type);
+        if(recipe == null) return false;
+        tanks[0].setTankType(type);
+        return true;
+    }
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
@@ -437,8 +439,8 @@ public class TileEntityElectrolyser extends TileEntityMachineBase implements IEn
 		nbt.setLong("power", this.power);
 		nbt.setInteger("progressFluid", this.progressFluid);
 		nbt.setInteger("progressOre", this.progressOre);
-		nbt.setInteger("processFluidTime", getDurationFluid());
-		nbt.setInteger("processOreTime", getDurationMetal());
+		nbt.setInteger("processFluidTime", this.processFluidTime);
+		nbt.setInteger("processOreTime", this.processOreTime);
 		if(this.leftStack != null) {
 			nbt.setInteger("leftType", leftStack.material.id);
 			nbt.setInteger("leftAmount", leftStack.amount);
@@ -552,7 +554,6 @@ public class TileEntityElectrolyser extends TileEntityMachineBase implements IEn
 		}
 		if(type == UpgradeType.POWER) {
 			info.add(EnumChatFormatting.GREEN + I18nUtil.resolveKey(this.KEY_CONSUMPTION, "-" + (level * 25) + "%"));
-			info.add(EnumChatFormatting.RED + I18nUtil.resolveKey(this.KEY_DELAY, "+" + (25) + "%"));
 		}
 		if(type == UpgradeType.OVERDRIVE) {
 			info.add((BobMathUtil.getBlink() ? EnumChatFormatting.RED : EnumChatFormatting.DARK_GRAY) + "YES");
