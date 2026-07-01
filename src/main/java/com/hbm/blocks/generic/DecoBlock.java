@@ -187,4 +187,5 @@ public class DecoBlock extends BlockContainer implements IToolable, INBTBlockTra
 	public int transformMeta(int meta, int coordBaseMode) {
 		return INBTBlockTransformable.transformMetaDeco(meta, coordBaseMode);
 	}
+
 }

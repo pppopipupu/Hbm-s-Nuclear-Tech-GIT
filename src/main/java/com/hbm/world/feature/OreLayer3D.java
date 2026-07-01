@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import com.hbm.dim.WorldProviderCelestial;
+
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -35,6 +37,7 @@ public class OreLayer3D {
 	Block block;
 	int meta;
 	int dim = 0;
+	boolean allCelestials = false;
 
 	Map<Integer, Set<ChunkCoordIntPair>> alreadyDecorated = new HashMap<>();
 
@@ -48,6 +51,12 @@ public class OreLayer3D {
 
 	public OreLayer3D setDimension(int dim) {
 		this.dim = dim;
+		return this;
+	}
+
+	// If enabled, this vein will spawn on all celestial bodies
+	public OreLayer3D setGlobal(boolean value) {
+		this.allCelestials = value;
 		return this;
 	}
 
@@ -68,11 +77,28 @@ public class OreLayer3D {
 
 	@SubscribeEvent
 	public void onDecorate(DecorateBiomeEvent.Pre event) {
+
 		World world = event.world;
 		int cx = event.chunkX;
 		int cz = event.chunkZ;
 
-		if(world.provider == null || world.provider.dimensionId != this.dim) return;
+		// cx = chunk x
+		// ox = offset x
+		// nx = noise x
+		// x = world x
+
+		if(world.provider == null) return;
+
+		Block replace = Blocks.stone;
+		if(world.provider instanceof WorldProviderCelestial) {
+			replace = ((WorldProviderCelestial)world.provider).getStone();
+		}
+
+		if(allCelestials) {
+			if(!(world.provider instanceof WorldProviderCelestial) && world.provider.dimensionId != 0) return;
+		} else {
+			if(world.provider.dimensionId != this.dim) return;
+		}
 
 		ChunkCoordIntPair chunkPos = new ChunkCoordIntPair(cx, cz);
 		Set<ChunkCoordIntPair> decoratedChunks = alreadyDecorated.computeIfAbsent(world.provider.dimensionId, n -> new HashSet<>());
@@ -113,7 +139,7 @@ public class OreLayer3D {
 					if(nx * ny * nz > threshold) {
 						Block target = world.getBlock(x, y, z);
 
-						if(target.isNormalCube() && target.isReplaceableOreGen(world, x, y, z, Blocks.stone)) {
+						if(target.isNormalCube() && target.isReplaceableOreGen(world, x, y, z, replace)) {
 							world.setBlock(x, y, z, block, meta, 2);
 						}
 					}

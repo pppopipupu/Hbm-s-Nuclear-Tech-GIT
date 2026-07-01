@@ -4,8 +4,6 @@ import java.util.List;
 
 import com.hbm.handler.MissileStruct;
 import com.hbm.items.ModItems;
-import com.hbm.items.weapon.ItemCustomMissilePart.FuelType;
-import com.hbm.items.weapon.ItemCustomMissilePart.WarheadType;
 import com.hbm.util.i18n.I18nUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -64,29 +62,19 @@ public class ItemCustomMissile extends Item {
 			ItemCustomMissilePart stability = (ItemCustomMissilePart) Item.getItemById(readFromNBT(stack, "stability"));
 			ItemCustomMissilePart thruster = (ItemCustomMissilePart) Item.getItemById(readFromNBT(stack, "thruster"));
 
-			// warhead name
-			list.add(EnumChatFormatting.BOLD + I18nUtil.resolveKey("item.missile.desc.warhead") + ": " + EnumChatFormatting.GRAY + warhead.getWarhead((WarheadType)warhead.attributes[0]));
-
-			// strength
-			list.add(EnumChatFormatting.BOLD + I18nUtil.resolveKey("item.missile.desc.strength") + ": " + EnumChatFormatting.GRAY + (Float)warhead.attributes[1]);
-
-			// fuel type & amount
-			list.add(EnumChatFormatting.BOLD + I18nUtil.resolveKey("item.missile.desc.fuelType") + ": " + EnumChatFormatting.GRAY + fuselage.getFuel((FuelType)fuselage.attributes[0]));
-			list.add(EnumChatFormatting.BOLD + I18nUtil.resolveKey("item.missile.desc.fuelAmount") + ": " + EnumChatFormatting.GRAY + (Float)fuselage.attributes[1] + "l");
-
-			// chip inaccuracy
+			list.add(EnumChatFormatting.BOLD + I18nUtil.resolveKey("item.missile.desc.warhead") + ": " + EnumChatFormatting.GRAY + warhead.getWarhead());
+			list.add(EnumChatFormatting.BOLD + I18nUtil.resolveKey("item.missile.desc.strength") + ": " + EnumChatFormatting.GRAY + warhead.attributes[1]);
+			list.add(EnumChatFormatting.BOLD + I18nUtil.resolveKey("item.missile.desc.fuelType") + ": " + EnumChatFormatting.GRAY + fuselage.getFuelName());
+			list.add(EnumChatFormatting.BOLD + I18nUtil.resolveKey("item.missile.desc.fuelAmount") + ": " + EnumChatFormatting.GRAY + fuselage.getTankSize() + "l");
 			list.add(EnumChatFormatting.BOLD + I18nUtil.resolveKey("item.missile.desc.chipInaccuracy") + ": " + EnumChatFormatting.GRAY + (Float)chip.attributes[0] * 100 + "%");
 
-			// fin inaccuracy
 			if(stability != null)
 				list.add(EnumChatFormatting.BOLD + I18nUtil.resolveKey("item.missile.desc.finInaccuracy") + ": " + EnumChatFormatting.GRAY + (Float)stability.attributes[0] * 100 + "%");
 			else
 				list.add(EnumChatFormatting.BOLD + I18nUtil.resolveKey("item.missile.desc.finInaccuracy") + ": " + EnumChatFormatting.GRAY + "100%");
 
-			// size
 			list.add(EnumChatFormatting.BOLD + I18nUtil.resolveKey("item.missile.desc.size") + ": " + EnumChatFormatting.GRAY + fuselage.getSize(fuselage.top) + "/" + fuselage.getSize(fuselage.bottom));
 
-			// health
 			float health = warhead.health + fuselage.health + thruster.health;
 			if(stability != null)
 				health += stability.health;

@@ -8,7 +8,7 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
 public class CommonConfig {
-	
+
 	public static final String CATEGORY_GENERAL = "01_general";
 	public static final String CATEGORY_ORES = "02_ores";
 	public static final String CATEGORY_NUKES = "03_nukes";
@@ -24,9 +24,10 @@ public class CommonConfig {
 	public static final String CATEGORY_RADIATION = "13_radiation";
 	public static final String CATEGORY_HAZARD = "14_hazard";
 	public static final String CATEGORY_STRUCTURES = "15_structures";
-	public static final String CATEGORY_POLLUTION = "16_pollution";
-	public static final String CATEGORY_BIOMES = "17_biomes";
-	public static final String CATEGORY_WEAPONS = "18_weapons";
+	public static final String CATEGORY_BIOMES = "16_biomes";
+	public static final String CATEGORY_DIMS = "17_dims";
+	public static final String CATEGORY_POLLUTION = "18_pollution";
+	public static final String CATEGORY_WEAPONS = "19_weapons";
 
 	public static final String CATEGORY_528 = "528";
 	public static final String CATEGORY_LBSM = "LESS BULLSHIT MODE";
@@ -55,6 +56,12 @@ public class CommonConfig {
 
 	public static int createConfigInt(Configuration config, String category, String name, String comment, int def) {
 		Property prop = config.get(category, name, def);
+		prop.comment = comment;
+		return prop.getInt();
+	}
+
+	public static int createConfigInt(Configuration config, String category, String name, String comment, int def, int min, int max) {
+		Property prop = config.get(category, name, def, null, min, max);
 		prop.comment = comment;
 		return prop.getInt();
 	}
@@ -89,7 +96,7 @@ public class CommonConfig {
 
 	public static int parseStructureFlag(String flag) {
 		if(flag == null) flag = "";
-		
+
 		switch(flag.toLowerCase(Locale.US)) {
 		case "true":
 		case "on":

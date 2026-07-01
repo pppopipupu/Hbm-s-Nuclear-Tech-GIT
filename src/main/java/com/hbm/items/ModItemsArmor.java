@@ -127,6 +127,7 @@ public class ModItemsArmor {
 				.setHasHardLanding(true)
 				.addEffect(new PotionEffect(Potion.damageBoost.id, 20, 0))
 				.setStep("hbm:step.metal").setJump("hbm:step.iron_jump").setFall("hbm:step.iron_land")
+				.setSealed(true)
 				.hides(EnumPlayerPart.HAT)
 				.setHazardClass(ArmorUtil.FULL_NO_LIGHT).setRadResist(1D /*90%*/)
 				.setUnlocalizedName("t51_helmet").setMaxStackSize(1).setTextureName(RefStrings.MODID + ":armor");
@@ -139,6 +140,7 @@ public class ModItemsArmor {
 		steamsuit_helmet = new ArmorDesh(aMatDesh, 0, RefStrings.MODID + ":textures/armor/starmetal_1.png", Fluids.STEAM, 64_000, 500, 50, 1)
 				.setHasHardLanding(true)
 				.addEffect(new PotionEffect(Potion.digSpeed.id, 20, 4))
+				.setSealed(true)
 				.hides(EnumPlayerPart.HAT)
 				.setHazardClass(ArmorUtil.FULL_PACKAGE).setRadResist(1.3D /*95%*/)
 				.setUnlocalizedName("steamsuit_helmet").setMaxStackSize(1).setTextureName(RefStrings.MODID + ":steamsuit_helmet");
@@ -167,6 +169,7 @@ public class ModItemsArmor {
 				.addEffect(new PotionEffect(Potion.jump.id, 20, 0))
 				.addEffect(new PotionEffect(Potion.damageBoost.id, 20, 0))
 				.setStep("hbm:step.metal").setJump("hbm:step.iron_jump").setFall("hbm:step.iron_land")
+				.setSealed(true)
 				.hides(EnumPlayerPart.HAT)
 				.setHazardClass(ArmorUtil.FULL_PACKAGE).setRadResist(1.3D /*95%*/)
 				.setUnlocalizedName("ajr_helmet").setTextureName(RefStrings.MODID + ":ajr_helmet");
@@ -181,6 +184,7 @@ public class ModItemsArmor {
 				.addEffect(new PotionEffect(Potion.jump.id, 20, 0))
 				.addEffect(new PotionEffect(Potion.damageBoost.id, 20, 0))
 				.setStep("hbm:step.metal").setJump("hbm:step.iron_jump").setFall("hbm:step.iron_land")
+				.setSealed(true)
 				.hides(EnumPlayerPart.HAT)
 				.setHazardClass(ArmorUtil.FULL_PACKAGE).setRadResist(1.3D /*95%*/)
 				.setUnlocalizedName("ajro_helmet").setTextureName(RefStrings.MODID + ":ajro_helmet");
@@ -196,6 +200,7 @@ public class ModItemsArmor {
 				.setStep("hbm:step.powered")
 				.setJump("hbm:step.powered")
 				.setFall("hbm:step.powered")
+				.setSealed(true)
 				.hides(EnumPlayerPart.HAT)
 				.setHazardClass(ArmorUtil.FULL_PACKAGE).setRadResist(2D /*99%*/)
 				.setUnlocalizedName("rpa_helmet").setTextureName(RefStrings.MODID + ":rpa_helmet");
@@ -211,6 +216,7 @@ public class ModItemsArmor {
 				.setStep("hbm:step.powered")
 				.setJump("hbm:step.powered")
 				.setFall("hbm:step.powered")
+				.setSealed(true)
 				.hides(EnumPlayerPart.HAT)
 				.setHazardClass(ArmorUtil.FULL_PACKAGE).setRadResist(1.7D /*97%*/)
 				.setUnlocalizedName("ncrpa_helmet").setTextureName(RefStrings.MODID + ":rpa_helmet");
@@ -244,6 +250,7 @@ public class ModItemsArmor {
 		envsuit_helmet = new ArmorEnvsuit(aMatEnv, 0, RefStrings.MODID + ":textures/armor/starmetal_1.png", 100_000, 1_000, 250, 0)
 				.addEffect(new PotionEffect(Potion.moveSpeed.id, 20, 1))
 				.addEffect(new PotionEffect(Potion.jump.id, 20, 0))
+				.setSealed(true)
 				.hides(EnumPlayerPart.HAT)
 				.setHazardClass(ArmorUtil.FULL_PACKAGE).setRadResist(1.0D /*90%*/)
 				.setUnlocalizedName("envsuit_helmet").setTextureName(RefStrings.MODID + ":envsuit_helmet");
@@ -258,6 +265,7 @@ public class ModItemsArmor {
 				.addEffect(new PotionEffect(Potion.jump.id, 20, 0))
 				.setHasGeigerSound(true)
 				.setHasCustomGeiger(true)
+				.setSealed(true)
 				.hides(EnumPlayerPart.HAT)
 				.setHazardClass(ArmorUtil.FULL_PACKAGE).setRadResist(2.3D /*99.5%*/)
 				.setUnlocalizedName("hev_helmet").setTextureName(RefStrings.MODID + ":hev_helmet");
@@ -278,6 +286,7 @@ public class ModItemsArmor {
 				.setStep("hbm:step.metal")
 				.setJump("hbm:step.iron_jump")
 				.setFall("hbm:step.iron_land")
+				.setSealed(true)
 				.hides(EnumPlayerPart.HAT)
 				.setHazardClass(ArmorUtil.FULL_PACKAGE).setRadResist(4D /*99.99%*/)
 				.setUnlocalizedName("fau_helmet").setTextureName(RefStrings.MODID + ":fau_helmet");
@@ -298,6 +307,7 @@ public class ModItemsArmor {
 				.setStep("hbm:step.metal")
 				.setJump("hbm:step.iron_jump")
 				.setFall("hbm:step.iron_land")
+				.setSealed(true)
 				.hides(EnumPlayerPart.HAT)
 				.setHazardClass(ArmorUtil.FULL_PACKAGE).setRadResist(5D /*99.999%*/)
 				.setUnlocalizedName("dns_helmet").setTextureName(RefStrings.MODID + ":dns_helmet");
@@ -310,6 +320,7 @@ public class ModItemsArmor {
 		taurun_helmet = new ArmorTaurun(aMatTaurun, 0, RefStrings.MODID + ":textures/armor/starmetal_1.png")
 				.addEffect(new PotionEffect(Potion.damageBoost.id, 20, 0))
 				.setStepSize(1)
+				.setSealed(true)
 				.hides(EnumPlayerPart.HAT)
 				.setHazardClass(ArmorUtil.FULL_PACKAGE).setRadResist(0.125D /*25%*/)
 				.setUnlocalizedName("taurun_helmet").setTextureName(RefStrings.MODID + ":taurun_helmet");
@@ -325,6 +336,7 @@ public class ModItemsArmor {
 				.addEffect(new PotionEffect(Potion.moveSpeed.id, 20, 0))
 				.enableVATS(true)
 				.setStepSize(1)
+				.setSealed(true)
 				.hides(EnumPlayerPart.HAT)
 				.setRadResist(1D /*90%*/)
 				.setHazardClass(ArmorUtil.FULL_PACKAGE).setUnlocalizedName("trenchmaster_helmet").setTextureName(RefStrings.MODID + ":trenchmaster_helmet");

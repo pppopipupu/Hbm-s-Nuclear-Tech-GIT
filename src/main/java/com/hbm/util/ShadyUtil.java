@@ -1,11 +1,7 @@
 package com.hbm.util;
 
 import com.google.common.collect.Sets;
-import com.hbm.config.GeneralConfig;
-import com.hbm.main.MainRegistry;
-import cpw.mods.fml.relauncher.ReflectionHelper;
 
-import java.lang.reflect.Field;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
@@ -52,25 +48,15 @@ public class ShadyUtil {
 	public static String Adam29Adam29 = "bbae7bfa-0eba-40ac-a0dd-f3b715e73e61";
 	public static String Alcater = "0b399a4a-8545-45a1-be3d-ece70d7d48e9";
 	public static String ege444 = "42ee978c-442a-4cd8-95b6-29e469b6df10";
+	public static String DUODEC_ = "85d54b8c-1862-4c86-b351-5ef1b998aa32";
 	public static String LePeeperSauvage = "433c2bb7-018c-4d51-acfe-27f907432b5e";
+	public static String MellowRPG8 = "99b9efa5-8c38-4b22-86c2-baf97789d2fb";
 
 	public static final Set<String> hashes = new HashSet();
 	static {
 		hashes.add("41de5c372b0589bbdb80571e87efa95ea9e34b0d74c6005b8eab495b7afd9994");
 		hashes.add("31da6223a100ed348ceb3254ceab67c9cc102cb2a04ac24de0df3ef3479b1036");
 	}
-
-	public static final int c = 0x3d;
-	public static String initializer =	"Ur bp7mN-@UFZKXBx9N[/>M'k\\7\\9m3b";
-	public static String signature =	"dYPq\\YzrNpfn[ZDxdk7PS2jhTY72cZT7SoH|\\WL3dIznfC";
-	public static String mask =			"E#?V,%l!nb4 ik_wJ@(&k4o>Wq";
-	public static String checksum =		"dpXt\\Xnr\\Yzm";
-	public static String testCase =		"dYPq\\YzrNm3FUH;P[ZTq";
-	public static String testValue =	"WGm?";
-	public static String smTest1 =		"hgwS";
-	public static String smTest2 =		"8Sfw";
-	public static String smTest3 =		"j11D";
-	public static String smTest4 =		"s783";
 
 	public static Set<String> contributors = Sets.newHashSet(new String[] {
 			"06ab7c03-55ce-43f8-9d3c-2850e3c652de", //mustang_rudolf
@@ -79,18 +65,10 @@ public class ShadyUtil {
 			});
 
 	// simple cryptographic utils
-	public static String encode(String msg) { return Base64.getEncoder().encodeToString(msg.getBytes()); }
-	public static String decode(String msg) { return new String(Base64.getDecoder().decode(msg)); }
+	@Deprecated public static String encode(String msg) { return Base64.getEncoder().encodeToString(msg.getBytes()); }
+	@Deprecated public static String decode(String msg) { return new String(Base64.getDecoder().decode(msg)); }
 
-	public static String offset(String msg, int o) {
-		byte[] bytes = msg.getBytes();
-		for(int i = 0; i < bytes.length; i++) {
-			bytes[i] += o;
-		}
-		return new String(bytes);
-	}
-
-	/** Encryptor for the h-cat answer strings */
+	/** complete fucking shit */
 	public static String smoosh(String s1, String s2, String s3, String s4) {
 
 		Random rand = new Random();
@@ -131,24 +109,5 @@ public class ShadyUtil {
 			return str;
 		} catch(NoSuchAlgorithmException e) { }
 		return "";
-	}
-
-	public static void test() {
-		if(!GeneralConfig.enableDebugMode) return; //only run in debug mode
-		
-		//unit test for smooshing
-		MainRegistry.logger.debug(smoosh(smTest1, smTest2, smTest3, smTest4));
-
-		try {
-			Class test = Class.forName(decode(offset(signature, -2)));
-			Field field = ReflectionHelper.findField(test, decode(offset(checksum, -2)));
-			if(field != null) {
-				System.out.println("TEST SECTION START");
-				//Class toLoad = Class.forName(decode(offset(testCase, -2)));
-				//Field toRead = ReflectionHelper.findField(toLoad, decode(offset(testValue, -2)));
-				//ModEventHandler.reference = toRead;
-				System.out.println("TEST SECTION END");
-			}
-		} catch(Throwable e) { }
 	}
 }

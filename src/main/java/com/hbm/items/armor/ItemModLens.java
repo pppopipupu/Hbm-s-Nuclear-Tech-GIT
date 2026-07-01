@@ -53,7 +53,7 @@ public class ItemModLens extends ItemArmorMod implements ISatChip {
 		if(lens == null) return;
 
 		int freq = this.getFreq(lens);
-		Satellite sat = SatelliteSavedData.getData(world).getSatFromFreq(freq);
+		Satellite sat = SatelliteSavedData.getData(world, (int)entity.posX, (int)entity.posZ).getSatFromFreq(freq);
 		if(!(sat instanceof SatelliteScanner)) return;
 
 		int x = (int) Math.floor(player.posX);
@@ -82,7 +82,9 @@ public class ItemModLens extends ItemArmorMod implements ISatChip {
 
 						if(addIf(ModBlocks.ore_alexandrite, b, 1, aX, seg, aZ, "Alexandrite", 0x00ffff, player)) hits++;
 						if(addIf(ModBlocks.ore_oil, b, 300, aX, seg, aZ, "Oil", 0xa0a0a0, player)) hits++;
+						if(addIf(ModBlocks.ore_gas, b, 300, aX, seg, aZ, "Natural Gas", 0xa0a0a0, player)) hits++;
 						if(addIf(ModBlocks.ore_bedrock_oil, b, 300, aX, seg, aZ, "Bedrock Oil", 0xa0a0a0, player)) hits++;
+						if(addIf(ModBlocks.ore_brine, b, 300, aX, seg, aZ, "Brine", 0xa0a0a0, player)) hits++;
 						if(addIf(ModBlocks.ore_coltan, b, 5, aX, seg, aZ, "Coltan", 0xa0a000, player)) hits++;
 						if(addIf(ModBlocks.stone_gneiss, b, 5000, aX, seg, aZ, "Schist", 0x8080ff, player)) hits++;
 						if(addIf(ModBlocks.ore_australium, b, 1000, aX, seg, aZ, "Australium", 0xffff00, player)) hits++;

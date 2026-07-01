@@ -430,7 +430,6 @@ public class TileEntityTurretArty extends TileEntityTurretBaseArtillery implemen
 
 	@Override
 	protected void spawnCasing() {
-
 		if(cachedCasingConfig == null) return;
 
 		Vec3 spawn = this.getCasingSpawnPos();

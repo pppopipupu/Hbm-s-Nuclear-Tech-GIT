@@ -28,10 +28,10 @@ public class FusionRecipes extends GenericRecipes<FusionRecipe> {
 
 	@Override
 	public void registerDefaults() {
-		
+
 		long solenoid = 25_000;
 		double breederCapacity = TileEntityFusionBreeder.capacity;
-		
+
 		// mostly for breeding helium and tritium, energy gains are enough to ignite TH4
 		// 15MHE/s to 20MHE/s
 		this.register((FusionRecipe) new FusionRecipe("fus.dd").setInputEnergy(750_000).setOutputEnergy(1_000_000).setOutputFlux(breederCapacity / 200)
@@ -40,7 +40,7 @@ public class FusionRecipes extends GenericRecipes<FusionRecipe> {
 				.setPower(solenoid).setDuration(100)
 				.inputFluids(new FluidStack(Fluids.DEUTERIUM, 20))
 				.outputFluids(new FluidStack(Fluids.HELIUM4, 1_000))); // akshuyally it should be helium-3 muh realisme
-		
+
 		// early fuel
 		// 5MHE/s to 20MHE/s
 		this.register((FusionRecipe) new FusionRecipe("fus.do").setInputEnergy(250_000).setOutputEnergy(1_250_000).setOutputFlux(breederCapacity / 200)
@@ -48,7 +48,7 @@ public class FusionRecipes extends GenericRecipes<FusionRecipe> {
 				.setPower(solenoid).setDuration(100)
 				.inputFluids(new FluidStack(Fluids.DEUTERIUM, 10), new FluidStack(Fluids.OXYGEN, 10))
 				.outputItems(new ItemStack(ModItems.pellet_charged)));
-		
+
 		// medium fuel
 		// 15MHE/s to 75MHE/s
 		this.register((FusionRecipe) new FusionRecipe("fus.dt").setInputEnergy(750_000).setOutputEnergy(3_750_000).setOutputFlux(breederCapacity / 100)
@@ -56,7 +56,7 @@ public class FusionRecipes extends GenericRecipes<FusionRecipe> {
 				.setPower(solenoid).setDuration(100)
 				.inputFluids(new FluidStack(Fluids.DEUTERIUM, 10), new FluidStack(Fluids.TRITIUM, 10))
 				.outputFluids(new FluidStack(Fluids.HELIUM4, 1_000)));
-		
+
 		// medium fuel, three klystrons or in tandem
 		// 50MHE/s to 125MHE/s
 		this.register((FusionRecipe) new FusionRecipe("fus.tcl").setInputEnergy(2_500_000).setOutputEnergy(6_250_000).setOutputFlux(breederCapacity / 20)
@@ -65,7 +65,7 @@ public class FusionRecipes extends GenericRecipes<FusionRecipe> {
 				.setPower(solenoid).setDuration(100)
 				.inputFluids(new FluidStack(Fluids.TRITIUM, 10), new FluidStack(Fluids.CHLORINE, 10))
 				.outputItems(new ItemStack(ModItems.powder_chlorophyte)));
-		
+
 		// medium fuel, aneutronic
 		// 10MHE/s to 75MHE/s
 		this.register((FusionRecipe) new FusionRecipe("fus.h3").setInputEnergy(500_000).setOutputEnergy(3_750_000).setOutputFlux(0)
@@ -74,7 +74,7 @@ public class FusionRecipes extends GenericRecipes<FusionRecipe> {
 				.setPower(solenoid).setDuration(100)
 				.inputFluids(new FluidStack(Fluids.HELIUM3, 20))
 				.outputFluids(new FluidStack(Fluids.HELIUM4, 1_000)));
-		
+
 		// medium fuel, in tandem with DD
 		// 17.5MHE/s to 80MHE/s
 		this.register((FusionRecipe) new FusionRecipe("fus.th4").setInputEnergy(875_000).setOutputEnergy(4_000_000).setOutputFlux(breederCapacity / 20)

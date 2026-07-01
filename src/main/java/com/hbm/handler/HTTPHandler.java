@@ -18,28 +18,29 @@ public class HTTPHandler {
 	public static String versionNumber = "";
 
 	public static void loadStats() {
-		
+
 		Thread versionChecker = new Thread("NTM Version Checker") {
-			
+
 			@Override
 			public void run() {
 				try {
 					loadVersion();
 					loadSoyuz();
 					loadTips();
+					loadSpaceTips();
 				} catch(IOException e) {
 					MainRegistry.logger.warn("Version checker failed!");
 				}
 			}
-			
+
 		};
-		
+
 		versionChecker.start();
 	}
 
 	private static void loadVersion() throws IOException {
 
-		URL github = new URL("https://raw.githubusercontent.com/HbmMods/Hbm-s-Nuclear-Tech-GIT/master/src/main/java/com/hbm/lib/RefStrings.java");
+		URL github = new URL("https://raw.githubusercontent.com/JameH2/Hbm-s-Nuclear-Tech-GIT/space-travel-twopointfive/src/main/java/com/hbm/lib/RefStrings.java");
 		BufferedReader in = new BufferedReader(new InputStreamReader(github.openStream()));
 
 		MainRegistry.logger.info("Searching for new versions...");
@@ -78,6 +79,16 @@ public class HTTPHandler {
 	private static void loadTips() throws IOException {
 
 		URL github = new URL("https://gist.githubusercontent.com/HbmMods/a03c66ba160184e12f43de826b30c096/raw/tip_of_the_day");
+		BufferedReader in = new BufferedReader(new InputStreamReader(github.openStream()));
+
+		String line;
+		while((line = in.readLine()) != null) tipOfTheDay.add(line);
+		in.close();
+	}
+
+	private static void loadSpaceTips() throws IOException {
+
+		URL github = new URL("https://gist.githubusercontent.com/MellowArpeggiation/f9424a8773ed8530000437dfcef50d3e/raw/tip_of_the_space");
 		BufferedReader in = new BufferedReader(new InputStreamReader(github.openStream()));
 
 		String line;

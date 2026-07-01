@@ -38,6 +38,8 @@ public class Compat {
 	public static final String MOD_TC = "tc";
 	public static final String MOD_EIDS = "endlessids";
 	public static final String MOD_ANG = "angelica";
+	public static final String MOD_BOP = "BiomesOPlenty";
+	public static final String MOD_COFH = "CoFHCore";
 	public static final String MOD_TOR = "Torcherino";
 	public static final String MOD_OC = "OpenComputers";
 
@@ -52,11 +54,11 @@ public class Compat {
 	private static String getReg(String domain, String name) {
 		return domain + ":" + name;
 	}
-	
+
 	public static ItemStack getPreferredOreOutput(List<ItemStack> oreList) {
 		int lowestPref = -1;
 		ItemStack preferredStack = null;
-		
+
 		for(ItemStack item : oreList) {
 			String modid = ItemStackUtil.getModIdFromItemStack(item);
 			for(int i = 0; i < GeneralConfig.preferredOutputMod.length; i++) {
@@ -74,7 +76,7 @@ public class Compat {
 		}
 		return oreList.get(0).copy();
 	}
-	
+
 	public static boolean isModLoaded(String modid) {
 		return Loader.isModLoaded(modid);
 	}
@@ -262,7 +264,7 @@ public class Compat {
 		if(!world.getChunkProvider().chunkExists(x >> 4, z >> 4)) return null;
 		return world.getTileEntity(x, y, z);
 	}
-	
+
 	public static void blacklistAccelerator(Class clazz) {
 		FMLInterModComms.sendMessage("Torcherino", "blacklist-tile", clazz.getName());
 	}

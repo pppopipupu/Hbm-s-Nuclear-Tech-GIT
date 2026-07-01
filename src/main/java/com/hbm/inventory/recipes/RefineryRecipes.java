@@ -74,7 +74,7 @@ public class RefineryRecipes extends SerializableRecipe {
 				DictFrame.fromOne(ModItems.oil_tar, EnumTarType.PARAFFIN)
 				));
 	}
-	
+
 	public static RefineryRecipe getRefinery(FluidType oil) {
 		return recipes.get(oil);
 	}
@@ -82,7 +82,7 @@ public class RefineryRecipes extends SerializableRecipe {
 	@Override public String getFileName() { return "hbmRefinery.json"; }
 	@Override public Object getRecipeObject() { return recipes; }
 	@Override public void deleteRecipes() { recipes.clear(); }
-	
+
 	@Override public String getComment() {
 		return "Inputs always assume 100mB, input ammount cannot be changed.";
 	}
@@ -90,40 +90,40 @@ public class RefineryRecipes extends SerializableRecipe {
 	@Override
 	public void readRecipe(JsonElement recipe) {
 		JsonObject obj = recipe.getAsJsonObject();
-		
+
 		FluidType type = Fluids.fromName(obj.get("input").getAsString());
 		FluidStack o0 = this.readFluidStack(obj.get("output0").getAsJsonArray());
 		FluidStack o1 = this.readFluidStack(obj.get("output1").getAsJsonArray());
 		FluidStack o2 = this.readFluidStack(obj.get("output2").getAsJsonArray());
 		FluidStack o3 = this.readFluidStack(obj.get("output3").getAsJsonArray());
 		ItemStack solid = this.readItemStack(obj.get("solid").getAsJsonArray());
-		
+
 		recipes.put(type, new RefineryRecipe(o0, o1, o2, o3, solid));
 	}
 
 	@Override
 	public void writeRecipe(Object recipe, JsonWriter writer) throws IOException {
 		Entry<FluidType, RefineryRecipe> rec = (Entry<FluidType, RefineryRecipe>) recipe;
-		
+
 		writer.name("input").value(rec.getKey().getName());
-		
+
 		for(int i = 0; i < 4; i++) {
 			writer.name("output" + i);
 			this.writeFluidStack(rec.getValue().outputs[i], writer);
 		}
-		
+
 		writer.name("solid");
 		this.writeItemStack(rec.getValue().solid, writer);
 	}
-	
+
 	public static HashMap<Object, Object[]> getRefineryRecipe() {
 
 		HashMap<Object, Object[]> recipes = new HashMap<Object, Object[]>();
-		
+
 		for(Entry<FluidType, RefineryRecipe> recipe : RefineryRecipes.recipes.entrySet()) {
-			
+
 			RefineryRecipe fluids = recipe.getValue();
-			
+
 			recipes.put(ItemFluidIcon.make(recipe.getKey(), 1000),
 					new ItemStack[] {
 							ItemFluidIcon.make(fluids.outputs[0].type, fluids.outputs[0].fill * 10),
@@ -132,15 +132,15 @@ public class RefineryRecipes extends SerializableRecipe {
 							ItemFluidIcon.make(fluids.outputs[3].type, fluids.outputs[3].fill * 10),
 							ItemStackUtil.carefulCopy(fluids.solid) });
 		}
-		
+
 		return recipes;
 	}
-	
+
 	public static class RefineryRecipe {
-		
+
 		public FluidStack[] outputs;
 		public ItemStack solid;
-		
+
 		public RefineryRecipe(FluidStack f0, FluidStack f1, FluidStack f2, FluidStack f3, ItemStack f4) {
 			this.outputs = new FluidStack[] {f0, f1, f2, f3};
 			this.solid = f4;

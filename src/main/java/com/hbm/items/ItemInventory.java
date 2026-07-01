@@ -1,5 +1,6 @@
 package com.hbm.items;
 
+import com.hbm.main.NTMSounds;
 import com.hbm.util.ItemStackUtil;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -38,7 +39,7 @@ public abstract class ItemInventory implements IInventory {
 	}
 
 	public NBTTagCompound checkNBT(NBTTagCompound nbt) {
-		
+
 		if(nbt == null || nbt.hasNoTags())
 			return null;
 
@@ -83,7 +84,7 @@ public abstract class ItemInventory implements IInventory {
 				return null; // Reset.
 			}
 		} catch (IOException ignored) {}
-		
+
 		return nbt;
 	}
 
@@ -124,6 +125,6 @@ public abstract class ItemInventory implements IInventory {
 	@Override public boolean isItemValidForSlot(int slot, ItemStack stack) { return true; }
 	@Override public int getInventoryStackLimit() { return 64; }
 
-	@Override public void openInventory() { player.worldObj.playSoundEffect(player.posX, player.posY, player.posZ, "hbm:block.crateOpen", 1.0F, 0.8F); }
-	@Override public void closeInventory() { player.worldObj.playSoundEffect(player.posX, player.posY, player.posZ, "hbm:block.crateClose", 1.0F, 0.8F); }
+	@Override public void openInventory() { player.worldObj.playSoundEffect(player.posX, player.posY, player.posZ, NTMSounds.CRATE_OPEN, 1.0F, 0.8F); }
+	@Override public void closeInventory() { player.worldObj.playSoundEffect(player.posX, player.posY, player.posZ, NTMSounds.CRATE_CLOSE, 1.0F, 0.8F); }
 }

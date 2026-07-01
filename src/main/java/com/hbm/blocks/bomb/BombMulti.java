@@ -2,6 +2,8 @@ package com.hbm.blocks.bomb;
 
 import java.util.Random;
 
+import org.apache.logging.log4j.Level;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -18,6 +20,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import com.hbm.blocks.ModBlocks;
+import com.hbm.config.GeneralConfig;
 import com.hbm.entity.effect.EntityMist;
 import com.hbm.explosion.ExplosionChaos;
 import com.hbm.explosion.ExplosionLarge;
@@ -123,17 +126,17 @@ public class BombMulti extends BlockContainer implements IBomb {
 	public BombReturnCode igniteTestBomb(World world, int x, int y, int z) {
 		TileEntityBombMulti entity = (TileEntityBombMulti) world.getTileEntity(x, y, z);
 		if(!world.isRemote) {
-			
+
 			if(entity.isLoaded()) {
-				
+
 				float explosionValue = 0.0F;
 				int clusterCount = 0;
 				int fireRadius = 0;
 				int poisonRadius = 0;
 				int gasCloud = 0;
-				
+
 				explosionValue = this.explosionBaseValue;
-				
+
 				switch(entity.return2type()) {
 				case 1: explosionValue += 1.0F; break;
 				case 2: explosionValue += 4.0F; break;
@@ -159,11 +162,11 @@ public class BombMulti extends BlockContainer implements IBomb {
 				explosionValue = 0;
 
 				if(clusterCount > 0) {
-					ExplosionChaos.cluster(world, x, y, z, clusterCount, 1);
+					ExplosionChaos.cluster(world, x + 0.5, y + 0.5, z + 0.5, clusterCount, 0, (float) Math.PI * 0.5F, (float) Math.PI * 2F, (float) Math.PI * 0.125F, 0.375F);
 				}
 
 				if(fireRadius > 0) {
-					ExplosionChaos.burn(world, x, y, z, fireRadius);
+					ExplosionChaos.igniteAllBlocks(world, x, y, z, fireRadius);
 				}
 
 				if(poisonRadius > 0) {
@@ -177,7 +180,7 @@ public class BombMulti extends BlockContainer implements IBomb {
 					mist.setArea(gasCloud * 15F / 50F, gasCloud * 7.5F / 50F);
 					world.spawnEntityInWorld(mist);
 				}
-				
+
 				return BombReturnCode.DETONATED;
 			}
 		}
@@ -215,7 +218,13 @@ public class BombMulti extends BlockContainer implements IBomb {
 		if(i == 3) {
 			world.setBlockMetadataWithNotify(x, y, z, 2, 2);
 		}
+		if(!world.isRemote) {
+			if(GeneralConfig.enableExtendedLogging) {
+			MainRegistry.logger.log(Level.INFO, "[BOMBPL]" + this.getLocalizedName() + " placed at " + x + " / " + y + " / " + z + "! " + "by "+ player.getCommandSenderName());
+		}
 	}
+}
+
 
 	@Override
 	public void setBlockBoundsBasedOnState(IBlockAccess p_149719_1_, int p_149719_2_, int p_149719_3_, int p_149719_4_) {
@@ -232,17 +241,17 @@ public class BombMulti extends BlockContainer implements IBomb {
 
 	@Override
 	public BombReturnCode explode(World world, int x, int y, int z) {
-		
+
 		if(!world.isRemote) {
 			TileEntityBombMulti entity = (TileEntityBombMulti) world.getTileEntity(x, y, z);
-			
+
 			if(entity.isLoaded()) {
 				return igniteTestBomb(world, x, y, z);
 			}
-			
+
 			return BombReturnCode.ERROR_MISSING_COMPONENT;
 		}
-		
+
 		return BombReturnCode.UNDEFINED;
 	}
 

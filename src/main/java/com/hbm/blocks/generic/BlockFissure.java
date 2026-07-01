@@ -38,7 +38,7 @@ public class BlockFissure extends BlockContainer implements IBlockMultiPass {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister reg) {
-		
+
 		this.blockIcon = reg.registerIcon("bedrock");
 		this.overlay = reg.registerIcon(RefStrings.MODID + ":molten_overlay");
 	}
@@ -46,10 +46,10 @@ public class BlockFissure extends BlockContainer implements IBlockMultiPass {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int meta) {
-		
+
 		if(RenderBlockMultipass.currentPass == 0)
 			return Blocks.bedrock.getIcon(0, 0);
-		
+
 		return this.overlay;
 	}
 
@@ -58,7 +58,7 @@ public class BlockFissure extends BlockContainer implements IBlockMultiPass {
 		boolean crater = world.getBlockMetadata(x, y, z) != 0;
 		if(world.getBlock(x, y + 1, z).isReplaceable(world, x, y + 1, z)) world.setBlock(x, y + 1, z, crater ? ModBlocks.rad_lava_block : ModBlocks.volcanic_lava_block);
 	}
-	
+
 	@Override
 	public boolean shouldRenderItemMulti() {
 		return true;
@@ -68,7 +68,7 @@ public class BlockFissure extends BlockContainer implements IBlockMultiPass {
 	public int getPasses() {
 		return 2;
 	}
-	
+
 	@Override
 	public int getRenderType(){
 		return IBlockMultiPass.getRenderType();
@@ -78,14 +78,14 @@ public class BlockFissure extends BlockContainer implements IBlockMultiPass {
 	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
 		return new TileEntityFissure();
 	}
-	
+
 	public static class TileEntityFissure extends TileEntityLoadedBase implements IFluidStandardSender {
 
 		public FluidTank lava = new FluidTank(Fluids.LAVA, 1_000);
-		
+
 		@Override
 		public void updateEntity() {
-			
+
 			if(!worldObj.isRemote) {
 				lava.setFill(1_000);
 				this.sendFluid(lava, worldObj, xCoord, yCoord + 1, zCoord, ForgeDirection.UP);
@@ -96,7 +96,7 @@ public class BlockFissure extends BlockContainer implements IBlockMultiPass {
 		public boolean canConnect(FluidType type, ForgeDirection dir) {
 			return dir == ForgeDirection.DOWN && type == Fluids.LAVA;
 		}
-		
+
 		@Override public FluidTank[] getAllTanks() { return new FluidTank[] {lava}; }
 		@Override public FluidTank[] getSendingTanks() { return new FluidTank[] {lava}; }
 	}

@@ -1,5 +1,13 @@
 package com.hbm.tileentity;
 
+import java.util.List;
+
+import com.hbm.dim.CelestialBody;
+import com.hbm.dim.orbit.WorldProviderOrbit;
+import com.hbm.dim.trait.CBT_Atmosphere;
+import com.hbm.handler.atmosphere.AtmosphereBlob;
+import com.hbm.handler.atmosphere.ChunkAtmosphereManager;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.util.fauxpointtwelve.DirPos;
 
 import net.minecraft.block.Block;
@@ -8,6 +16,7 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidTank;
 
@@ -19,11 +28,6 @@ public abstract class TileEntityMachineBase extends TileEntityLoadedBase impleme
 
 	public TileEntityMachineBase(int slotCount) {
 		slots = new ItemStack[slotCount];
-	}
-
-	/** The "chunks is modified, pls don't forget to save me" effect of markDirty, minus the block updates */
-	public void markChanged() {
-		this.worldObj.markTileEntityChunkModified(this.xCoord, this.yCoord, this.zCoord, this);
 	}
 
 	@Override
@@ -38,13 +42,12 @@ public abstract class TileEntityMachineBase extends TileEntityLoadedBase impleme
 
 	@Override
 	public ItemStack getStackInSlotOnClosing(int i) {
-		if(slots[i] != null)
-		{
+		if(slots[i] != null) {
 			ItemStack itemStack = slots[i];
 			slots[i] = null;
 			return itemStack;
 		} else {
-		return null;
+			return null;
 		}
 	}
 
@@ -182,7 +185,7 @@ public abstract class TileEntityMachineBase extends TileEntityLoadedBase impleme
 			}
 		}
 		nbt.setTag("items", list);
-		
+
 		if (customName != null) {
 			nbt.setString("name", customName);
 		}
@@ -210,4 +213,29 @@ public abstract class TileEntityMachineBase extends TileEntityLoadedBase impleme
 			}
 		}
 	}
+
+	// TODO: Consume air from connected tanks if available
+	public boolean breatheAir(int amount) {
+		return breatheAir(worldObj, xCoord, yCoord, zCoord, amount);
+	}
+
+	public static boolean breatheAir(World world, int x, int y, int z, int amount) {
+		CBT_Atmosphere atmosphere = world.provider instanceof WorldProviderOrbit ? null : CelestialBody.getTrait(world, CBT_Atmosphere.class);
+		if(atmosphere != null) {
+			if(atmosphere.hasFluid(Fluids.EARTHAIR, 0.19) || atmosphere.hasFluid(Fluids.OXYGEN, 0.09)) {
+				return true;
+			}
+		}
+
+		List<AtmosphereBlob> blobs = ChunkAtmosphereManager.proxy.getBlobs(world, x, y, z);
+		for(AtmosphereBlob blob : blobs) {
+			if(blob.hasFluid(Fluids.EARTHAIR, 0.19) || blob.hasFluid(Fluids.OXYGEN, 0.09)) {
+				blob.consume(amount);
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 }

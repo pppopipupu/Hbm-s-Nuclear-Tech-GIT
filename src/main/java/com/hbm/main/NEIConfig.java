@@ -16,6 +16,10 @@ import com.hbm.inventory.gui.GUIAnvil;
 import com.hbm.items.ItemEnums.EnumSecretType;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemBattery;
+import com.hbm.items.special.ItemBedrockOreNew;
+import com.hbm.items.special.ItemBedrockOreNew.BedrockOreGrade;
+import com.hbm.items.special.ItemBedrockOreNew.CelestialBedrockOre;
+import com.hbm.items.special.ItemBedrockOreNew.CelestialBedrockOreType;
 import com.hbm.items.weapon.sedna.ItemGunBaseNT;
 import com.hbm.items.weapon.sedna.factory.GunFactory.EnumAmmoSecret;
 import com.hbm.lib.RefStrings;
@@ -58,8 +62,6 @@ public class NEIConfig implements IConfigureNEI {
 		API.hideItem(new ItemStack(ModBlocks.machine_rtg_furnace_on));
 		API.hideItem(new ItemStack(ModBlocks.reinforced_lamp_on));
 		API.hideItem(new ItemStack(ModBlocks.statue_elb_f));
-		API.hideItem(new ItemStack(ModBlocks.cheater_virus));
-		API.hideItem(new ItemStack(ModBlocks.cheater_virus_seed));
 		API.hideItem(new ItemStack(ModItems.euphemium_kit));
 		API.hideItem(new ItemStack(ModItems.bobmazon_hidden));
 		API.hideItem(new ItemStack(ModItems.book_lore)); //the broken nbt-less one shouldn't show up in normal play anyway
@@ -87,12 +89,28 @@ public class NEIConfig implements IConfigureNEI {
 		API.hideItem(new ItemStack(ModBlocks.spotlight_halogen_off));
 		API.hideItem(new ItemStack(ModBlocks.spotlight_beam));
 
+		API.hideItem(new ItemStack(ModItems.rocket_custom));
+		API.hideItem(new ItemStack(ModBlocks.orbital_station));
+
 		API.hideItem(new ItemStack(ModBlocks.conveyor));
 		API.hideItem(new ItemStack(ModBlocks.conveyor_chute));
 		API.hideItem(new ItemStack(ModBlocks.conveyor_lift));
 		API.hideItem(new ItemStack(ModBlocks.conveyor_express));
 		API.hideItem(new ItemStack(ModBlocks.conveyor_double));
 		API.hideItem(new ItemStack(ModBlocks.conveyor_triple));
+		
+		API.hideItem(new ItemStack(ModBlocks.war_controller));
+		API.hideItem(new ItemStack(ModItems.sat_war));
+
+		API.hideItem(new ItemStack(ModBlocks.furnace));
+		API.hideItem(new ItemStack(ModBlocks.lit_furnace));
+
+		for(BedrockOreGrade grade : BedrockOreGrade.values()) {
+			if(grade == BedrockOreGrade.BASE) continue;
+			for(CelestialBedrockOreType type : CelestialBedrockOre.getAllTypes()) {
+				API.hideItem(ItemBedrockOreNew.make(grade, type));
+			}
+		}
 
 		API.registerHighlightIdentifier(ModBlocks.plushie, new IHighlightHandler() {
 			@Override public ItemStack identifyHighlight(World world, EntityPlayer player, MovingObjectPosition mop) {

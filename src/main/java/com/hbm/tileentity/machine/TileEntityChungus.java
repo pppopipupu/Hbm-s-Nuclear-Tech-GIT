@@ -1,5 +1,7 @@
 package com.hbm.tileentity.machine;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.io.IOException;
 
@@ -7,30 +9,58 @@ import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.handler.CompatHandler;
+import com.hbm.inventory.OreDictManager;
+import com.hbm.inventory.RecipesCommon.AStack;
+import com.hbm.inventory.RecipesCommon.ComparableStack;
+import com.hbm.inventory.RecipesCommon.OreDictStack;
+import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTank;
+import com.hbm.inventory.fluid.trait.FT_Coolable;
+import com.hbm.inventory.fluid.trait.FT_Coolable.CoolingType;
+import com.hbm.items.ModItems;
 import com.hbm.main.MainRegistry;
+import com.hbm.main.NTMSounds;
 import com.hbm.sound.AudioWrapper;
+import com.hbm.tileentity.IFluidCopiable;
+import com.hbm.tileentity.IPersistentNBT;
+import com.hbm.tileentity.IRepairable;
 import com.hbm.tileentity.IConfigurableMachine;
+import com.hbm.tileentity.TileEntityLoadedBase;
+import com.hbm.util.CompatEnergyControl;
 import com.hbm.util.fauxpointtwelve.DirPos;
+import com.hbm.world.gen.nbt.INBTTileEntityTransformable;
 
+import api.hbm.energymk2.IEnergyProviderMK2;
+import api.hbm.fluidmk2.IFluidStandardTransceiverMK2;
+import api.hbm.redstoneoverradio.IRORValueProvider;
+import api.hbm.tile.IInfoProviderEC;
 import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.SimpleComponent;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.world.Explosion;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 @Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
-public class TileEntityChungus extends TileEntityTurbineBase implements SimpleComponent, CompatHandler.OCComponent, IConfigurableMachine {
+public class TileEntityChungus extends TileEntityLoadedBase implements IEnergyProviderMK2, IFluidStandardTransceiverMK2, SimpleComponent, IInfoProviderEC, CompatHandler.OCComponent, IConfigurableMachine, IFluidCopiable, IRepairable, INBTTileEntityTransformable, IPersistentNBT, IRORValueProvider {
 
+	public long powerBuffer;
 	private int turnTimer;
 	public float rotor;
 	public float lastRotor;
 	public float fanAcceleration = 0F;
+
+	public FluidTank[] tanks;
+	protected double[] info = new double[3];
 
 	private AudioWrapper audio;
 	private float audioDesync;
@@ -39,6 +69,9 @@ public class TileEntityChungus extends TileEntityTurbineBase implements SimpleCo
 	public static int inputTankSize = 1_000_000_000;
 	public static int outputTankSize = 1_000_000_000;
 	public static double efficiency = 0.85D;
+
+	public boolean damaged;
+	public Explosion lastExplosion;
 
 	public TileEntityChungus() {
 		tanks = new FluidTank[2];
@@ -68,11 +101,110 @@ public class TileEntityChungus extends TileEntityTurbineBase implements SimpleCo
 		writer.name("I:outputTankSize").value(outputTankSize);
 		writer.name("D:efficiency").value(efficiency);
 	}
-	
-	@Override public double consumptionPercent() { return 1D; }
-	@Override public double getEfficiency() { return efficiency; }
+
+
 
 	@Override
+	public void updateEntity() {
+
+		if(!worldObj.isRemote) {
+			
+			this.powerBuffer = 0;
+			this.info = new double[3];
+
+			if(damaged) {
+				networkPackNT(150);
+				return;
+			}
+
+			boolean operational = false;
+			FluidType in = tanks[0].getTankType();
+			boolean valid = false;
+			if(in.hasTrait(FT_Coolable.class)) {
+				FT_Coolable trait = in.getTrait(FT_Coolable.class);
+				double eff = trait.getEfficiency(CoolingType.TURBINE) * efficiency; //85% efficiency by default
+				if(eff > 0) {
+					tanks[1].setTankType(trait.coolsTo);
+					int inputOps = tanks[0].getFill() / trait.amountReq;
+					int outputOps = (tanks[1].getMaxFill() - tanks[1].getFill()) / trait.amountProduced;
+					int ops = Math.min(inputOps, outputOps);
+					tanks[0].setFill(tanks[0].getFill() - ops * trait.amountReq);
+					tanks[1].setFill(tanks[1].getFill() + ops * trait.amountProduced);
+					this.powerBuffer += (ops * trait.heatEnergy * eff);
+					info[0] = ops * trait.amountReq;
+					info[1] = ops * trait.amountProduced;
+					info[2] = ops * trait.heatEnergy * eff;
+					valid = true;
+					operational = ops > 0;
+				}
+			}
+
+			if(!valid) tanks[1].setTankType(Fluids.NONE);
+
+			ForgeDirection dir = ForgeDirection.getOrientation(this.getBlockMetadata() - BlockDummyable.offset);
+			this.tryProvide(worldObj, xCoord - dir.offsetX * 11, yCoord, zCoord - dir.offsetZ * 11, dir.getOpposite());
+
+			for(DirPos pos : this.getConPos()) {
+				this.tryProvide(tanks[1], worldObj, pos);
+				this.trySubscribe(tanks[0].getTankType(), worldObj, pos);
+			}
+
+			turnTimer--;
+
+			if(operational) turnTimer = 25;
+			networkPackNT(150);
+
+		} else {
+
+			this.lastRotor = this.rotor;
+			this.rotor += this.fanAcceleration;
+
+			if(this.rotor >= 360) {
+				this.rotor -= 360;
+				this.lastRotor -= 360;
+			}
+
+			if(turnTimer > 0) {
+				// Fan accelerates with a random offset to ensure the audio doesn't perfectly align, makes for a more pleasant hum
+				this.fanAcceleration = Math.max(0F, Math.min(25F, this.fanAcceleration += 0.075F + audioDesync));
+
+				Random rand = worldObj.rand;
+				ForgeDirection dir = ForgeDirection.getOrientation(this.getBlockMetadata() - BlockDummyable.offset);
+				ForgeDirection side = dir.getRotation(ForgeDirection.UP);
+
+				for(int i = 0; i < 10; i++) {
+					worldObj.spawnParticle("cloud",
+							xCoord + 0.5 + dir.offsetX * (rand.nextDouble() + 1.25) + rand.nextGaussian() * side.offsetX * 0.65,
+							yCoord + 2.5 + rand.nextGaussian() * 0.65,
+							zCoord + 0.5 + dir.offsetZ * (rand.nextDouble() + 1.25) + rand.nextGaussian() * side.offsetZ * 0.65,
+							-dir.offsetX * 0.2, 0, -dir.offsetZ * 0.2);
+				}
+
+				if(audio == null) {
+					audio = MainRegistry.proxy.getLoopedSound(NTMSounds.TURBINE_LEVI_LOOP, xCoord, yCoord, zCoord, 1.0F, 20F, 1.0F, 20);
+					audio.startSound();
+				}
+
+				float turbineSpeed = this.fanAcceleration / 25F;
+				audio.updateVolume(getVolume(0.5f * turbineSpeed));
+				audio.updatePitch(0.25F + 0.75F * turbineSpeed);
+			} else {
+				this.fanAcceleration = Math.max(0F, Math.min(25F, this.fanAcceleration -= 0.1F));
+
+				if(audio != null) {
+					if(this.fanAcceleration > 0) {
+						float turbineSpeed = this.fanAcceleration / 25F;
+						audio.updateVolume(getVolume(0.5f * turbineSpeed));
+						audio.updatePitch(0.25F + 0.75F * turbineSpeed);
+					} else {
+						audio.stopSound();
+						audio = null;
+					}
+				}
+			}
+		}
+	}
+
 	public DirPos[] getConPos() {
 		ForgeDirection dir = ForgeDirection.getOrientation(this.getBlockMetadata() - BlockDummyable.offset);
 		ForgeDirection rot = dir.getRotation(ForgeDirection.UP);
@@ -82,82 +214,45 @@ public class TileEntityChungus extends TileEntityTurbineBase implements SimpleCo
 				new DirPos(xCoord - rot.offsetX * 3, yCoord, zCoord - rot.offsetZ * 3, rot.getOpposite())
 		};
 	}
-	
-	@Override
-	public DirPos[] getPowerPos() {
-		ForgeDirection dir = ForgeDirection.getOrientation(this.getBlockMetadata() - BlockDummyable.offset);
-		return new DirPos[] { new DirPos(xCoord - dir.offsetX * 11, yCoord, zCoord - dir.offsetZ * 11, dir.getOpposite()) };
-	}
-
-	@Override
-	public void onServerTick() {
-		turnTimer--;
-		if(operational) turnTimer = 25;
-	}
-	
-	@Override
-	public void onClientTick() {
-
-		this.lastRotor = this.rotor;
-		this.rotor += this.fanAcceleration;
-
-		if(this.rotor >= 360) {
-			this.rotor -= 360;
-			this.lastRotor -= 360;
-		}
-
-		if(turnTimer > 0) {
-			// Fan accelerates with a random offset to ensure the audio doesn't perfectly align, makes for a more pleasant hum
-			this.fanAcceleration = Math.max(0F, Math.min(25F, this.fanAcceleration += 0.075F + audioDesync));
-
-			Random rand = worldObj.rand;
-			ForgeDirection dir = ForgeDirection.getOrientation(this.getBlockMetadata() - BlockDummyable.offset);
-			ForgeDirection side = dir.getRotation(ForgeDirection.UP);
-
-			for(int i = 0; i < 10; i++) {
-				worldObj.spawnParticle("cloud",
-						xCoord + 0.5 + dir.offsetX * (rand.nextDouble() + 1.25) + rand.nextGaussian() * side.offsetX * 0.65,
-						yCoord + 2.5 + rand.nextGaussian() * 0.65,
-						zCoord + 0.5 + dir.offsetZ * (rand.nextDouble() + 1.25) + rand.nextGaussian() * side.offsetZ * 0.65,
-						-dir.offsetX * 0.2, 0, -dir.offsetZ * 0.2);
-			}
-
-			if(audio == null) {
-				audio = MainRegistry.proxy.getLoopedSound("hbm:block.chungusTurbineRunning", xCoord, yCoord, zCoord, 1.0F, 20F, 1.0F, 20);
-				audio.startSound();
-			}
-
-			float turbineSpeed = this.fanAcceleration / 25F;
-			audio.updateVolume(getVolume(0.5f * turbineSpeed));
-			audio.updatePitch(0.25F + 0.75F * turbineSpeed);
-			audio.keepAlive();
-			
-		} else {
-			this.fanAcceleration = Math.max(0F, Math.min(25F, this.fanAcceleration -= 0.1F));
-
-			if(audio != null) {
-				if(this.fanAcceleration > 0) {
-					float turbineSpeed = this.fanAcceleration / 25F;
-					audio.updateVolume(getVolume(0.5f * turbineSpeed));
-					audio.updatePitch(0.25F + 0.75F * turbineSpeed);
-				} else {
-					audio.stopSound();
-					audio = null;
-				}
-			}
-		}
-	}
 
 	@Override
 	public void serialize(ByteBuf buf) {
-		super.serialize(buf);
+		buf.writeLong(this.powerBuffer);
 		buf.writeInt(this.turnTimer);
+
+		this.tanks[0].serialize(buf);
+		this.tanks[1].serialize(buf);
+
+		buf.writeBoolean(this.damaged);
 	}
 
 	@Override
 	public void deserialize(ByteBuf buf) {
-		super.deserialize(buf);
+		this.powerBuffer = buf.readLong();
 		this.turnTimer = buf.readInt();
+
+		this.tanks[0].deserialize(buf);
+		this.tanks[1].deserialize(buf);
+
+		this.damaged = buf.readBoolean();
+	}
+
+	@Override
+	public void readFromNBT(NBTTagCompound nbt) {
+		super.readFromNBT(nbt);
+		tanks[0].readFromNBT(nbt, "water");
+		tanks[1].readFromNBT(nbt, "steam");
+		powerBuffer = nbt.getLong("power");
+		damaged = nbt.getBoolean("damaged");
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound nbt) {
+		super.writeToNBT(nbt);
+		tanks[0].writeToNBT(nbt, "water");
+		tanks[1].writeToNBT(nbt, "steam");
+		nbt.setLong("power", powerBuffer);
+		nbt.setBoolean("damaged", damaged);
 	}
 
 	@Override
@@ -166,8 +261,29 @@ public class TileEntityChungus extends TileEntityTurbineBase implements SimpleCo
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
+	public double getMaxRenderDistanceSquared() {
+		return 65536.0D;
+	}
+
+	@Override
 	public boolean canConnect(ForgeDirection dir) {
 		return dir != ForgeDirection.UP && dir != ForgeDirection.DOWN && dir != ForgeDirection.UNKNOWN;
+	}
+
+	@Override
+	public long getPower() {
+		return powerBuffer;
+	}
+
+	@Override
+	public long getMaxPower() {
+		return powerBuffer;
+	}
+
+	@Override
+	public void setPower(long power) {
+		this.powerBuffer = power;
 	}
 
 	@Override
@@ -254,6 +370,89 @@ public class TileEntityChungus extends TileEntityTurbineBase implements SimpleCo
 			case ("getInfo"):
 				return getInfo(context, args);
 		}
-		throw new NoSuchMethodException();
+	throw new NoSuchMethodException();
+	}
+
+	@Override
+	public FluidTank[] getSendingTanks() {
+		return new FluidTank[] {tanks[1]};
+	}
+
+	@Override
+	public FluidTank[] getReceivingTanks() {
+		return new FluidTank[] {tanks[0]};
+	}
+
+	@Override
+	public FluidTank[] getAllTanks() {
+		return tanks;
+	}
+
+	@Override
+	public void provideExtraInfo(NBTTagCompound data) {
+		data.setBoolean(CompatEnergyControl.B_ACTIVE, info[1] > 0);
+		data.setDouble(CompatEnergyControl.D_CONSUMPTION_MB, info[0]);
+		data.setDouble(CompatEnergyControl.D_OUTPUT_MB, info[1]);
+		data.setDouble(CompatEnergyControl.D_OUTPUT_HE, info[2]);
+	}
+
+	@Override
+	public FluidTank getTankToPaste() {
+		return null;
+	}
+
+	@Override
+	public boolean isDamaged() { return damaged; }
+
+	List<AStack> repair = new ArrayList<>();
+
+	@Override
+	public List<AStack> getRepairMaterials() {
+		if(!repair.isEmpty()) return repair;
+
+		repair.add(new OreDictStack(OreDictManager.STEEL.plateWelded(), 6));
+		repair.add(new OreDictStack(OreDictManager.STEEL.pipe(), 8));
+		repair.add(new OreDictStack(OreDictManager.ANY_RESISTANTALLOY.ingot(), 8));
+		repair.add(new OreDictStack(OreDictManager.GOLD.wireDense(), 24));
+		repair.add(new ComparableStack(ModItems.flywheel_beryllium));
+		return repair;
+	}
+
+	@Override
+	public void repair() {
+		damaged = false;
+		markDirty();
+	}
+
+	@Override
+	public void tryExtinguish(World world, int x, int y, int z, EnumExtinguishType type) {}
+
+	@Override
+	public void transformTE(World world, int coordBaseMode) {
+		damaged = true;
+	}
+
+	@Override
+	public void writeNBT(NBTTagCompound nbt) {
+		if(damaged) nbt.setBoolean("damaged", true);
+	}
+
+	@Override
+	public void readNBT(NBTTagCompound nbt) {
+		damaged = nbt.getBoolean("damaged");
+	}
+
+
+	@Override
+	public String[] getFunctionInfo() {
+		return new String[] {
+				PREFIX_VALUE + "output"
+		};
+	}
+	
+	@Override
+	public String provideRORValue(String name) {
+		if((PREFIX_VALUE + "output").equals(name)) return "" + (int) this.powerBuffer;
+		return null;
 	}
 }

@@ -5,8 +5,11 @@ import java.util.List;
 
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.ILookOverlay;
+import com.hbm.dim.CelestialBody;
+import com.hbm.dim.trait.CBT_Atmosphere;
 import com.hbm.tileentity.TileEntityProxyCombo;
 import com.hbm.tileentity.machine.TileEntityTowerLarge;
+import com.hbm.util.BobMathUtil;
 import com.hbm.util.i18n.I18nUtil;
 
 import net.minecraft.block.material.Material;
@@ -24,13 +27,13 @@ public class MachineTowerLarge extends BlockDummyable implements ILookOverlay {
 
 	@Override
 	public TileEntity createNewTileEntity(World p_149915_1_, int meta) {
-		
+
 		if(meta >= 12)
 			return new TileEntityTowerLarge();
-		
+
 		if(meta >= 8)
 			return new TileEntityProxyCombo(false, false, true);
-		
+
 		return null;
 	}
 
@@ -47,10 +50,10 @@ public class MachineTowerLarge extends BlockDummyable implements ILookOverlay {
 	@Override
 	public void fillSpace(World world, int x, int y, int z, ForgeDirection dir, int o) {
 		super.fillSpace(world, x, y, z, dir, o);
-		
+
 		x = x + dir.offsetX * o;
 		z = z + dir.offsetZ * o;
-		
+
 		for(int i = 2; i <= 6; i++) {
 			ForgeDirection dr2 = ForgeDirection.getOrientation(i);
 			ForgeDirection rot = dr2.getRotation(ForgeDirection.UP);
@@ -74,7 +77,14 @@ public class MachineTowerLarge extends BlockDummyable implements ILookOverlay {
 
 		TileEntityTowerLarge tower = (TileEntityTowerLarge) te;
 
-		List<String> text = new ArrayList();
+		List<String> text = new ArrayList<>();
+
+		if(!tower.vacuumOptimised) {
+			CBT_Atmosphere atmosphere = CelestialBody.getTrait(world, CBT_Atmosphere.class);
+			if(CelestialBody.inOrbit(world) || atmosphere == null || atmosphere.getPressure() < 0.01) {
+				text.add("&[" + (BobMathUtil.getBlink() ? 0xff0000 : 0xffff00) + "&]! ! ! " + I18nUtil.resolveKey("atmosphere.noVacuum") + " ! ! !");
+			}
+		}
 
 		for(int i = 0; i < tower.tanks.length; i++)
 			text.add((i < 1 ? (EnumChatFormatting.GREEN + "-> ") : (EnumChatFormatting.RED + "<- ")) + EnumChatFormatting.RESET + tower.tanks[i].getTankType().getLocalizedName() + ": " + tower.tanks[i].getFill() + "/" + tower.tanks[i].getMaxFill() + "mB");

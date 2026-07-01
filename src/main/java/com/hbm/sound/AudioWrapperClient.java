@@ -7,28 +7,33 @@ import net.minecraft.util.ResourceLocation;
 
 @SideOnly(Side.CLIENT)
 public class AudioWrapperClient extends AudioWrapper {
-	
+
 	AudioDynamic sound;
-	
+
 	public AudioWrapperClient(ResourceLocation source) {
 		if(source != null) sound = new AudioDynamic(source);
 	}
-	
+
+	public AudioWrapperClient(ResourceLocation source, Entity entity) {
+		if(source != null && entity != null && !entity.isDead)
+			sound = new AudioDynamicEntity(source, entity);
+	}
+
 	@Override
 	public void setKeepAlive(int keepAlive) {
 		if(sound != null) sound.setKeepAlive(keepAlive);
 	}
-	
+
 	@Override
 	public void keepAlive() {
 		if(sound != null) sound.keepAlive();
 	}
-	
+
 	@Override
 	public void updatePosition(float x, float y, float z) {
 		if(sound != null) sound.setPosition(x, y, z);
 	}
-	
+
 	@Override
 	public void attachTo(Entity e) {
 		if(sound != null) sound.attachTo(e);
@@ -77,5 +82,10 @@ public class AudioWrapperClient extends AudioWrapper {
 	@Override
 	public boolean isPlaying() {
 		return sound != null ? sound.isPlaying() : false;
+	}
+
+	@Override
+	public void setDoesRepeat(boolean repeat) {
+		if(sound != null) sound.setRepeat(repeat);
 	}
 }

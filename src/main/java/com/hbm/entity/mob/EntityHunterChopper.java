@@ -9,6 +9,7 @@ import com.hbm.lib.Library;
 import com.hbm.lib.ModDamageSource;
 import com.hbm.packet.toclient.AuxParticlePacketNT;
 
+import api.hbm.entity.ISuffocationImmune;
 import api.hbm.entity.IRadiationImmune;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.relauncher.Side;
@@ -28,7 +29,7 @@ import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 
 @Spaghetti("this sucks complete donkey shit")
-public class EntityHunterChopper extends EntityFlying implements IMob, IBossDisplayData, IRadiationImmune {
+public class EntityHunterChopper extends EntityFlying implements IMob, IBossDisplayData, IRadiationImmune, ISuffocationImmune {
 
 	public int courseChangeCooldown;
 	public double waypointX;
@@ -59,7 +60,7 @@ public class EntityHunterChopper extends EntityFlying implements IMob, IBossDisp
 	@Override
 	public boolean attackEntityFrom(DamageSource source, float amount) {
 
-		if(!(source == ModDamageSource.shrapnel || source == ModDamageSource.nuclearBlast || source == ModDamageSource.blackhole || source.isExplosion() || ModDamageSource.getIsTau(source) || ModDamageSource.getIsSubatomic(source) || ModDamageSource.getIsDischarge(source)))
+		if(!(source == ModDamageSource.shrapnel || source == ModDamageSource.nuclearBlast || source == ModDamageSource.blackhole || source.isExplosion() || ModDamageSource.getIsTau(source) || ModDamageSource.getIsSubatomic(source)))
 			amount *= 0.1F;
 
 		if(this.isEntityInvulnerable() || source instanceof EntityDamageSource || this.getHealth() <= 0.1F) {

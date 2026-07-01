@@ -12,6 +12,7 @@ import com.hbm.main.ResourceManager;
 import com.hbm.render.item.ItemRenderBase;
 import com.hbm.render.loader.HFRWavefrontObject;
 import com.hbm.render.util.HorsePronter;
+import com.hbm.util.BobMathUtil;
 import com.hbm.util.EnumUtil;
 
 import net.minecraft.client.Minecraft;
@@ -35,6 +36,20 @@ public class RenderPlushie extends TileEntitySpecialRenderer implements IItemRen
 	public static final ResourceLocation yomiTex = new ResourceLocation(RefStrings.MODID, "textures/models/trinkets/yomi.png");
 	public static final ResourceLocation numbernineTex = new ResourceLocation(RefStrings.MODID, "textures/models/horse/numbernine.png");
 	public static final ResourceLocation hundunTex = new ResourceLocation(RefStrings.MODID, "textures/models/trinkets/hundun.png");
+
+	//VOCALOIDS//
+	public static final IModelCustom tetoModel = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/trinkets/teto.obj")).asVBO();
+	public static final ResourceLocation tetoTex = new ResourceLocation(RefStrings.MODID, "textures/models/trinkets/teto.png");
+	public static final ResourceLocation tetoBlush = new ResourceLocation(RefStrings.MODID, "textures/models/trinkets/teto_squished.png");
+
+	public static final IModelCustom mikuModel = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/trinkets/miku.obj")).asVBO();
+	public static final ResourceLocation mikuTex = new ResourceLocation(RefStrings.MODID, "textures/models/trinkets/miku.png");
+	public static final ResourceLocation mikuBlush = new ResourceLocation(RefStrings.MODID, "textures/models/trinkets/miku_squished.png");
+
+	public static final IModelCustom neruModel = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/trinkets/neru.obj")).asVBO();
+	public static final ResourceLocation neruTex = new ResourceLocation(RefStrings.MODID, "textures/models/trinkets/neru.png");
+	public static final ResourceLocation neruBlush = new ResourceLocation(RefStrings.MODID, "textures/models/trinkets/neru_squished.png");
+
 	public static final ResourceLocation dergTex = new ResourceLocation(RefStrings.MODID, "textures/models/trinkets/derg.png");
 
 	@Override
@@ -42,31 +57,37 @@ public class RenderPlushie extends TileEntitySpecialRenderer implements IItemRen
 		GL11.glPushMatrix();
 		GL11.glTranslated(x + 0.5, y, z + 0.5);
 		GL11.glEnable(GL11.GL_CULL_FACE);
-		
+
 		GL11.glRotated(22.5D * tile.getBlockMetadata() + 90, 0, -1, 0);
 		TileEntityPlushie te = (TileEntityPlushie) tile;
-		
-		if(te.squishTimer > 0) {
+
+		if(te.miseryFactor > 0.01F) {
+			GL11.glScaled(1, 1 - BobMathUtil.interp(te.lastMiseryFactor, te.miseryFactor, interp), 1);
+		} else if(te.squishTimer > 0) {
 			double squish = te.squishTimer - interp;
 			GL11.glScaled(1, 1 + (-(Math.sin(squish)) * squish) * 0.025, 1);
 		}
-		
+
 		switch(te.type) {
 		case NONE: break;
 		case YOMI: GL11.glScaled(0.5, 0.5, 0.5); break;
 		case NUMBERNINE: GL11.glScaled(0.75, 0.75, 0.75); break;
+		case TETO: GL11.glScaled(0.5, 0.5, 0.5); break;
+		case FATO: GL11.glScaled(1.0, 0.5, 1.0); break;
+		case MIKU: GL11.glScaled(0.5, 0.5, 0.5); break;
+		case NERU: GL11.glScaled(0.5, 0.5, 0.5); break;
 		case HUNDUN: GL11.glScaled(1, 1, 1); break;
 		case DERG: break;
 		}
-		renderPlushie(te.type, te.squishTimer > 0);
-		
+		renderPlushie(te.type, te.squishTimer);
+
 		GL11.glPopMatrix();
 	}
-	
-	public static void renderPlushie(PlushieType type, boolean squish) {
-		
+
+	public static void renderPlushie(PlushieType type, int squishTimer) {
+
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-		
+
 		switch(type) {
 		case NONE: break;
 		case YOMI:
@@ -117,10 +138,23 @@ public class RenderPlushie extends TileEntitySpecialRenderer implements IItemRen
 			Minecraft.getMinecraft().getTextureManager().bindTexture(hundunTex);
 			hundunModel.renderPart("goober_posed");
 			break;
+		case TETO:
+		case FATO:
+			Minecraft.getMinecraft().getTextureManager().bindTexture(squishTimer > 6 ? tetoBlush : tetoTex);
+			tetoModel.renderAll();
+			break;
+		case MIKU:
+			Minecraft.getMinecraft().getTextureManager().bindTexture(squishTimer > 6 ? mikuBlush : mikuTex);
+			mikuModel.renderAll();
+			break;
+		case NERU:
+			Minecraft.getMinecraft().getTextureManager().bindTexture(squishTimer > 6 ? neruBlush : neruTex);
+			neruModel.renderAll();
+			break;
 		case DERG:
 			Minecraft.getMinecraft().getTextureManager().bindTexture(dergTex);
 			dergModel.renderPart("Derg");
-			dergModel.renderPart(squish ? "Blep" : "ColonThree");
+			dergModel.renderPart(squishTimer > 0 ? "Blep" : "ColonThree");
 			break;
 		}
 	}
@@ -141,15 +175,19 @@ public class RenderPlushie extends TileEntitySpecialRenderer implements IItemRen
 				GL11.glTranslated(0, 0.25, 0);
 				GL11.glEnable(GL11.GL_CULL_FACE);
 				PlushieType type = EnumUtil.grabEnumSafely(PlushieType.class, item.getItemDamage());
-				
+
 				switch(type) {
 				case NONE: break;
 				case YOMI: GL11.glScaled(1.25, 1.25, 1.25); break;
 				case NUMBERNINE: GL11.glTranslated(0, 0.25, 0.25); GL11.glScaled(1.25, 1.25, 1.25); break;
 				case HUNDUN: GL11.glTranslated(0.5, 0.5, 0); GL11.glScaled(1.25, 1.25, 1.25); break;
+				case TETO: GL11.glTranslated(0, 0.25, 0); GL11.glScaled(1.5, 1.5, 1.5); break;
+				case FATO: GL11.glTranslated(0, 0.25, 0); GL11.glScaled(3.0, 1.5, 3.0); break;
+				case MIKU: GL11.glTranslated(0, 0.25, 0); GL11.glScaled(1.5, 1.5, 1.5); break;
+				case NERU: GL11.glTranslated(0, 0.25, 0); GL11.glScaled(1.5, 1.5, 1.5); break;
 				case DERG: GL11.glScaled(1.5, 1.5, 1.5); break;
 				}
-				renderPlushie(type, false);
+				renderPlushie(type, 0);
 			}};
 	}
 }

@@ -353,3 +353,4 @@ public interface IWeaponAbility extends IBaseAbility {
 		return NONE;
 	}
 }
+

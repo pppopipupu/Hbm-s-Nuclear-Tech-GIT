@@ -42,7 +42,7 @@ public class RBMKRod extends RBMKBase {
 
 	@Override
 	public void breakBlock(World world, int x, int y, int z, Block block, int meta) {
-		if(meta >= this.offset && !RBMKDials.getMeltdownsDisabled(world)) {
+		if(!world.isRemote && meta >= this.offset && !RBMKDials.getMeltdownsDisabled(world)) {
 			TileEntityRBMKRod tile = (TileEntityRBMKRod) world.getTileEntity(x, y, z);
 			if(tile != null && tile.explodeOnBroken) {
 				if(tile.slots[0] != null && tile.slots[0].getItem() instanceof ItemRBMKRod && ItemRBMKRod.getHullHeat(tile.slots[0]) >= 1500) {
@@ -82,7 +82,7 @@ public class RBMKRod extends RBMKBase {
 		if(player.getHeldItem() != null && player.getHeldItem().getItem() instanceof ItemRBMKRod && rbmk.slots[0] == null) {
 			rbmk.slots[0] = player.getHeldItem().copy();
 			rbmk.slots[0].stackSize = 1;
-			player.getHeldItem().stackSize--;
+			if(!player.capabilities.isCreativeMode) player.getHeldItem().stackSize--;
 			world.playSoundEffect(x + 0.5, y + 0.5, z + 0.5, "hbm:item.upgradePlug", 1.0F, 1.0F);
 			return false;
 		}

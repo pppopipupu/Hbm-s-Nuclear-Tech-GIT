@@ -1,6 +1,7 @@
 package com.hbm.main;
 
 import com.hbm.handler.HbmKeybinds.EnumKeybind;
+import com.hbm.render.util.MissilePart;
 import com.hbm.saveddata.TomSaveData;
 import com.hbm.sound.AudioWrapper;
 import com.hbm.util.i18n.I18nServer;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ServerProxy {
-	
+
 	private static final I18nServer I18N = new I18nServer();
 
 	//sort by estimated time of display. longer lasting ones should be sorted at the top.
@@ -34,7 +35,8 @@ public class ServerProxy {
 	public static final int ID_TOOLABILITY = 11;
 	public static final int ID_GAS_HAZARD = 12;
 	public static final int ID_WRENCH = 13;
-	
+	public static final int ID_PAGER_DYN = 1000;
+
 	public ITranslate getI18n() { return I18N; }
 
 	public void registerPreRenderInfo() { }
@@ -50,24 +52,27 @@ public class ServerProxy {
 
 	public void effectNT(NBTTagCompound data) { }
 
-	public void registerMissileItems() { }
+	public void registerMissileItems() {
+		MissilePart.registerAllPartsServer();
+	}
 
 	/** Retired in favor of the version that uses keepAlive */
 	@Deprecated public AudioWrapper getLoopedSound(String sound, float x, float y, float z, float volume, float range, float pitch) { return null; }
 	public AudioWrapper getLoopedSound(String sound, float x, float y, float z, float volume, float range, float pitch, int keepAlive) { return null; }
+	public AudioWrapper getLoopedSound(String sound, Entity entity, float volume, float range, float pitch, int keepAlive) { return null; }
 
 	public void playSound(String sound, Object data) { }
 
 	public void displayTooltip(String msg, int id) {
 		displayTooltip(msg, 1000, id);
 	}
-	
+
 	public void displayTooltip(String msg, int time, int id) { }
 
 	public boolean getIsKeyPressed(EnumKeybind key) {
 		return false;
 	}
-	
+
 	public EntityPlayer me() {
 		return null;
 	}

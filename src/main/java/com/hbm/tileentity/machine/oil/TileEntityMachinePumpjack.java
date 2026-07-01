@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.ModBlocks;
+import com.hbm.blocks.generic.BlockOreFluid;
 import com.hbm.inventory.container.ContainerMachineOilWell;
 import com.hbm.inventory.gui.GUIMachineOilWell;
 import com.hbm.items.machine.ItemMachineUpgrade.UpgradeType;
@@ -34,11 +35,11 @@ public class TileEntityMachinePumpjack extends TileEntityOilDrillBase {
 	protected static int maxPower = 250_000;
 	protected static int consumption = 200;
 	protected static int delay = 25;
-	protected static int oilPerDepsoit = 750;
-	protected static int gasPerDepositMin = 50;
-	protected static int gasPerDepositMax = 250;
-	protected static double drainChance = 0.025D;
-	
+
+	protected static double oilMultiplier = 1.5;
+	protected static double gasMultiplier = 0.5;
+	protected static double drainChanceMultiplier = 0.5;
+
 	public float rot = 0;
 	public float prevRot = 0;
 	public float speed = 0;
@@ -70,7 +71,7 @@ public class TileEntityMachinePumpjack extends TileEntityOilDrillBase {
 		int[] ids = OreDictionary.getOreIDs(stack);
 		for(Integer i : ids) {
 			String name = OreDictionary.getOreName(i);
-			
+
 			if("oreUranium".equals(name)) {
 				for(int j = 2; j < 6; j++) {
 					ForgeDirection dir = ForgeDirection.getOrientation(j);
@@ -79,7 +80,7 @@ public class TileEntityMachinePumpjack extends TileEntityOilDrillBase {
 					}
 				}
 			}
-			
+
 			if("oreAsbestos".equals(name)) {
 				for(int j = 2; j < 6; j++) {
 					ForgeDirection dir = ForgeDirection.getOrientation(j);
@@ -92,17 +93,32 @@ public class TileEntityMachinePumpjack extends TileEntityOilDrillBase {
 	}
 
 	@Override
+	protected int getPrimaryFluidAmount(BlockOreFluid block, int meta) {
+		return (int) (super.getPrimaryFluidAmount(block, meta) * oilMultiplier);
+	}
+
+	@Override
+	protected int getSecondaryFluidAmount(BlockOreFluid block, int meta) {
+		return (int) (super.getSecondaryFluidAmount(block, meta) * gasMultiplier);
+	}
+
+	@Override
+	protected void attemptDrain(BlockOreFluid block, int x, int y, int z, int meta) {
+		block.drain(worldObj, x, y, z, meta, drainChanceMultiplier);
+	}
+
+	@Override
 	public void updateEntity() {
 		super.updateEntity();
-		
+
 		if(worldObj.isRemote) {
 
 			this.prevRot = rot;
-			
+
 			if(this.indicator == 0) {
 				this.rot += speed;
 			}
-			
+
 			if(this.rot >= 360) {
 				this.prevRot -= 360;
 				this.rot -= 360;
@@ -123,24 +139,12 @@ public class TileEntityMachinePumpjack extends TileEntityOilDrillBase {
 		this.speed = buf.readFloat();
 	}
 
-	@Override
-	public void onSuck(int x, int y, int z) {
-		
-		this.tanks[0].setFill(this.tanks[0].getFill() + oilPerDepsoit);
-		if(this.tanks[0].getFill() > this.tanks[0].getMaxFill()) this.tanks[0].setFill(tanks[0].getMaxFill());
-		this.tanks[1].setFill(this.tanks[1].getFill() + (gasPerDepositMin + worldObj.rand.nextInt((gasPerDepositMax - gasPerDepositMin + 1))));
-		if(this.tanks[1].getFill() > this.tanks[1].getMaxFill()) this.tanks[1].setFill(tanks[1].getMaxFill());
-		
-		if(worldObj.rand.nextDouble() < drainChance) {
-			worldObj.setBlock(x, y, z, ModBlocks.ore_oil_empty);
-		}
-	}
 
 	AxisAlignedBB bb = null;
-	
+
 	@Override
 	public AxisAlignedBB getRenderBoundingBox() {
-		
+
 		if(bb == null) {
 			bb = AxisAlignedBB.getBoundingBox(
 					xCoord - 7,
@@ -151,7 +155,7 @@ public class TileEntityMachinePumpjack extends TileEntityOilDrillBase {
 					zCoord + 8
 					);
 		}
-		
+
 		return bb;
 	}
 
@@ -160,7 +164,7 @@ public class TileEntityMachinePumpjack extends TileEntityOilDrillBase {
 		this.getBlockMetadata();
 		ForgeDirection dir = ForgeDirection.getOrientation(this.blockMetadata - BlockDummyable.offset);
 		ForgeDirection rot = dir.getRotation(ForgeDirection.DOWN);
-		
+
 		return new DirPos[] {
 			new DirPos(xCoord + rot.offsetX * 2 + dir.offsetX * 2, yCoord, zCoord + rot.offsetZ * 2 + dir.offsetZ * 2, dir),
 			new DirPos(xCoord + rot.offsetX * 2 + dir.offsetX * 2, yCoord, zCoord + rot.offsetZ * 4 - dir.offsetZ * 2, dir.getOpposite()),
@@ -179,10 +183,9 @@ public class TileEntityMachinePumpjack extends TileEntityOilDrillBase {
 		maxPower = IConfigurableMachine.grab(obj, "I:powerCap", maxPower);
 		consumption = IConfigurableMachine.grab(obj, "I:consumption", consumption);
 		delay = IConfigurableMachine.grab(obj, "I:delay", delay);
-		oilPerDepsoit = IConfigurableMachine.grab(obj, "I:oilPerDeposit", oilPerDepsoit);
-		gasPerDepositMin = IConfigurableMachine.grab(obj, "I:gasPerDepositMin", gasPerDepositMin);
-		gasPerDepositMax = IConfigurableMachine.grab(obj, "I:gasPerDepositMax", gasPerDepositMax);
-		drainChance = IConfigurableMachine.grab(obj, "D:drainChance", drainChance);
+		oilMultiplier = IConfigurableMachine.grab(obj, "D:oilMultiplier", oilMultiplier);
+		gasMultiplier = IConfigurableMachine.grab(obj, "D:gasMultiplier", gasMultiplier);
+		drainChanceMultiplier = IConfigurableMachine.grab(obj, "D:drainChanceMultiplier", drainChanceMultiplier);
 	}
 
 	@Override
@@ -190,12 +193,11 @@ public class TileEntityMachinePumpjack extends TileEntityOilDrillBase {
 		writer.name("I:powerCap").value(maxPower);
 		writer.name("I:consumption").value(consumption);
 		writer.name("I:delay").value(delay);
-		writer.name("I:oilPerDeposit").value(oilPerDepsoit);
-		writer.name("I:gasPerDepositMin").value(gasPerDepositMin);
-		writer.name("I:gasPerDepositMax").value(gasPerDepositMax);
-		writer.name("D:drainChance").value(drainChance);
+		writer.name("D:oilMultiplier").value(oilMultiplier);
+		writer.name("D:gasMultiplier").value(gasMultiplier);
+		writer.name("D:drainChanceMultiplier").value(drainChanceMultiplier);
 	}
-	
+
 	@Override
 	public Container provideContainer(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		return new ContainerMachineOilWell(player.inventory, this);
@@ -211,15 +213,15 @@ public class TileEntityMachinePumpjack extends TileEntityOilDrillBase {
 	public void provideInfo(UpgradeType type, int level, List<String> info, boolean extendedInfo) {
 		info.add(IUpgradeInfoProvider.getStandardLabel(ModBlocks.machine_pumpjack));
 		if(type == UpgradeType.SPEED) {
-			info.add(EnumChatFormatting.GREEN + I18nUtil.resolveKey(this.KEY_DELAY, "-" + (level * 25) + "%"));
-			info.add(EnumChatFormatting.RED + I18nUtil.resolveKey(this.KEY_CONSUMPTION, "+" + (level * 25) + "%"));
+			info.add(EnumChatFormatting.GREEN + I18nUtil.resolveKey(KEY_DELAY, "-" + (level * 25) + "%"));
+			info.add(EnumChatFormatting.RED + I18nUtil.resolveKey(KEY_CONSUMPTION, "+" + (level * 25) + "%"));
 		}
 		if(type == UpgradeType.POWER) {
-			info.add(EnumChatFormatting.GREEN + I18nUtil.resolveKey(this.KEY_CONSUMPTION, "-" + (level * 25) + "%"));
-			info.add(EnumChatFormatting.RED + I18nUtil.resolveKey(this.KEY_DELAY, "+" + (level * 10) + "%"));
+			info.add(EnumChatFormatting.GREEN + I18nUtil.resolveKey(KEY_CONSUMPTION, "-" + (level * 25) + "%"));
+			info.add(EnumChatFormatting.RED + I18nUtil.resolveKey(KEY_DELAY, "+" + (level * 10) + "%"));
 		}
 		if(type == UpgradeType.AFTERBURN) {
-			info.add(EnumChatFormatting.GREEN + I18nUtil.resolveKey(this.KEY_BURN, level * 10, level * 50));
+			info.add(EnumChatFormatting.GREEN + I18nUtil.resolveKey(KEY_BURN, level * 10, level * 50));
 		}
 		if(type == UpgradeType.OVERDRIVE) {
 			info.add((BobMathUtil.getBlink() ? EnumChatFormatting.RED : EnumChatFormatting.DARK_GRAY) + "YES");

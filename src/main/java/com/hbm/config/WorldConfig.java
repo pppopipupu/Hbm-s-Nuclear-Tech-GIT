@@ -1,5 +1,8 @@
 package com.hbm.config;
 
+import com.hbm.util.Compat;
+
+import cpw.mods.fml.common.Loader;
 import net.minecraftforge.common.config.Configuration;
 
 public class WorldConfig {
@@ -8,12 +11,17 @@ public class WorldConfig {
 	public static boolean netherOre = true;
 	public static boolean endOre = true;
 
+	public static int ironSpawn = 9;
+
 	public static int uraniumSpawn = 6;
 	public static int thoriumSpawn = 7;
 	public static int titaniumSpawn = 8;
 	public static int sulfurSpawn = 5;
 	public static int aluminiumSpawn = 7;
 	public static int copperSpawn = 12;
+	public static int nickelSpawn = 9;
+	public static int zincSpawn = 8;
+	public static int mineralSpawn = 5;
 	public static int fluoriteSpawn = 6;
 	public static int niterSpawn = 6;
 	public static int tungstenSpawn = 10;
@@ -32,7 +40,61 @@ public class WorldConfig {
 	public static int bedrockOilSpawn = 200;
 	public static int meteoriteSpawn = 500;
 
+	// Space oils and ores
+	public static int dunaOilSpawn = 100;
+	public static int eveGasSpawn = 100;
+	public static int laytheOilSpawn = 100;
+	public static int munBrineSpawn = 100;
+	public static int minmusBrineSpawn = 100;
+	public static int ikeBrineSpawn = 100;
+
+	public static int bedrockOilPerDeposit = 100;
+	public static int bedrockGasPerDepositMin = 10;
+	public static int bedrockGasPerDepositMax = 50;
+
+	public static int earthOilPerDeposit = 500;
+	public static int earthGasPerDepositMin = 100;
+	public static int earthGasPerDepositMax = 500;
+	public static double earthOilDrainChance = 0.05D;
+
+	public static int dunaOilPerDeposit = 200;
+	public static int dunaGasPerDepositMin = 100;
+	public static int dunaGasPerDepositMax = 500;
+	public static double dunaOilDrainChance = 0.1D;
+
+	public static int laytheOilPerDeposit = 500;
+	public static int laytheGasPerDepositMin = 100;
+	public static int laytheGasPerDepositMax = 500;
+	public static double laytheOilDrainChance = 0.05D;
+
+	public static int tektoOilSpawn = 100;
+	public static int tektoOilPerDeposit = 500;
+	public static int tektoGasPerDepositMin = 100;
+	public static int tektoGasPerDepositMax = 500;
+	public static double tektoOilDrainChance = 0.05D;
+
+	public static int tektoBedrockOilSpawn = 200;
+	public static int tektoBedrockOilPerDeposit = 100;
+	public static int tektoBedrockGasPerDepositMin = 10;
+	public static int tektoBedrockGasPerDepositMax = 50;
+
+	public static int eveGasPerDeposit = 500;
+	public static int evePetPerDepositMin = 20;
+	public static int evePetPerDepositMax = 100;
+	public static double eveGasDrainChance = 0.05D;
+
+	public static int munBrinePerDeposit = 300;
+	public static double munBrineDrainChance = 0.05D;
+
+	public static int minmusBrinePerDeposit = 300;
+	public static double minmusBrineDrainChance = 0.05D;
+
+	public static int ikeBrinePerDeposit = 300;
+	public static double ikeBrineDrainChance = 0.05D;
+
+
 	public static boolean newBedrockOres = true;
+
 	public static int bedrockIronSpawn = 100;
 	public static int bedrockCopperSpawn = 200;
 	public static int bedrockBoraxSpawn = 50;
@@ -49,6 +111,8 @@ public class WorldConfig {
 	public static int bedrockNiterSpawn = 50;
 	public static int bedrockFluoriteSpawn = 50;
 	public static int bedrockRedstoneSpawn = 50;
+	public static int bedrockBismuthSpawn = 400;
+	public static int bedrockCadmiumSpawn = 300;
 	public static int bedrockRareEarthSpawn = 50;
 	public static int bedrockBauxiteSpawn = 100;
 	public static int bedrockEmeraldSpawn = 50;
@@ -81,19 +145,15 @@ public class WorldConfig {
 	public static boolean enableSulfurCave = true;
 	public static boolean enableAsbestosCave = true;
 
-//	public static int radioStructure = 500;
 	public static int antennaStructure = 250;
 	public static int atomStructure = 500;
 	public static int dungeonStructure = 64;
-	public static int relayStructure = 500;
 	public static int satelliteStructure = 500;
-//	public static int factoryStructure = 1000;
 	public static int dudStructure = 500;
 	public static int spaceshipStructure = 1000;
 	public static int barrelStructure = 5000;
-	public static int geyserWater = 3000;
 	public static int geyserChlorine = 3000;
-	public static int geyserVapor = 500;
+	public static int geyserVapor = 250;
 	public static int capsuleStructure = 100;
 	public static int arcticStructure = 500;
 	public static int jungleStructure = 2000;
@@ -153,6 +213,61 @@ public class WorldConfig {
 		oilSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.21_oilSpawnRate", "Spawns an oil bubble every nTH chunk", 100);
 		bedrockOilSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.22_bedrockOilSpawnRate", "Spawns a bedrock oil node every nTH chunk", 200);
 		meteoriteSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.23_meteoriteSpawnRate", "Spawns a fallen meteorite every nTH chunk", 200);
+		nickelSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.24_nickelSpawnrate", "Amount of nickel ore veins per chunk", 12);
+		zincSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.25_zincSpawnrate", "Amount of zinc ore veins per chunk", 8);
+		mineralSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.26_mineralSpawnrate", "Amount of mineral ore veins per chunk", 4);
+		dunaOilSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.27S_oilSpawnRate", "Spawns an oil bubble every nTH chunk (on Duna)", 100);
+		laytheOilSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.28S_oilSpawnRate", "Spawns a DS oil bubble every nTH chunk (on Laythe)", 100);
+		eveGasSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.29S_gasSpawnRate", "Spawns a natural gas bubble every nTH chunk (on Eve)", 100);
+		munBrineSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.30S_brineSpawnRate", "Spawns a brine bubble every nTH chunk (on Mun)", 100);
+		minmusBrineSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.31S_brineSpawnRate", "Spawns a brine bubble every nTH chunk (on Minmus)", 100);
+		ikeBrineSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.32S_brineSpawnRate", "Spawns a brine bubble every nTH chunk (on Ike)", 100);
+
+		bedrockOilPerDeposit = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.O00_bedrockOilPerDeposit", "Oil extracted per bedrock oil block suck", bedrockOilPerDeposit);
+		bedrockGasPerDepositMin = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.O01_bedrockGasPerDepositMin", "Minimum natural gas extracted per bedrock oil block suck", bedrockGasPerDepositMin);
+		bedrockGasPerDepositMax = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.O02_bedrockGasPerDepositMax", "Maximum natural gas extracted per bedrock oil block suck", bedrockGasPerDepositMax);
+
+		earthOilPerDeposit = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.O03_earthOilPerDeposit", "Oil extracted per Earth oil block suck", earthOilPerDeposit);
+		earthGasPerDepositMin = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.O04_earthGasPerDepositMin", "Minimum natural gas extracted per Earth oil block suck", earthGasPerDepositMin);
+		earthGasPerDepositMax = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.O05_earthGasPerDepositMax", "Maximum natural gas extracted per Earth oil block suck", earthGasPerDepositMax);
+		earthOilDrainChance = CommonConfig.createConfigDouble(config, CATEGORY_OREGEN, "2.O06_earthOilDrainChance", "Chance for an Earth oil block to become empty on suck", earthOilDrainChance);
+
+		dunaOilPerDeposit = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.O07_dunaOilPerDeposit", "Oil extracted per Duna oil block suck", dunaOilPerDeposit);
+		dunaGasPerDepositMin = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.O08_dunaGasPerDepositMin", "Minimum natural gas extracted per Duna oil block suck", dunaGasPerDepositMin);
+		dunaGasPerDepositMax = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.O09_dunaGasPerDepositMax", "Maximum natural gas extracted per Duna oil block suck", dunaGasPerDepositMax);
+		dunaOilDrainChance = CommonConfig.createConfigDouble(config, CATEGORY_OREGEN, "2.O10_dunaOilDrainChance", "Chance for a Duna oil block to become empty on suck", dunaOilDrainChance);
+
+		laytheOilPerDeposit = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.O11_laytheOilPerDeposit", "Desulfurized Oil extracted per Laythe oil block suck", laytheOilPerDeposit);
+		laytheGasPerDepositMin = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.O12_laytheGasPerDepositMin", "Minimum natural gas extracted per Laythe oil block suck", laytheGasPerDepositMin);
+		laytheGasPerDepositMax = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.O13_laytheGasPerDepositMax", "Maximum natural gas extracted per Laythe oil block suck", laytheGasPerDepositMax);
+		laytheOilDrainChance = CommonConfig.createConfigDouble(config, CATEGORY_OREGEN, "2.O14_laytheOilDrainChance", "Chance for a Laythe oil block to become empty on suck", laytheOilDrainChance);
+
+		eveGasPerDeposit = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.O15_eveGasPerDeposit", "Natural Gas extracted per Eve gas block suck", eveGasPerDeposit);
+		evePetPerDepositMin = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.O16_evePetPerDepositMin", "Minimum petroleum gas extracted per Eve oil block suck", evePetPerDepositMin);
+		evePetPerDepositMax = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.O17_evePetPerDepositMax", "Maximum petroleum gas extracted per Eve oil block suck", evePetPerDepositMax);
+		eveGasDrainChance = CommonConfig.createConfigDouble(config, CATEGORY_OREGEN, "2.O18_eveGasDrainChance", "Chance for an Eve gas block to become empty on suck", eveGasDrainChance);
+
+		munBrinePerDeposit = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.O19_munBrinePerDeposit", "Brine extracted per Mun brine block suck", munBrinePerDeposit);
+		munBrineDrainChance = CommonConfig.createConfigDouble(config, CATEGORY_OREGEN, "2.O20_munBrineDrainChance", "Chance for an Mun brine block to become empty on suck", munBrineDrainChance);
+
+		minmusBrinePerDeposit = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.O21_minmusBrinePerDeposit", "Brine extracted per Minmus brine block suck", minmusBrinePerDeposit);
+		minmusBrineDrainChance = CommonConfig.createConfigDouble(config, CATEGORY_OREGEN, "2.O22_minmusBrineDrainChance", "Chance for an Minmus brine block to become empty on suck", minmusBrineDrainChance);
+
+		ikeBrinePerDeposit = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.O23_ikeBrinePerDeposit", "Brine extracted per Ike brine block suck", ikeBrinePerDeposit);
+		ikeBrineDrainChance = CommonConfig.createConfigDouble(config, CATEGORY_OREGEN, "2.O24_ikeBrineDrainChance", "Chance for an Ike brine block to become empty on suck", ikeBrineDrainChance);
+
+		tektoOilSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.33S_tektoOilSpawnRate", "Spawns a Tekto oil bubble every nTH chunk (on Tekto)", tektoOilSpawn);
+		tektoOilPerDeposit = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.O25_tektoOilPerDeposit", "Oil extracted per Tekto oil block suck", tektoOilPerDeposit);
+		tektoGasPerDepositMin = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.O26_tektoGasPerDepositMin", "Minimum natural gas extracted per Tekto oil block suck", tektoGasPerDepositMin);
+		tektoGasPerDepositMax = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.O27_tektoGasPerDepositMax", "Maximum natural gas extracted per Tekto oil block suck", tektoGasPerDepositMax);
+		tektoOilDrainChance = CommonConfig.createConfigDouble(config, CATEGORY_OREGEN, "2.O28_tektoOilDrainChance", "Chance for a Tekto oil block to become empty on suck", tektoOilDrainChance);
+
+
+		tektoBedrockOilSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.34_tektoBedrockOilSpawnRate", "Spawns a Tekto bedrock oil bubble every nTH chunk (on Tekto)", tektoBedrockOilSpawn);
+		tektoBedrockOilPerDeposit = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.O35_tektoBedrockOilPerDeposit", "Oil extracted per bedrock oil block suck", tektoBedrockOilPerDeposit);
+		tektoBedrockGasPerDepositMin = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.O36_tektoBedrockGasPerDepositMin", "Minimum natural gas extracted per bedrock oil block suck", tektoBedrockGasPerDepositMin);
+		tektoBedrockGasPerDepositMax = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.O37_tektoBedrockGasPerDepositMax", "Maximum natural gas extracted per bedrock oil block suck", tektoBedrockGasPerDepositMax);
+
 
 		newBedrockOres = CommonConfig.createConfigBool(config, CATEGORY_OREGEN, "2.NB_newBedrockOres", "Enables the newer genreric bedrock ores", true);
 		bedrockIronSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.B00_bedrockIronWeight", "Spawn weight for iron bedrock ore", 100);
@@ -169,6 +284,10 @@ public class WorldConfig {
 		bedrockNiterSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.B11_bedrockNiterWeight", "Spawn weight for niter bedrock ore", 50);
 		bedrockFluoriteSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.B12_bedrockFluoriteWeight", "Spawn weight for fluorite bedrock ore", 50);
 		bedrockRedstoneSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.B13_bedrockRedstoneWeight", "Spawn weight for redstone bedrock ore", 50);
+		bedrockBismuthSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.B08_bedrockBismuthSpawn", "Spawns a bedrock bismuth deposit every nTH chunk", 400);
+		bedrockCadmiumSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.B09_bedrockCadmiumSpawn", "Spawns a bedrock cadmium deposit every nTH chunk", 400);
+		// JESUS CHRIST....
+		// bedrockChlorocalciteSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.B14_bedrockbChlorocalciteWeight", "Spawn weight for chlorocalcite bedrock ore", 35);
 		bedrockChlorocalciteSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.B14_bedrockChlorocalciteWeight", "Spawn weight for chlorocalcite bedrock ore", 35);
 		bedrockNeodymiumSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.B15_bedrockNeodymiumWeight", "Spawn weight for neodymium bedrock ore", 50);
 		bedrockRareEarthSpawn = CommonConfig.createConfigInt(config, CATEGORY_OREGEN, "2.B16_bedrockRareEarthWeight", "Spawn weight for rare earth bedrock ore", 50);
@@ -204,13 +323,10 @@ public class WorldConfig {
 		enableAsbestosCave = CommonConfig.createConfigBool(config, CATEGORY_OREGEN, "2.C01_enableAsbestosCave", "Toggles asbestos caves", true);
 
 		final String CATEGORY_DUNGEON = CommonConfig.CATEGORY_DUNGEONS;
-//		radioStructure = CommonConfig.createConfigInt(config, CATEGORY_DUNGEON, "4.00_radioSpawn", "Spawn radio station on every nTH chunk", 500);
 		antennaStructure = CommonConfig.createConfigInt(config, CATEGORY_DUNGEON, "4.01_antennaSpawn", "Spawn antenna on every nTH chunk", 250);
 		atomStructure = CommonConfig.createConfigInt(config, CATEGORY_DUNGEON, "4.02_atomSpawn", "Spawn power plant on every nTH chunk", 500);
 		dungeonStructure = CommonConfig.createConfigInt(config, CATEGORY_DUNGEON, "4.04_dungeonSpawn", "Spawn library dungeon on every nTH chunk", 64);
-		relayStructure = CommonConfig.createConfigInt(config, CATEGORY_DUNGEON, "4.05_relaySpawn", "Spawn relay on every nTH chunk", 500);
 		satelliteStructure = CommonConfig.createConfigInt(config, CATEGORY_DUNGEON, "4.06_satelliteSpawn", "Spawn satellite dish on every nTH chunk", 500);
-//		factoryStructure = CommonConfig.createConfigInt(config, CATEGORY_DUNGEON, "4.09_factorySpawn", "Spawn factory on every nTH chunk", 1000);
 		dudStructure = CommonConfig.createConfigInt(config, CATEGORY_DUNGEON, "4.10_dudSpawn", "Spawn dud on every nTH chunk", 500);
 		spaceshipStructure = CommonConfig.createConfigInt(config, CATEGORY_DUNGEON, "4.11_spaceshipSpawn", "Spawn spaceship on every nTH chunk", 1000);
 		barrelStructure = CommonConfig.createConfigInt(config, CATEGORY_DUNGEON, "4.12_barrelSpawn", "Spawn waste tank on every nTH chunk", 5000);
@@ -218,9 +334,8 @@ public class WorldConfig {
 		minefreq = CommonConfig.createConfigInt(config, CATEGORY_DUNGEON, "4.14_landmineSpawn", "Spawn AP landmine on every nTH chunk", 64);
 		radfreq = CommonConfig.createConfigInt(config, CATEGORY_DUNGEON, "4.15_radHotspotSpawn", "Spawn radiation hotspot on every nTH chunk", 5000);
 		vaultfreq = CommonConfig.createConfigInt(config, CATEGORY_DUNGEON, "4.16_vaultSpawn", "Spawn locked safe on every nTH chunk", 2500);
-		geyserWater = CommonConfig.createConfigInt(config, CATEGORY_DUNGEON, "4.17_geyserWaterSpawn", "Spawn water geyser on every nTH chunk", 3000);
 		geyserChlorine = CommonConfig.createConfigInt(config, CATEGORY_DUNGEON, "4.18_geyserChlorineSpawn", "Spawn poison geyser on every nTH chunk", 3000);
-		geyserVapor = CommonConfig.createConfigInt(config, CATEGORY_DUNGEON, "4.19_geyserVaporSpawn", "Spawn vapor geyser on every nTH chunk", 500);
+		geyserVapor = CommonConfig.createConfigInt(config, CATEGORY_DUNGEON, "4.19_geyserVaporSpawn", "Spawn vapor geyser on every nTH chunk", 250);
 		capsuleStructure = CommonConfig.createConfigInt(config, CATEGORY_DUNGEON, "4.21_capsuleSpawn", "Spawn landing capsule on every nTH chunk", 100);
 		arcticStructure = CommonConfig.createConfigInt(config, CATEGORY_DUNGEON, "4.22_arcticVaultSpawn", "Spawn arctic code vault on every nTH chunk", 500);
 		jungleStructure = CommonConfig.createConfigInt(config, CATEGORY_DUNGEON, "4.23_jungleDungeonSpawn", "Spawn jungle dungeon on every nTH chunk", 2000);
@@ -235,27 +350,26 @@ public class WorldConfig {
 		meteorShowerChance = CommonConfig.createConfigInt(config, CATEGORY_METEOR, "5.04_meteorShowerChance", "The probability of a meteor spawning during meteor shower (an average of once every nTH ticks)", 20 * 60 * 15);
 		meteorShowerDuration = CommonConfig.createConfigInt(config, CATEGORY_METEOR, "5.05_meteorShowerDuration", "Max duration of meteor shower in ticks", 20 * 60 * 30);
 
+		// Move defaults into unused ranges if EndlessIDs is installed
+		int defaultBiomeOffset = Loader.isModLoaded(Compat.MOD_EIDS) ? 12_000 : 0;
+
 		final String CATEGORY_BIOMES = CommonConfig.CATEGORY_BIOMES;
 		enableCraterBiomes = CommonConfig.createConfigBool(config, CATEGORY_BIOMES, "17.B_toggle", "Enables the biome change caused by nuclear explosions", true);
-		craterBiomeId = CommonConfig.createConfigInt(config, CATEGORY_BIOMES, "17.B00_craterBiomeId", "The numeric ID for the crater biome", 80);
-		craterBiomeInnerId = CommonConfig.createConfigInt(config, CATEGORY_BIOMES, "17.B01_craterBiomeInnerId", "The numeric ID for the inner crater biome", 81);
-		craterBiomeOuterId = CommonConfig.createConfigInt(config, CATEGORY_BIOMES, "17.B02_craterBiomeOuterId", "The numeric ID for the outer crater biome", 82);
+		craterBiomeId = CommonConfig.createConfigInt(config, CATEGORY_BIOMES, "17.B00_craterBiomeId", "The numeric ID for the crater biome", craterBiomeId + defaultBiomeOffset);
+		craterBiomeInnerId = CommonConfig.createConfigInt(config, CATEGORY_BIOMES, "17.B01_craterBiomeInnerId", "The numeric ID for the inner crater biome", craterBiomeInnerId + defaultBiomeOffset);
+		craterBiomeOuterId = CommonConfig.createConfigInt(config, CATEGORY_BIOMES, "17.B02_craterBiomeOuterId", "The numeric ID for the outer crater biome", craterBiomeOuterId + defaultBiomeOffset);
 		craterBiomeRad = (float) CommonConfig.createConfigDouble(config, CATEGORY_BIOMES, "17.R00_craterBiomeRad", "RAD/s for the crater biome", 5D);
 		craterBiomeInnerRad = (float) CommonConfig.createConfigDouble(config, CATEGORY_BIOMES, "17.R01_craterBiomeInnerRad", "RAD/s for the inner crater biome", 25D);
 		craterBiomeOuterRad = (float) CommonConfig.createConfigDouble(config, CATEGORY_BIOMES, "17.R02_craterBiomeOuterRad", "RAD/s for the outer crater biome", 0.5D);
 		craterBiomeWaterMult = (float) CommonConfig.createConfigDouble(config, CATEGORY_BIOMES, "17.R03_craterBiomeWaterMult", "Multiplier for RAD/s in crater biomes when in water", 5D);
 
-//		radioStructure = CommonConfig.setDefZero(radioStructure, 1000);
 		antennaStructure = CommonConfig.setDefZero(antennaStructure, 1000);
 		atomStructure = CommonConfig.setDefZero(atomStructure, 1000);
 		dungeonStructure = CommonConfig.setDefZero(dungeonStructure, 1000);
-		relayStructure = CommonConfig.setDefZero(relayStructure, 1000);
 		satelliteStructure = CommonConfig.setDefZero(satelliteStructure, 1000);
-//		factoryStructure = CommonConfig.setDefZero(factoryStructure, 1000);
 		dudStructure = CommonConfig.setDefZero(dudStructure, 1000);
 		spaceshipStructure = CommonConfig.setDefZero(spaceshipStructure, 1000);
 		barrelStructure = CommonConfig.setDefZero(barrelStructure, 1000);
-		geyserWater = CommonConfig.setDefZero(geyserWater, 1000);
 		geyserChlorine = CommonConfig.setDefZero(geyserChlorine, 1000);
 		geyserVapor = CommonConfig.setDefZero(geyserVapor, 1000);
 		broadcaster = CommonConfig.setDefZero(broadcaster, 1000);

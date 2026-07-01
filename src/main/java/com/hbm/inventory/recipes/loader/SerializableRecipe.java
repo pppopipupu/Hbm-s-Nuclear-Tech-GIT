@@ -56,7 +56,6 @@ public abstract class SerializableRecipe {
 		recipeHandlers.add(new ShredderRecipes());
 		recipeHandlers.add(new SolderingRecipes());
 		recipeHandlers.add(new CombinationRecipes());
-		recipeHandlers.add(new CrucibleRecipes());
 		recipeHandlers.add(new CentrifugeRecipes());
 		recipeHandlers.add(new CrystallizerRecipes());
 		recipeHandlers.add(new RefineryRecipes());
@@ -85,17 +84,25 @@ public abstract class SerializableRecipe {
 		recipeHandlers.add(new AmmoPressRecipes());
 		//AFTER Assembler
 		recipeHandlers.add(new AnvilRecipes());
+		recipeHandlers.add(new AlkylationRecipes());
+		recipeHandlers.add(new VacuumCircuitRecipes());
 		recipeHandlers.add(new PedestalRecipes());
 		recipeHandlers.add(new AnnihilatorRecipes());
-		
+		recipeHandlers.add(new AtmosphereRecipes());
+
 		//GENERIC
+		recipeHandlers.add(CrucibleRecipes.INSTANCE);
 		recipeHandlers.add(AssemblyMachineRecipes.INSTANCE);
 		recipeHandlers.add(ChemicalPlantRecipes.INSTANCE);
 		recipeHandlers.add(PUREXRecipes.INSTANCE);
 		recipeHandlers.add(FusionRecipes.INSTANCE);
 		recipeHandlers.add(PrecAssRecipes.INSTANCE);
+		recipeHandlers.add(PlasmaForgeRecipes.INSTANCE);
+		recipeHandlers.add(BlastFurnaceRecipesNT.INSTANCE);
 
 		recipeHandlers.add(new MatDistribution());
+		recipeHandlers.add(new CryoRecipes());
+
 		recipeHandlers.add(new CustomMachineRecipes());
 		//AFTER MatDistribution
 		recipeHandlers.add(new ArcFurnaceRecipes());
@@ -116,7 +123,7 @@ public abstract class SerializableRecipe {
 		MainRegistry.logger.info("Starting recipe init!");
 
 		GenericRecipes.clearPools();
-		
+
 		for(SerializableRecipe recipe : recipeHandlers) {
 
 			recipe.deleteRecipes();
@@ -212,7 +219,7 @@ public abstract class SerializableRecipe {
 				recipeList.addAll(((HashMap) recipeObject).entrySet());
 			}
 
-			if(recipeList.isEmpty())
+			if(recipeList.isEmpty() && !allowEmptyRecipeList())
 				throw new IllegalStateException("Error while writing recipes for " + this.getClass().getSimpleName() + ": Recipe list is either empty or in an unsupported format!");
 
 			JsonWriter writer = new JsonWriter(new FileWriter(template));
@@ -238,6 +245,8 @@ public abstract class SerializableRecipe {
 			ex.printStackTrace();
 		}
 	}
+	
+	public boolean allowEmptyRecipeList() { return false; }
 
 	public void readRecipeFile(File file) {
 		try {

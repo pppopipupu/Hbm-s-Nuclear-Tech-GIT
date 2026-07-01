@@ -955,9 +955,9 @@ abstract public class Component extends StructureComponent {
 		}
 	}
 
-	static class ConcreteBricks extends StructureComponent.BlockSelector {
+	public static class ConcreteBricks extends StructureComponent.BlockSelector {
 
-		ConcreteBricks() { }
+		public ConcreteBricks() { } // is this a bad idea
 
 		/** Selects blocks */
 		@Override
@@ -1022,16 +1022,24 @@ abstract public class Component extends StructureComponent {
 	}
 
 	//ag
-	static class LabTiles extends StructureComponent.BlockSelector {
+	public static class LabTiles extends StructureComponent.BlockSelector {
 
-		LabTiles() { }
+		private final float crackFrequency;
+
+		public LabTiles() {
+			this(0.5F);
+		}
+
+		public LabTiles(float crackFrequency) {
+			this.crackFrequency = 1 - crackFrequency;
+		}
 
 		/** Selects blocks */
 		@Override
 		public void selectBlocks(Random rand, int posX, int posY, int posZ, boolean notInterior) {
 			float chance = rand.nextFloat();
 
-			if(chance < 0.5F) {
+			if(chance < crackFrequency) {
 				this.field_151562_a = ModBlocks.tile_lab;
 			} else if (chance < 0.9F) {
 				this.field_151562_a = ModBlocks.tile_lab_cracked;

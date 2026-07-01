@@ -12,6 +12,9 @@ import com.hbm.items.ModItems;
 import com.hbm.lib.RefStrings;
 import com.hbm.main.ResourceManager;
 import com.hbm.render.model.ModelBullet;
+import com.hbm.render.util.BeamPronter;
+import com.hbm.render.util.BeamPronter.EnumBeamType;
+import com.hbm.render.util.BeamPronter.EnumWaveType;
 import com.hbm.render.util.RenderSparks;
 import com.hbm.util.Tuple.Pair;
 
@@ -58,7 +61,7 @@ public class RenderBullet extends Render {
 			case BulletConfiguration.STYLE_NORMAL: renderBullet(trail); break;
 			case BulletConfiguration.STYLE_PISTOL: renderPistol(trail); break;
 			case BulletConfiguration.STYLE_BOLT: renderDart(trail, bullet.getEntityId()); break;
-			case BulletConfiguration.STYLE_FLECHETTE: renderFlechette(); break;
+			case BulletConfiguration.STYLE_FLECHETTE: renderFlechette();; break;
 			case BulletConfiguration.STYLE_FOLLY: renderBullet(trail); break;
 			case BulletConfiguration.STYLE_PELLET: renderBuckshot(); break;
 			case BulletConfiguration.STYLE_ROCKET: renderRocket(trail); break;
@@ -69,6 +72,8 @@ public class RenderBullet extends Render {
 			case BulletConfiguration.STYLE_BLADE: renderBlade(); break;
 			case BulletConfiguration.STYLE_TAU: renderTau(bullet, trail, f1); break;
 			case BulletConfiguration.STYLE_LEADBURSTER: renderLeadburster(bullet, f1); break;
+			case BulletConfiguration.STYLE_WAR: renderTracerV2(); break;
+
 			default: renderBullet(trail); break;
 		}
 		
@@ -213,6 +218,16 @@ public class RenderBullet extends Render {
 		GL11.glShadeModel(GL11.GL_SMOOTH);
 		bindTexture(ResourceManager.flechette_tex);
 		ResourceManager.projectiles.renderPart("Flechette");
+		GL11.glShadeModel(GL11.GL_FLAT);
+	}
+	private void renderTracerV2() {
+		
+		GL11.glScaled(0.5, 0.5, 0.5);
+		GL11.glRotated(90, 0, 0, 1);
+		GL11.glRotated(90, 0, 1, 0);
+		
+		GL11.glShadeModel(GL11.GL_SMOOTH);
+		BeamPronter.prontBeam(Vec3.createVectorHelper(0, 5, 0), EnumWaveType.SPIRAL, EnumBeamType.SOLID, 0xFF9000, 0xFF9000, 0, 1, 0F, 6, (float)0.2 * 0.2F, 256);
 		GL11.glShadeModel(GL11.GL_FLAT);
 	}
 	

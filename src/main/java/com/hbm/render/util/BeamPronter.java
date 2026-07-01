@@ -21,13 +21,22 @@ public class BeamPronter {
 	}
 	
 	private static boolean depthMask = false;
+
 	public static void prontBeamwithDepth(Vec3 skeleton, EnumWaveType wave, EnumBeamType beam, int outerColor, int innerColor, int start, int segments, float size, int layers, float thickness) {
+		prontBeamwithDepth(skeleton, wave, beam, outerColor, innerColor, start, segments, size, layers, thickness, 1F);
+	}
+
+	public static void prontBeamwithDepth(Vec3 skeleton, EnumWaveType wave, EnumBeamType beam, int outerColor, int innerColor, int start, int segments, float size, int layers, float thickness, float alpha) {
 		depthMask = true;
-		prontBeam(skeleton, wave, beam, outerColor, innerColor, start, segments, size, layers, thickness);
+		prontBeam(skeleton, wave, beam, outerColor, innerColor, start, segments, size, layers, thickness, alpha);
 		depthMask = false;
 	}
 
 	public static void prontBeam(Vec3 skeleton, EnumWaveType wave, EnumBeamType beam, int outerColor, int innerColor, int start, int segments, float size, int layers, float thickness) {
+		prontBeam(skeleton, wave, beam, outerColor, innerColor, start, segments, size, layers, thickness, 1F);
+	}
+
+	public static void prontBeam(Vec3 skeleton, EnumWaveType wave, EnumBeamType beam, int outerColor, int innerColor, int start, int segments, float size, int layers, float thickness, float alpha) {
 
 		GL11.glPushMatrix();
 		GL11.glDepthMask(depthMask);
@@ -46,7 +55,9 @@ public class BeamPronter {
 
 		if(beam == EnumBeamType.SOLID) {
 			GL11.glDisable(GL11.GL_CULL_FACE);
+
 			GL11.glEnable(GL11.GL_BLEND);
+
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 		}
 
@@ -108,33 +119,35 @@ public class BeamPronter {
 					int color = r | g | b;
 
 					tessellator.startDrawingQuads();
-					tessellator.setColorOpaque_I(color);
+					setColorWithAlpha(tessellator, color, alpha);
 					tessellator.addVertex(lastX + (radius * j), lastY, lastZ + (radius * j));
 					tessellator.addVertex(lastX + (radius * j), lastY, lastZ - (radius * j));
 					tessellator.addVertex(pX + (radius * j), pY, pZ - (radius * j));
 					tessellator.addVertex(pX + (radius * j), pY, pZ + (radius * j));
 					tessellator.draw();
 					tessellator.startDrawingQuads();
-					tessellator.setColorOpaque_I(color);
+					setColorWithAlpha(tessellator, color, alpha);
 					tessellator.addVertex(lastX - (radius * j), lastY, lastZ + (radius * j));
 					tessellator.addVertex(lastX - (radius * j), lastY, lastZ - (radius * j));
 					tessellator.addVertex(pX - (radius * j), pY, pZ - (radius * j));
 					tessellator.addVertex(pX - (radius * j), pY, pZ + (radius * j));
 					tessellator.draw();
 					tessellator.startDrawingQuads();
-					tessellator.setColorOpaque_I(color);
+					setColorWithAlpha(tessellator, color, alpha);
 					tessellator.addVertex(lastX + (radius * j), lastY, lastZ + (radius * j));
 					tessellator.addVertex(lastX - (radius * j), lastY, lastZ + (radius * j));
 					tessellator.addVertex(pX - (radius * j), pY, pZ + (radius * j));
 					tessellator.addVertex(pX + (radius * j), pY, pZ + (radius * j));
 					tessellator.draw();
 					tessellator.startDrawingQuads();
-					tessellator.setColorOpaque_I(color);
+					setColorWithAlpha(tessellator, color, alpha);
 					tessellator.addVertex(lastX + (radius * j), lastY, lastZ - (radius * j));
 					tessellator.addVertex(lastX - (radius * j), lastY, lastZ - (radius * j));
 					tessellator.addVertex(pX - (radius * j), pY, pZ - (radius * j));
 					tessellator.addVertex(pX + (radius * j), pY, pZ - (radius * j));
 					tessellator.draw();
+					
+					
 				}
 			}
 
@@ -155,14 +168,22 @@ public class BeamPronter {
 		if(beam == EnumBeamType.SOLID) {
 			GL11.glDisable(GL11.GL_BLEND);
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
+
 		}
 
 		GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		
 		GL11.glPopMatrix();
 		GL11.glDepthMask(true);
 
 		GL11.glPopMatrix();
 	}
-
+    private static void setColorWithAlpha(Tessellator tessellator, int color, float alpha) {
+        float red = ((color >> 16) & 0xFF) / 255.0f;
+        float green = ((color >> 8) & 0xFF) / 255.0f;
+        float blue = (color & 0xFF) / 255.0f;
+        
+        GL11.glColor4f(red, green, blue, alpha);
+    }
 }

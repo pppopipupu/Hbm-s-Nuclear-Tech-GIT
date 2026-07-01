@@ -31,12 +31,6 @@ public class ContainerBase extends Container {
 	public boolean canInteractWith(EntityPlayer player) {
 		return tile.isUseableByPlayer(player);
 	}
-	
-	/** Respects slot restrictions */
-	@Override
-	protected boolean mergeItemStack(ItemStack slotStack, int start, int end, boolean direction) {
-		return super.mergeItemStack(slotStack, start, end, direction); // overriding this with InventoryUtil.mergeItemStack breaks it but invoking it directly doesn't? wtf?
-	}
 
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int index) {
@@ -47,7 +41,7 @@ public class ContainerBase extends Container {
 			ItemStack slotStack = slot.getStack();
 			slotOriginal = slotStack.copy();
 
-			if(index <= tile.getSizeInventory() - 1) {
+			if(index < tile.getSizeInventory()) {
 				if(!this.mergeItemStack(slotStack, tile.getSizeInventory(), this.inventorySlots.size(), true)) {
 					return null;
 				}
@@ -66,7 +60,12 @@ public class ContainerBase extends Container {
 
 		return slotOriginal;
 	}
-	
+
+	/** Standard player inventory with default hotbar and horizontal offsets */
+	public void playerInv(InventoryPlayer invPlayer, int playerInvY) {
+		playerInv(invPlayer, 8, playerInvY, playerInvY + 58);
+	}
+
 	/** Standard player inventory with default hotbar offset */
 	public void playerInv(InventoryPlayer invPlayer, int playerInvX, int playerInvY) {
 		playerInv(invPlayer, playerInvX, playerInvY, playerInvY + 58);
@@ -97,7 +96,7 @@ public class ContainerBase extends Container {
 	public void addSlots(IInventory inv, int from, int x, int y, int rows, int cols) {
 		addSlots(inv, from, x, y, rows, cols, 18);
 	}
-	
+
 	public void addSlots(IInventory inv, int from, int x, int y, int rows, int cols, int slotSize) {
 		for(int row = 0; row < rows; row++) {
 			for(int col = 0; col < cols; col++) {
@@ -105,24 +104,113 @@ public class ContainerBase extends Container {
 			}
 		}
 	}
-	
+
 	public void addOutputSlots(EntityPlayer player, IInventory inv, int from, int x, int y, int rows, int cols) {
 		addOutputSlots(player, inv, from, x, y, rows, cols, 18);
 	}
-	
+
 	public void addOutputSlots(EntityPlayer player, IInventory inv, int from, int x, int y, int rows, int cols, int slotSize) {
 		for(int row = 0; row < rows; row++) for(int col = 0; col < cols; col++) {
 			this.addSlotToContainer(new SlotCraftingOutput(player, inv, col + row * cols + from, x + col * slotSize, y + row * slotSize));
 		}
 	}
-	
+
 	public void addTakeOnlySlots(IInventory inv, int from, int x, int y, int rows, int cols) {
 		addTakeOnlySlots(inv, from, x, y, rows, cols, 18);
 	}
-	
+
 	public void addTakeOnlySlots(IInventory inv, int from, int x, int y, int rows, int cols, int slotSize) {
 		for(int row = 0; row < rows; row++) for(int col = 0; col < cols; col++) {
 			this.addSlotToContainer(new SlotTakeOnly(inv, col + row * cols + from, x + col * slotSize, y + row * slotSize));
 		}
 	}
+
+	// Fixed mergeItemStack that actually respects stacksize limits AND whether the slot actually accepts the fucking item
+	@Override
+	protected boolean mergeItemStack(ItemStack stack, int fromInclusive, int toExclusive, boolean toPlayerInventory) {
+		boolean didMerge = false;
+		int targetIndex = fromInclusive;
+
+		if(toPlayerInventory) {
+			targetIndex = toExclusive - 1;
+		}
+
+		Slot targetSlot;
+		ItemStack targetStack;
+
+		int maxStackSize = stack.getMaxStackSize();
+		if(!toPlayerInventory) maxStackSize = Math.min(maxStackSize, tile.getInventoryStackLimit());
+
+		// Stack on top of existing
+		if(stack.isStackable()) {
+			while(stack.stackSize > 0 && (!toPlayerInventory && targetIndex < toExclusive || toPlayerInventory && targetIndex >= fromInclusive)) {
+				targetSlot = getSlot(targetIndex);
+				targetStack = targetSlot.getStack();
+
+				if(targetStack != null && targetStack.getItem() == stack.getItem() && (!stack.getHasSubtypes() || stack.getItemDamage() == targetStack.getItemDamage()) && ItemStack.areItemStackTagsEqual(stack, targetStack)) {
+					if(targetSlot.isItemValid(stack)) {
+						int l = targetStack.stackSize + stack.stackSize;
+
+						if(l <= maxStackSize) {
+							stack.stackSize = 0;
+							targetStack.stackSize = l;
+							targetSlot.onSlotChanged();
+							didMerge = true;
+						} else if(targetStack.stackSize < maxStackSize) {
+							stack.stackSize -= maxStackSize - targetStack.stackSize;
+							targetStack.stackSize = maxStackSize;
+							targetSlot.onSlotChanged();
+							didMerge = true;
+						}
+					}
+				}
+
+				if(toPlayerInventory) {
+					--targetIndex;
+				} else {
+					++targetIndex;
+				}
+			}
+		}
+
+		// Remainder into an empty slot
+		if(stack.stackSize > 0) {
+			if(toPlayerInventory) {
+				targetIndex = toExclusive - 1;
+			} else {
+				targetIndex = fromInclusive;
+			}
+
+			while(!toPlayerInventory && targetIndex < toExclusive || toPlayerInventory && targetIndex >= fromInclusive) {
+				targetSlot = getSlot(targetIndex);
+				targetStack = targetSlot.getStack();
+
+				if(targetStack == null && targetSlot.isItemValid(stack)) {
+					if(stack.stackSize <= maxStackSize) {
+						targetSlot.putStack(stack.copy());
+						targetSlot.onSlotChanged();
+						stack.stackSize = 0;
+						didMerge = true;
+						break;
+					} else {
+						ItemStack newStack = stack.copy();
+						newStack.stackSize = maxStackSize;
+						targetSlot.putStack(newStack);
+						targetSlot.onSlotChanged();
+						stack.stackSize -= maxStackSize;
+						didMerge = true;
+					}
+				}
+
+				if(toPlayerInventory) {
+					--targetIndex;
+				} else {
+					++targetIndex;
+				}
+			}
+		}
+
+		return didMerge;
+	}
+
 }

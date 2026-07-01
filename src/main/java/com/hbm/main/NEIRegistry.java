@@ -9,17 +9,20 @@ import java.util.List;
 
 public class NEIRegistry {
 
-	public static List<TemplateRecipeHandler> handlers = new ArrayList();
+	public static List<TemplateRecipeHandler> handlers = new ArrayList<>();
 
 	public static List<TemplateRecipeHandler> listAllHandlers() {
 
 		if(!handlers.isEmpty()) return handlers;
 
+		handlers.add(new ToolingHandler());
+		handlers.add(new ConstructionHandler());
 		handlers.add(new AnnihilatorHandler());
+		handlers.add(new SolderingStationHandler());
+		handlers.add(new BlastFurnaceHandler());
 		handlers.add(new AnvilRecipeHandler());
 		handlers.add(new SmithingRecipeHandler());
 		handlers.add(new PressRecipeHandler());
-		handlers.add(new AlloyFurnaceRecipeHandler());
 		handlers.add(new ShredderRecipeHandler());
 		handlers.add(new CrucibleSmeltingHandler());
 		handlers.add(new CrucibleAlloyingHandler());
@@ -34,6 +37,8 @@ public class NEIRegistry {
 		handlers.add(new CyclotronRecipeHandler());
 		handlers.add(new VacuumRecipeHandler());
 		handlers.add(new CrackingHandler());
+		handlers.add(new AlkylationHandler());
+		handlers.add(new CryoHandler());
 		handlers.add(new RadiolysisRecipeHandler());
 		handlers.add(new ReformingHandler());
 		handlers.add(new HydrotreatingHandler());
@@ -42,13 +47,19 @@ public class NEIRegistry {
 		handlers.add(new CrystallizerRecipeHandler());
 		handlers.add(new BookRecipeHandler());
 		handlers.add(new FusionRecipeHandler());
+		handlers.add(new PlasmaForgeRecipeHandler());
 		handlers.add(new SILEXRecipeHandler());
 		handlers.add(new FuelPoolHandler());
 		handlers.add(new RBMKRodDisassemblyHandler());
 		handlers.add(new RBMKWasteDecayHandler());
-		handlers.add(new ToolingHandler());
-		handlers.add(new ConstructionHandler());
 		handlers.add(new SatelliteHandler());
+		handlers.add(new GrenadeRecipeHandler());
+		handlers.add(new DairyHandler());
+		handlers.add(new AtmosphericCompressorHandler());
+		handlers.add(new AtmosphereRecipeHandler());
+		handlers.add(new BedrockDrillHandler());
+		handlers.add(new WaterTableHandler());
+		handlers.add(new OilExtractionHandler());
 
 		//universal boyes
 		handlers.add(new ZirnoxRecipeHandler());
@@ -70,7 +81,7 @@ public class NEIRegistry {
 		handlers.add(new ElectrolyserMetalHandler());
 		handlers.add(new AshpitHandler());
 		handlers.add(new ArcWelderHandler());
-		handlers.add(new SolderingStationHandler());
+		handlers.add(new VacuumCircuitHandler());
 		handlers.add(new ExposureChamberHandler());
 		handlers.add(new ArcFurnaceSolidHandler());
 		handlers.add(new ArcFurnaceFluidHandler());

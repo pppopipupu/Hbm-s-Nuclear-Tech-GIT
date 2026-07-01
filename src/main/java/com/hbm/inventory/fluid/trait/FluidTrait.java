@@ -13,10 +13,10 @@ import com.hbm.inventory.fluid.trait.FluidTraitSimple.*;
 import net.minecraft.world.World;
 
 public abstract class FluidTrait {
-	
-	public static List<Class<? extends FluidTrait>> traitList = new ArrayList();
+
+	public static List<Class<? extends FluidTrait>> traitList = new ArrayList<Class<? extends FluidTrait>>();
 	public static HashBiMap<String, Class<? extends FluidTrait>> traitNameMap = HashBiMap.create();
-	
+
 	static {
 		//complex traits with values
 		registerTrait("corrosive", FT_Corrosive.class);
@@ -30,6 +30,9 @@ public abstract class FluidTrait {
 		registerTrait("toxin", FT_Toxin.class);
 		registerTrait("ventradiation", FT_VentRadiation.class);
 		registerTrait("pheromone", FT_Pheromone.class);
+		registerTrait("rocket", FT_Rocket.class);
+		registerTrait("terraformer", FT_Terraformer.class);
+
 		//simple traits, "tags"
 		registerTrait("gaseous", FT_Gaseous.class);
 		registerTrait("gaseous_art", FT_Gaseous_ART.class);
@@ -42,8 +45,12 @@ public abstract class FluidTrait {
 		registerTrait("noid", FT_NoID.class);
 		registerTrait("nocontainer", FT_NoContainer.class);
 		registerTrait("unsiphonable", FT_Unsiphonable.class);
+		registerTrait("uk", FT_ULTRAKILL.class);	// x
+		registerTrait("explosive", FT_EXPLOSIVE.class);	// x
+
+
 	}
-	
+
 	private static void registerTrait(String name, Class<? extends FluidTrait> clazz) {
 		traitNameMap.put(name, clazz);
 		traitList.add(clazz);
@@ -53,12 +60,12 @@ public abstract class FluidTrait {
 	public void addInfo(List<String> info) { }
 	/* General names of simple traits which are displayed when holding shift */
 	public void addInfoHidden(List<String> info) { }
-	
+
 	public void onFluidRelease(World world, int x, int y, int z, FluidTank tank, int overflowAmount, FluidReleaseType type) { }
 
 	public void serializeJSON(JsonWriter writer) throws IOException { }
 	public void deserializeJSON(JsonObject obj) { }
-	
+
 	public static enum FluidReleaseType {
 		VOID,	//if fluid is deleted entirely, shouldn't be used
 		BURN,	//if fluid is burned or combusted
