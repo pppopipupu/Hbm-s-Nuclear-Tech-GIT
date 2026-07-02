@@ -617,7 +617,6 @@ public class Fluids {
 		metaOrder.add(HELIUM3);
 		metaOrder.add(HELIUM4);
 		metaOrder.add(OXYGEN);
-		metaOrder.add(XENON);
 		metaOrder.add(CHLORINE);
 		metaOrder.add(FLUORINE);
 		metaOrder.add(MERCURY);
