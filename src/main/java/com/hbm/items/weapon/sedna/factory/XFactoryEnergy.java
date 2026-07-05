@@ -173,7 +173,7 @@ public class XFactoryEnergy {
 		energy_tesla_ir_sub = new BulletConfig().setItem(EnumAmmo.CAPACITOR_IR).setupDamageClass(DamageClass.ELECTRIC).setBeam().setSpread(0.0F).setLife(3).setWear(3F).setRenderRotations(false).setDoesPenetrate(true)
 				.setDamage(0.5F).setOnBeamImpact(BulletConfig.LAMBDA_STANDARD_BEAM_HIT);		energy_pppop = new BulletConfig()
 				.setItem(ModItems.ingot_euphemium)
-				.setVel(4.0F)
+				.setVel(12.0F)
 				.setSpread(0.05F)
 				.setLife(25)
 				.setProjectiles(5)

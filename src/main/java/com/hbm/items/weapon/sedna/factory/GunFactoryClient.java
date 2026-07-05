@@ -249,16 +249,16 @@ public class GunFactoryClient {
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 			GL11.glDepthMask(false);
 
-			GL11.glScalef(1F/4F, 1F/8F, 1F/8F);
+			GL11.glScalef(1F/3F, 1F/5F, 1F/5F);
 			GL11.glScalef(-1, 1, 1);
-			GL11.glScalef(2, 2, 2);
+			GL11.glScalef(3, 3, 3);
 			
 			Tessellator tess = Tessellator.instance;
 			
 			if (superuser) {
-				float r1 = 0.25F;
+				float r1 = 0.1F;
 				float g1 = 0.0F;
-				float b1 = 0.45F;
+				float b1 = 0.22F;
 
 				tess.startDrawing(4);
 				tess.setColorRGBA_F(r1, g1, b1, 1.0F);
@@ -360,10 +360,10 @@ public class GunFactoryClient {
 				tess.draw();
 
 				GL11.glPushMatrix();
-				GL11.glScalef(1.6F, 3.2F, 3.2F);
-				float r2 = 0.9F;
+				GL11.glScalef(2.2F, 4.5F, 4.5F);
+				float r2 = 0.5F;
 				float g2 = 0.0F;
-				float b2 = 1.0F;
+				float b2 = 0.7F;
 				
 				double time = (double) bullet.ticksExisted + interp;
 				float pulse = 0.5F + (float) Math.sin(time * 0.8D) * 0.3F;
