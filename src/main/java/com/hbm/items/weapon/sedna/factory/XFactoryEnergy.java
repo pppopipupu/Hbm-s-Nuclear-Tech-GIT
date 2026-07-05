@@ -324,6 +324,9 @@ public class XFactoryEnergy {
 										.getMagazine(itemStack)
 										.getType(itemStack, lambdaContext.inventory);
 							}
+							if (entity instanceof EntityPlayer) {
+								com.hbm.util.AchievementHandler.grantAchievement((EntityPlayer) entity, MainRegistry.achPPPOP);
+							}
 							String snd = (currentBullet == energy_pppop) ? "hbm:weapon.zomgShoot" : "hbm:weapon.osiprShoot";
 							entity.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, snd, 1.0F, 1.0F);
 						})

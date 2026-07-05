@@ -226,6 +226,7 @@ public class MainRegistry {
 	public static Achievement achSoyuz;
 	public static Achievement achSpace;
 	public static Achievement achSchrab;
+	public static Achievement achPPPOP;
 	public static Achievement achAcidizer;
 	public static Achievement achRadium;
 	public static Achievement achTechnetium;
@@ -463,6 +464,7 @@ public class MainRegistry {
 		achFusion = new Achievement("achievement.fusion", "fusion", 13, -7, new ItemStack(ModBlocks.fusion_torus), achBismuth).initIndependentStat().setSpecial().registerStat();
 		achRedBalloons = new Achievement("achievement.redBalloons", "redBalloons", 11, 0, ModItems.missile_nuclear, achPolymer).initIndependentStat().setSpecial().registerStat();
 		achManhattan = new Achievement("achievement.manhattan", "manhattan", 11, -4, new ItemStack(ModBlocks.nuke_boy), achPolymer).initIndependentStat().setSpecial().registerStat();
+		achPPPOP = new Achievement("achievement.pppop", "pppop", 16, 3, ModItems.gun_pppop, null).initIndependentStat().setSpecial().registerStat();
 
 		AchievementPage.registerAchievementPage(new AchievementPage("Nuclear Tech", new Achievement[] {
 			achSacrifice,
@@ -529,6 +531,7 @@ public class MainRegistry {
 			achFusion,
 			achRedBalloons,
 			achManhattan,
+			achPPPOP,
 		}));
 
 		// MUST be initialized AFTER achievements!!

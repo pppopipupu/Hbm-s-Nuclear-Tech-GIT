@@ -4,7 +4,9 @@ import com.hbm.blocks.ModBlocks;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.items.ModItems;
 import com.hbm.main.MainRegistry;
+import com.hbm.explosion.ExplosionNukeSmall;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.Achievement;
 
@@ -50,14 +52,23 @@ public class AchievementHandler {
 		craftingAchievements.put(new ComparableStack(ModBlocks.machine_assembly_machine), MainRegistry.achAssembly);
 		craftingAchievements.put(new ComparableStack(ModItems.billet_pu_mix), MainRegistry.achChicagoPile);
 		craftingAchievements.put(new ComparableStack(ModItems.particle_digamma), MainRegistry.achOmega12);
+		craftingAchievements.put(new ComparableStack(ModItems.gun_pppop), MainRegistry.achPPPOP);
 	}
 
 	public static void fire(EntityPlayer player, ItemStack stack) {
-		if(player.worldObj.isRemote) return;
+		if(player == null || player.worldObj.isRemote) return;
 		ComparableStack comp = new ComparableStack(stack).makeSingular();
 		Achievement achievement = craftingAchievements.get(comp);
 		if(achievement != null) {
-			player.triggerAchievement(achievement);
+			grantAchievement(player, achievement);
+			if(achievement == MainRegistry.achPPPOP) {
+				ExplosionNukeSmall.explode(player.worldObj, player.posX, player.posY, player.posZ, ExplosionNukeSmall.PARAMS_MEDIUM);
+			}
 		}
+	}
+
+	public static void grantAchievement(EntityPlayer player, Achievement achievement) {
+		if(player == null || player.worldObj.isRemote) return;
+		player.triggerAchievement(achievement);
 	}
 }
