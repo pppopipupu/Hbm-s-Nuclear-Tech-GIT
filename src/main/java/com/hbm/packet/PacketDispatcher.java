@@ -63,10 +63,21 @@ public class PacketDispatcher {
 		wrapper.registerMessage(BiomeSyncPacket.Handler.class, BiomeSyncPacket.class, i++, Side.CLIENT);
 		//The not-so-convenient but not laggy one
 		wrapper.registerMessage(BufPacket.Handler.class, BufPacket.class, i++, Side.CLIENT);
+		//Same as above, but for entities
+		wrapper.registerMessage(EntityBufPacket.Handler.class, EntityBufPacket.class, i++, Side.CLIENT);
 		//Syncs server recipe configs to the client
 		wrapper.registerMessage(SerializableRecipePacket.Handler.class, SerializableRecipePacket.class, i++, Side.CLIENT);
 		//Syncing of NBT for guns
 		wrapper.registerMessage(HeldItemNBTPacket.Handler.class, HeldItemNBTPacket.class, i++, Side.CLIENT);
+
+		// Sends info about currently linked transporters to player
+		wrapper.registerMessage(TransporterLinkerPacket.Handler.class, TransporterLinkerPacket.class, i++, Side.CLIENT);
+
+		// Sync current GUI layer to server
+		wrapper.registerMessage(GuiLayerPacket.Handler.class, GuiLayerPacket.class, i++, Side.SERVER);
+
+		wrapper.registerMessage(SatActivatePacket.Handler.class, SatActivatePacket.class, i++, Side.SERVER);
+
 		//Syncs muzzle flashes of SEDNA guns for clients from other entities/players
 		wrapper.registerMessage(MuzzleFlashPacket.Handler.class, MuzzleFlashPacket.class, i++, Side.CLIENT);
 		//Sends custom container-bound payload between client and server, dual-use capable

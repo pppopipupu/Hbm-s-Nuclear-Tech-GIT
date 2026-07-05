@@ -44,7 +44,7 @@ public class PUREXRecipes extends GenericRecipes<PUREXRecipe> {
 						new OreDictStack(ZR.billet(), 3))
 				.inputFluids(new FluidStack(Fluids.NITRIC_ACID, 1_000), new FluidStack(Fluids.HYDROGEN, 4000))
 				.outputItems(new ItemStack(ModItems.billet_uzh, 4)));
-
+		
 		this.register((PUREXRecipe) new PUREXRecipe("purex.flashgold").setup(600, 1_000)
 				.inputItems(new OreDictStack(AU198.billet()),
 						new ComparableStack(ModItems.pellet_charged))
@@ -505,7 +505,7 @@ public class PUREXRecipes extends GenericRecipes<PUREXRecipe> {
 				.inputItems(new ComparableStack(ModBlocks.sand_mix, 1, EnumSandType.LEAD))
 				.inputFluids(new FluidStack(Fluids.WASTEGAS, 1_000))
 				.outputItems(new ItemStack(ModItems.nuclear_waste_vitrified)));
-
+		
 		this.register((PUREXRecipe) new PUREXRecipe("purex.vitsolid").setup(80, vitrification)
 				.inputItems(new ComparableStack(ModBlocks.sand_mix, 1, EnumSandType.LEAD), new ComparableStack(ModItems.nuclear_waste, 4))
 				.outputItems(new ItemStack(ModItems.nuclear_waste_vitrified, 4)));
@@ -540,6 +540,82 @@ public class PUREXRecipes extends GenericRecipes<PUREXRecipe> {
 				.outputItems(new ItemStack(ModItems.powder_schrabidium, 1),
 						new ItemStack(ModItems.nugget_technetium, 3),
 						new ItemStack(ModItems.nuclear_waste_tiny, 4))
+				.setIconToFirstIngredient());
+
+		// Spacey space stuff
+
+
+		this.register((PUREXRecipe) new PUREXRecipe("purex.watzpu241").setup(60, watzPower).setNameWrapper("purex.recycle").setGroup(autoWatz, this)
+				.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.PU241))
+				.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))
+				.outputItems(new ItemStack(ModItems.nugget_am242, 12),
+						new ItemStack(ModItems.nugget_am241, 6),
+						new ItemStack(ModItems.nuclear_waste, 2))
+				.outputFluids(new FluidStack(Fluids.WATZ, 1_000))
+				.setIconToFirstIngredient());
+		this.register((PUREXRecipe) new PUREXRecipe("purex.watzamf").setup(60, watzPower).setNameWrapper("purex.recycle").setGroup(autoWatz, this)
+				.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.AMF))
+				.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))
+				.outputItems(new ItemStack(ModItems.nugget_cm_mix, 6),
+						new ItemStack(ModItems.nugget_bk247, 3),
+						new ItemStack(ModItems.nuclear_waste, 2))
+				.outputFluids(new FluidStack(Fluids.WATZ, 1_000))
+				.setIconToFirstIngredient());
+		this.register((PUREXRecipe) new PUREXRecipe("purex.watzamrg").setup(60, watzPower).setNameWrapper("purex.recycle").setGroup(autoWatz, this)
+				.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.AMRG))
+				.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))
+				.outputItems(new ItemStack(ModItems.nugget_cm_mix, 12),
+						new ItemStack(ModItems.nugget_bk247, 6),
+						new ItemStack(ModItems.nuclear_waste, 2))
+				.outputFluids(new FluidStack(Fluids.WATZ, 1_000))
+				.setIconToFirstIngredient());
+		this.register((PUREXRecipe) new PUREXRecipe("purex.watzcmf").setup(60, watzPower).setNameWrapper("purex.recycle").setGroup(autoWatz, this)
+				.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.CMF))
+				.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))
+				.outputItems(new ItemStack(ModItems.nugget_cm_mix, 12),
+						new ItemStack(ModItems.nugget_es253, 3),
+						new ItemStack(ModItems.nuclear_waste, 2))
+				.outputFluids(new FluidStack(Fluids.WATZ, 1_000))
+				.setIconToFirstIngredient());
+		this.register((PUREXRecipe) new PUREXRecipe("purex.watzcmrg").setup(60, watzPower).setNameWrapper("purex.recycle").setGroup(autoWatz, this)
+				.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.CMRG))
+				.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))
+				.outputItems(new ItemStack(ModItems.nugget_cm_mix, 12),
+						new ItemStack(ModItems.nugget_cf252, 3),
+						new ItemStack(ModItems.nuclear_waste, 2))
+				.outputFluids(new FluidStack(Fluids.WATZ, 1_000))
+				.setIconToFirstIngredient());
+		this.register((PUREXRecipe) new PUREXRecipe("purex.watzbk247").setup(60, watzPower).setNameWrapper("purex.recycle").setGroup(autoWatz, this)
+				.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.BK247))
+				.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))
+				.outputItems(new ItemStack(ModItems.nugget_am_mix, 12),
+						new ItemStack(ModItems.nugget_pu239, 3),
+						new ItemStack(ModItems.nuclear_waste, 2))
+				.outputFluids(new FluidStack(Fluids.WATZ, 1_000))
+				.setIconToFirstIngredient());
+		this.register((PUREXRecipe) new PUREXRecipe("purex.watzcf251").setup(60, watzPower).setNameWrapper("purex.recycle").setGroup(autoWatz, this)
+				.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.CF251))
+				.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))
+				.outputItems(new ItemStack(ModItems.nugget_cm_mix, 3),
+						new ItemStack(ModItems.nugget_cf251, 6),
+						new ItemStack(ModItems.nuclear_waste, 2))
+				.outputFluids(new FluidStack(Fluids.WATZ, 1_000))
+				.setIconToFirstIngredient());
+		this.register((PUREXRecipe) new PUREXRecipe("purex.watzcf252").setup(60, watzPower).setNameWrapper("purex.recycle").setGroup(autoWatz, this)
+				.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.CF252))
+				.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))
+				.outputItems(new ItemStack(ModItems.nugget_cf252, 3),
+						new ItemStack(ModItems.nugget_cm_mix, 6),
+						new ItemStack(ModItems.nuclear_waste, 2))
+				.outputFluids(new FluidStack(Fluids.WATZ, 1_000))
+				.setIconToFirstIngredient());
+		this.register((PUREXRecipe) new PUREXRecipe("purex.watzes253").setup(60, watzPower).setNameWrapper("purex.recycle").setGroup(autoWatz, this)
+				.inputItems(new ComparableStack(ModItems.watz_pellet_depleted, 1, EnumWatzType.ES253))
+				.inputFluids(new FluidStack(Fluids.KEROSENE, 500), new FluidStack(Fluids.NITRIC_ACID, 250))
+				.outputItems(new ItemStack(ModItems.nugget_es253, 3),
+						new ItemStack(ModItems.nugget_cf252, 3),
+						new ItemStack(ModItems.nuclear_waste, 24))
+				.outputFluids(new FluidStack(Fluids.WATZ, 1_000))
 				.setIconToFirstIngredient());
 	}
 }

@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.generic.BlockDoorGeneric;
+import com.hbm.handler.atmosphere.IBlockSealable;
 import com.hbm.lib.Library;
 import com.hbm.main.MainRegistry;
 import com.hbm.render.anim.HbmAnimations.Animation;
@@ -144,9 +145,11 @@ public class TileEntityDoorGeneric extends TileEntityLockableBase {
 			}
 			if(state == STATE_OPENING && openTicks == getDoorType().timeToOpen()) {
 				state = STATE_OPEN;
+				((IBlockSealable)blockType).updateSealedState(worldObj, xCoord, yCoord, zCoord);
 			}
 			if(state == STATE_CLOSING && openTicks == 0) {
 				state = STATE_CLOSED;
+				((IBlockSealable)blockType).updateSealedState(worldObj, xCoord, yCoord, zCoord);
 			}
 
 			this.networkPackNT(100);

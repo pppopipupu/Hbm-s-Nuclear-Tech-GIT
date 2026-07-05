@@ -3,6 +3,7 @@ package com.hbm.entity.mob;
 import com.hbm.entity.item.EntityItemBuoyant;
 import com.hbm.items.ModItems;
 
+import api.hbm.entity.ISuffocationImmune;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.EntityWaterMob;
@@ -17,7 +18,7 @@ import net.minecraft.world.World;
  *
  * @author hbm
  */
-public class EntityPlasticBag extends EntityWaterMob {
+public class EntityPlasticBag extends EntityWaterMob implements ISuffocationImmune {
 
 	public float rotation;
 	public float prevRotation;

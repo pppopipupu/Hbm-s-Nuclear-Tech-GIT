@@ -34,15 +34,14 @@ public class TileEntityRBMKCooler extends TileEntityRBMKBase implements IFluidSt
 		this.tanks[0] = new FluidTank(Fluids.PERFLUOROMETHYL_COLD, 4_000);
 		this.tanks[1] = new FluidTank(Fluids.PERFLUOROMETHYL, 4_000);
 	}
-
 	@Override
 	public void updateEntity() {
 
 		if(!worldObj.isRemote) {
-
+			
 			if(timer <= 0) {
 				timer = 60;
-
+				
 				for(int i = 0; i < 25; i++) {
 					int x = xCoord - 2 + i / 5;
 					int z = zCoord - 2 + i % 5;
@@ -53,15 +52,15 @@ public class TileEntityRBMKCooler extends TileEntityRBMKBase implements IFluidSt
 						neighborCache[i] = null;
 					}
 				}
-
+				
 			} else {
 				timer--;
 			}
-
+			
 			if(tanks[0].getFill() >= 50 && tanks[1].getMaxFill() - tanks[1].getFill() >= 50) {
 				tanks[0].setFill(tanks[0].getFill() - 50);
 				tanks[1].setFill(tanks[1].getFill() + 50);
-
+				
 				for(TileEntityRBMKBase neighbor : neighborCache) {
 					if(neighbor != null) {
 						neighbor.heat -= 200;
@@ -71,7 +70,7 @@ public class TileEntityRBMKCooler extends TileEntityRBMKBase implements IFluidSt
 			}
 
 			this.trySubscribe(tanks[0].getTankType(), worldObj, xCoord, yCoord - 1, zCoord, Library.NEG_Y);
-
+			
 			if(this.tanks[1].getFill() > 0) for(DirPos pos : getOutputPos()) {
 				this.tryProvide(this.tanks[1], worldObj, pos);
 			}
@@ -82,7 +81,7 @@ public class TileEntityRBMKCooler extends TileEntityRBMKBase implements IFluidSt
 	}
 
 	protected DirPos[] getOutputPos() {
-
+		
 		if(worldObj.getBlock(xCoord, yCoord - 1, zCoord) == ModBlocks.rbmk_loader) {
 			return new DirPos[] {
 					new DirPos(this.xCoord, this.yCoord + RBMKDials.getColumnHeight(worldObj) + 1, this.zCoord, Library.POS_Y),

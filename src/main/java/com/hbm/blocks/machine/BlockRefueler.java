@@ -1,9 +1,14 @@
 package com.hbm.blocks.machine;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.hbm.blocks.ILookOverlay;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.items.machine.IItemFluidIdentifier;
 import com.hbm.items.machine.ItemFluidIDMulti;
 import com.hbm.tileentity.machine.TileEntityRefueler;
+import com.hbm.util.i18n.I18nUtil;
 
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -15,8 +20,9 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
-public class BlockRefueler extends BlockContainer {
+public class BlockRefueler extends BlockContainer implements ILookOverlay {
 
 	public BlockRefueler(Material mat) {
 		super(mat);
@@ -26,37 +32,37 @@ public class BlockRefueler extends BlockContainer {
 	public TileEntity createNewTileEntity(World world, int meta) {
 		return new TileEntityRefueler();
 	}
-
+	
 	@Override
 	public int getRenderType() {
 		return -1;
 	}
-
+	
 	@Override
 	public boolean isOpaqueCube() {
 		return false;
 	}
-
+	
 	@Override
 	public boolean renderAsNormalBlock() {
 		return false;
 	}
-
+	
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
 		if(!world.isRemote && !player.isSneaking()) {
 			if(player.getHeldItem() != null && player.getHeldItem().getItem() instanceof IItemFluidIdentifier) {
 				TileEntity te = world.getTileEntity(x, y, z);
-
+				
 				if(!(te instanceof TileEntityRefueler))
 					return false;
-
+				
 				TileEntityRefueler refueler = (TileEntityRefueler) te;
 				FluidType type = ((IItemFluidIdentifier) player.getHeldItem().getItem()).getType(world, x, y, z, player.getHeldItem());
 				refueler.tank.setTankType(type);
 				refueler.markDirty();
                 ItemFluidIDMulti.chatOnChangeType(player, "chat.refueler.abbr", type);
-
+				
 				return true;
 			}
 
@@ -69,7 +75,7 @@ public class BlockRefueler extends BlockContainer {
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack) {
 		int i = MathHelper.floor_double(player.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
-
+		
 		if(i == 0) world.setBlockMetadataWithNotify(x, y, z, 2, 2);
 		if(i == 1) world.setBlockMetadataWithNotify(x, y, z, 5, 2);
 		if(i == 2) world.setBlockMetadataWithNotify(x, y, z, 3, 2);
@@ -79,7 +85,7 @@ public class BlockRefueler extends BlockContainer {
 	@Override
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z) {
 		float f = 0.0625F;
-
+		
 		switch(world.getBlockMetadata(x, y, z)) {
 		case 2: this.setBlockBounds(0F, 0F, 12 * f, 1F, 1F, 1F); break;
 		case 3: this.setBlockBounds(0F, 0F, 0F, 1F, 1F, 4 * f); break;
@@ -95,4 +101,18 @@ public class BlockRefueler extends BlockContainer {
 		return AxisAlignedBB.getBoundingBox(x + this.minX, y + this.minY, z + this.minZ, x + this.maxX, y + this.maxY, z + this.maxZ);
 	}
 
+	@Override
+	public void printHook(RenderGameOverlayEvent.Pre event, World world, int x, int y, int z) {
+		TileEntity te = world.getTileEntity(x, y, z);
+
+		if(!(te instanceof TileEntityRefueler))
+			return;
+
+		TileEntityRefueler refueler = (TileEntityRefueler) te;
+
+		List<String> text = new ArrayList<>();
+		text.add("&[" + refueler.tank.getTankType().getColor() + "&]" + refueler.tank.getTankType().getLocalizedName());
+		ILookOverlay.printGeneric(event, I18nUtil.resolveKey(getUnlocalizedName() + ".name"), 0xffff00, 0x404000, text);
+	}
+	
 }

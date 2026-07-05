@@ -8,6 +8,7 @@ import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.generic.BlockDepth;
 import com.hbm.blocks.generic.BlockBedrockOreTE.TileEntityBedrockOre;
 import com.hbm.blocks.network.CraneInserter;
+import com.hbm.config.WorldConfig;
 import com.hbm.entity.item.EntityMovingItem;
 import com.hbm.interfaces.IControlReceiver;
 import com.hbm.inventory.UpgradeManagerNT;
@@ -271,7 +272,9 @@ public class TileEntityMachineExcavator extends TileEntityMachineBase implements
 						Block b = worldObj.getBlock(x, y, z);
 
 						if(b == ModBlocks.ore_bedrock) {
-							combinedHardness = 3600;
+							combinedHardness = 60 * 20;
+							if(WorldConfig.newBedrockOres) combinedHardness *= 3;
+
 							bedrockOre = new BlockPos(x, y, z);
 							bedrockDrilling = true;
 							enableCrusher = false;
@@ -342,7 +345,7 @@ public class TileEntityMachineExcavator extends TileEntityMachineBase implements
 			stacks.add(stack);
 
 			if(stack.getItem() == ModItems.bedrock_ore_base) {
-				ItemBedrockOreBase.setOreAmount(stack, pos.getX(), pos.getZ(), 1D + this.getInstalledDrill().fortune * 0.1D);
+				ItemBedrockOreBase.setOreAmount(worldObj, stack, pos.getX(), pos.getZ(), 1D + this.getInstalledDrill().fortune * 0.1D);
 			}
 
 			ForgeDirection dir = ForgeDirection.getOrientation(this.getBlockMetadata() - 10);

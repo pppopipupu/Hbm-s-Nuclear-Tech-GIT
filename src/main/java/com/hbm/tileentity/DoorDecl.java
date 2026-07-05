@@ -761,7 +761,8 @@ public abstract class DoorDecl {
 		return f;
 	}
 
-	public ResourceLocation[] getSEDNASkins() { return null; }
+	@SideOnly(Side.CLIENT) public ResourceLocation[] getSEDNASkins() { return null; }
+
 	public boolean hasSkins() { return getSkinCount() > 0; }
 
 	public int getSkinCount() { return 0; }

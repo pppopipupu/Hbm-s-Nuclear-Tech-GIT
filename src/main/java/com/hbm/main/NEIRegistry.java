@@ -9,7 +9,7 @@ import java.util.List;
 
 public class NEIRegistry {
 
-	public static List<TemplateRecipeHandler> handlers = new ArrayList();
+	public static List<TemplateRecipeHandler> handlers = new ArrayList<>();
 
 	public static List<TemplateRecipeHandler> listAllHandlers() {
 
@@ -37,6 +37,8 @@ public class NEIRegistry {
 		handlers.add(new CyclotronRecipeHandler());
 		handlers.add(new VacuumRecipeHandler());
 		handlers.add(new CrackingHandler());
+		handlers.add(new AlkylationHandler());
+		handlers.add(new CryoHandler());
 		handlers.add(new RadiolysisRecipeHandler());
 		handlers.add(new ReformingHandler());
 		handlers.add(new HydrotreatingHandler());
@@ -52,6 +54,12 @@ public class NEIRegistry {
 		handlers.add(new RBMKWasteDecayHandler());
 		handlers.add(new SatelliteHandler());
 		handlers.add(new GrenadeRecipeHandler());
+		handlers.add(new DairyHandler());
+		handlers.add(new AtmosphericCompressorHandler());
+		handlers.add(new AtmosphereRecipeHandler());
+		handlers.add(new BedrockDrillHandler());
+		handlers.add(new WaterTableHandler());
+		handlers.add(new OilExtractionHandler());
 
 		//universal boyes
 		handlers.add(new ZirnoxRecipeHandler());
@@ -73,6 +81,7 @@ public class NEIRegistry {
 		handlers.add(new ElectrolyserMetalHandler());
 		handlers.add(new AshpitHandler());
 		handlers.add(new ArcWelderHandler());
+		handlers.add(new VacuumCircuitHandler());
 		handlers.add(new ExposureChamberHandler());
 		handlers.add(new ArcFurnaceSolidHandler());
 		handlers.add(new ArcFurnaceFluidHandler());

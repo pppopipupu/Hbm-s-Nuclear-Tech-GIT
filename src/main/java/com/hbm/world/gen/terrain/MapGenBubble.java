@@ -30,6 +30,7 @@ public class MapGenBubble extends MapGenBaseMeta {
 	public boolean fuzzy;
 
 	public Block block;
+	public byte meta = 0;
 	public Block replace = Blocks.stone;
 
 	public Predicate<BiomeGenBase> canSpawn;
@@ -80,6 +81,7 @@ public class MapGenBubble extends MapGenBaseMeta {
 					if(fuzzy) rSqr -= rand.nextDouble() * radiusSqr / 3;
 					if(rSqr < radiusSqr) {
 						blocks[index] = block;
+						metas[index] = meta;
 					}
 				}
 			}
@@ -105,7 +107,7 @@ public class MapGenBubble extends MapGenBaseMeta {
 
 			if(rx >= 0 && rx < 16 && rz >= 0 && rz < 16) {
 				// find ground level
-				for(int y = 127; y >= 0; y--) {
+				for(int y = 127; y >= 4; y--) {
 					int index = (rx * 16 + rz) * 256 + y;
 
 					if(blocks[index] != null && blocks[index].isOpaqueCube()) {

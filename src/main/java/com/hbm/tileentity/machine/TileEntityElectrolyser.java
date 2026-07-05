@@ -68,7 +68,7 @@ public class TileEntityElectrolyser extends TileEntityMachineBase implements IEn
 	public MaterialStack leftStack;
 	public MaterialStack rightStack;
 	public int maxMaterial = MaterialShapes.BLOCK.q(16);
-	
+
 	private int lastSelectedGUI = 0;
 
 	public FluidTank[] tanks;
@@ -135,7 +135,7 @@ public class TileEntityElectrolyser extends TileEntityMachineBase implements IEn
 					if(tanks[2].getFill() > 0) this.tryProvide(tanks[2], worldObj, pos.getX(), pos.getY(), pos.getZ(), pos.getDir());
 				}
 			}
-            
+
             this.updateDuration();
 
 			upgradeManager.checkSlots(slots, 1, 2);
@@ -147,23 +147,23 @@ public class TileEntityElectrolyser extends TileEntityMachineBase implements IEn
 			usageFluid = usageFluidBase * (4 - powerLevel) / 4 * (speedLevel + 1);
             this.processOreTime = this.processOreTime * ((4 - speedLevel) / 4);
             this.processFluidTime = this.processFluidTime * ((4 - speedLevel) / 4);
-            
+
             for(int i = 0; i < ItemMachineUpgrade.OverdriveSpeeds[overLevel]; i++) {
                 if (this.canProcessFluid()) {
                     this.progressFluid++;
                     this.power -= this.usageFluid;
-                    
+
                     if (this.progressFluid >= this.processFluidTime) {
                         this.processFluids();
                         this.progressFluid = 0;
                         this.markChanged();
                     }
                 }
-                
+
                 if (this.canProcessMetal()) {
                     this.progressOre++;
                     this.power -= this.usageOre;
-                    
+
                     if (this.progressOre >= this.processOreTime) {
                         this.processMetal();
                         this.progressOre = 0;
@@ -171,16 +171,16 @@ public class TileEntityElectrolyser extends TileEntityMachineBase implements IEn
                     }
                 }
             }    
-            
+
 			if(this.leftStack != null) {
-                
+
 				ForgeDirection dir = ForgeDirection.getOrientation(this.getBlockMetadata() - BlockDummyable.offset).getOpposite();
 				List<MaterialStack> toCast = new ArrayList();
 				toCast.add(this.leftStack);
-                
+
 				Vec3 impact = Vec3.createVectorHelper(0, 0, 0);
 				MaterialStack didPour = CrucibleUtil.pourFullStack(worldObj, xCoord + 0.5D + dir.offsetX * 5.875D, yCoord + 2D, zCoord + 0.5D + dir.offsetZ * 5.875D, 6, true, toCast, MaterialShapes.INGOT.q(overLevel > 0 ? overLevel * 3 : 1), impact);
-                
+
 				if(didPour != null) {
 					NBTTagCompound data = new NBTTagCompound();
 					data.setString("type", "foundry");
@@ -190,20 +190,20 @@ public class TileEntityElectrolyser extends TileEntityMachineBase implements IEn
 					data.setFloat("base", 0.625F);
 					data.setFloat("len", Math.max(1F, yCoord - (float) (Math.ceil(impact.yCoord) - 0.875) + 2));
 					PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, xCoord + 0.5D + dir.offsetX * 5.875D, yCoord + 2, zCoord + 0.5D + dir.offsetZ * 5.875D), new TargetPoint(worldObj.provider.dimensionId, xCoord + 0.5, yCoord + 1, zCoord + 0.5, 50));
-                    
+
 					if(this.leftStack.amount <= 0) this.leftStack = null;
 				}
 			}
-            
+
 			if(this.rightStack != null) {
-                
+
 				ForgeDirection dir = ForgeDirection.getOrientation(this.getBlockMetadata() - BlockDummyable.offset);
 				List<MaterialStack> toCast = new ArrayList();
 				toCast.add(this.rightStack);
-                
+
 				Vec3 impact = Vec3.createVectorHelper(0, 0, 0);
 				MaterialStack didPour = CrucibleUtil.pourFullStack(worldObj, xCoord + 0.5D + dir.offsetX * 5.875D, yCoord + 2D, zCoord + 0.5D + dir.offsetZ * 5.875D, 6, true, toCast, MaterialShapes.INGOT.q(overLevel > 0 ? overLevel * 3 : 1), impact);
-                
+
 				if(didPour != null) {
 					NBTTagCompound data = new NBTTagCompound();
 					data.setString("type", "foundry");
@@ -213,29 +213,33 @@ public class TileEntityElectrolyser extends TileEntityMachineBase implements IEn
 					data.setFloat("base", 0.625F);
 					data.setFloat("len", Math.max(1F, yCoord - (float) (Math.ceil(impact.yCoord) - 0.875) + 2));
 					PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, xCoord + 0.5D + dir.offsetX * 5.875D, yCoord + 2, zCoord + 0.5D + dir.offsetZ * 5.875D), new TargetPoint(worldObj.provider.dimensionId, xCoord + 0.5, yCoord + 1, zCoord + 0.5, 50));
-                    
+
 					if(this.rightStack.amount <= 0) this.rightStack = null;
 				}
 			}
-            
+
 			this.networkPackNT(50);
 		}
 	}
-    
+
 	public DirPos[] getConPos() {
 		ForgeDirection dir = ForgeDirection.getOrientation(this.getBlockMetadata() - 10);
 		ForgeDirection rot = dir.getRotation(ForgeDirection.UP);
-        
+
 		return new DirPos[] {
 				new DirPos(xCoord - dir.offsetX * 6, yCoord, zCoord - dir.offsetZ * 6, dir.getOpposite()),
 				new DirPos(xCoord - dir.offsetX * 6 + rot.offsetX, yCoord, zCoord - dir.offsetZ * 6 + rot.offsetZ, dir.getOpposite()),
 				new DirPos(xCoord - dir.offsetX * 6 - rot.offsetX, yCoord, zCoord - dir.offsetZ * 6 - rot.offsetZ, dir.getOpposite()),
 				new DirPos(xCoord + dir.offsetX * 6, yCoord, zCoord + dir.offsetZ * 6, dir),
 				new DirPos(xCoord + dir.offsetX * 6 + rot.offsetX, yCoord, zCoord + dir.offsetZ * 6 + rot.offsetZ, dir),
-				new DirPos(xCoord + dir.offsetX * 6 - rot.offsetX, yCoord, zCoord + dir.offsetZ * 6 - rot.offsetZ, dir)
+				new DirPos(xCoord + dir.offsetX * 6 - rot.offsetX, yCoord, zCoord + dir.offsetZ * 6 - rot.offsetZ, dir),
+				new DirPos(xCoord - rot.offsetX * 4, yCoord, zCoord - rot.offsetZ * 4, rot.getOpposite()),
+				new DirPos(xCoord + rot.offsetX * 2, yCoord, zCoord + rot.offsetZ * 2, rot),
+				new DirPos(xCoord - dir.offsetX * 5 + rot.offsetX * 2, yCoord, zCoord - dir.offsetZ * 5 + rot.offsetZ * 2, rot),
+				new DirPos(xCoord + dir.offsetX * 5 + rot.offsetX * 2, yCoord, zCoord + dir.offsetZ * 5 + rot.offsetZ * 2, rot),
 		};
 	}
-    
+
 	@Override
 	public void serialize(ByteBuf buf) {
 		super.serialize(buf);
@@ -259,7 +263,7 @@ public class TileEntityElectrolyser extends TileEntityMachineBase implements IEn
 		}
 		buf.writeInt(lastSelectedGUI);
 	}
-    
+
 	@Override
 	public void deserialize(ByteBuf buf) {
 		super.deserialize(buf);
@@ -396,14 +400,14 @@ public class TileEntityElectrolyser extends TileEntityMachineBase implements IEn
 		this.tanks[3].setFill(this.tanks[3].getFill() - 100);
 		this.decrStackSize(14, 1);
 	}
-    
+
     public void updateDuration() {
         ElectrolysisMetalRecipe metal = ElectrolyserMetalRecipes.getRecipe(slots[14]);
         ElectrolysisRecipe fluid = ElectrolyserFluidRecipes.getRecipe(tanks[0].getTankType());
         this.processOreTime = metal != null ? metal.duration : 400;
         this.processFluidTime = fluid != null ? fluid.duration : 100;
     }
-    
+
     public boolean setFluidRC(FluidType type) {
         ElectrolysisRecipe recipe = ElectrolyserFluidRecipes.recipes.get(type);
         if(recipe == null) return false;

@@ -43,6 +43,7 @@ public class TileEntityGeiger extends TileEntity implements SimpleComponent, IIn
 		if(timer % 5 == 0) {
 			
 			if(ticker > 0) {
+				if(worldObj.rand.nextFloat() > ticker) return;
 				List<Integer> list = new ArrayList<Integer>();
 
 				if(ticker < 1) list.add(0);

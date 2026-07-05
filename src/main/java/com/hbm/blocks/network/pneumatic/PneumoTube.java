@@ -4,7 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.hbm.blocks.ITooltipProvider;
+import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
+import com.hbm.inventory.fluid.trait.FT_Corrosive;
+import com.hbm.inventory.fluid.trait.FT_Gaseous;
+import com.hbm.inventory.fluid.trait.FluidTraitSimple.FT_Amat;
+import com.hbm.inventory.fluid.trait.FluidTraitSimple.FT_Gaseous_ART;
+import com.hbm.items.machine.IItemFluidIdentifier;
 import com.hbm.lib.Library;
 import com.hbm.lib.RefStrings;
 import com.hbm.main.MainRegistry;
@@ -26,6 +32,10 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.ChatStyle;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -40,7 +50,7 @@ public class PneumoTube extends BlockContainer implements IToolable, ITooltipPro
 	@SideOnly(Side.CLIENT) public IIcon iconConnector;
 	@SideOnly(Side.CLIENT) public IIcon iconStraight;
 	@SideOnly(Side.CLIENT) public IIcon activeIcon;
-	
+
 	public boolean[] renderSides = new boolean[] {true, true, true, true, true, true};
 
 	public PneumoTube() {
@@ -67,7 +77,7 @@ public class PneumoTube extends BlockContainer implements IToolable, ITooltipPro
 		iconOut = reg.registerIcon(RefStrings.MODID + ":pneumatic_tube_out");
 		iconConnector = reg.registerIcon(RefStrings.MODID + ":pneumatic_tube_connector");
 		iconStraight = reg.registerIcon(RefStrings.MODID + ":pneumatic_tube_straight");
-		
+
 		this.activeIcon = this.baseIcon = this.blockIcon;
 	}
 
@@ -82,7 +92,7 @@ public class PneumoTube extends BlockContainer implements IToolable, ITooltipPro
 	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side) {
 		return renderSides[side % 6];
 	}
-	
+
 	public void resetRenderSides() {
 		for(int i = 0; i < 6; i++) renderSides[i] = true;
 	}
@@ -95,7 +105,23 @@ public class PneumoTube extends BlockContainer implements IToolable, ITooltipPro
 			if(tile instanceof TileEntityPneumoTube) {
 				TileEntityPneumoTube tube = (TileEntityPneumoTube) tile;
 				if(tube.isCompressor()) {
-					FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, x, y, z);
+					if(player.getHeldItem() != null && player.getHeldItem().getItem() instanceof IItemFluidIdentifier) {
+						if(!world.isRemote) {
+							FluidType type = ((IItemFluidIdentifier) player.getHeldItem().getItem()).getType(world, x, y, z, player.getHeldItem());
+							boolean canUse = !type.hasTrait(FT_Amat.class) && !type.hasTrait(FT_Corrosive.class) && (type.hasTrait(FT_Gaseous.class) || type.hasTrait(FT_Gaseous_ART.class));
+
+							if(canUse) {
+								tube.compair.setTankType(type);
+								tube.markDirty();
+								player.addChatComponentMessage(new ChatComponentText("Changed type to ").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)).appendSibling(new ChatComponentTranslation(type.getConditionalName())).appendSibling(new ChatComponentText("!")));
+							} else {
+								player.addChatComponentMessage(new ChatComponentText("Invalid gas!").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)));
+							}
+						}
+					} else {
+						FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, x, y, z);
+					}
+
 					return true;
 				} else if(tube.isEndpoint()) {
 					FMLNetworkHandler.openGui(player, MainRegistry.instance, 1, world, x, y, z);
@@ -107,17 +133,17 @@ public class PneumoTube extends BlockContainer implements IToolable, ITooltipPro
 			return false;
 		}
 	}
-	
+
 	@Override
 	public boolean onScrew(World world, EntityPlayer player, int x, int y, int z, int side, float fX, float fY, float fZ, ToolType tool) {
 		if(tool != ToolType.SCREWDRIVER) return false;
 		if(world.isRemote) return true;
-		
+
 		TileEntityPneumoTube tube = (TileEntityPneumoTube) world.getTileEntity(x, y, z);
 
 		ForgeDirection rot = player.isSneaking() ? tube.ejectionDir : tube.insertionDir;
 		ForgeDirection oth = player.isSneaking() ? tube.insertionDir : tube.ejectionDir;
-		
+
 		for(int i = 0; i < 7; i++) {
 			rot = ForgeDirection.getOrientation((rot.ordinal() + 1) % 7);
 			if(rot == ForgeDirection.UNKNOWN) break; //unknown is always valid, simply disables this part
@@ -126,12 +152,12 @@ public class PneumoTube extends BlockContainer implements IToolable, ITooltipPro
 			if(tile instanceof TileEntityPneumoTube) continue;
 			if(tile instanceof IInventory) break; //valid if connected to an IInventory
 		}
-		
+
 		if(player.isSneaking()) tube.ejectionDir = rot; else tube.insertionDir = rot;
-		
+
 		tube.markDirty();
 		if(world instanceof WorldServer) ((WorldServer) world).getPlayerManager().markBlockForUpdate(x, y, z);
-		
+
 		return true;
 	}
 
@@ -139,10 +165,10 @@ public class PneumoTube extends BlockContainer implements IToolable, ITooltipPro
 	public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB entityBounding, List list, Entity entity) {
 
 		List<AxisAlignedBB> bbs = new ArrayList();
-		
+
 		double lower = 0.3125D;
 		double upper = 0.6875D;
-		
+
 		bbs.add(AxisAlignedBB.getBoundingBox(x + lower, y + lower, z + lower, x + upper, y + upper, z + upper));
 
 		if(canConnectTo(world, x, y, z, Library.POS_X) || canConnectToAir(world, x, y, z, Library.POS_X)) bbs.add(AxisAlignedBB.getBoundingBox(x + upper, y + lower, z + lower, x + 1, y + upper, z + upper));
@@ -177,9 +203,8 @@ public class PneumoTube extends BlockContainer implements IToolable, ITooltipPro
 
 		float lower = 0.3125F;
 		float upper = 0.6875F;
-		
-		TileEntity tile = world.getTileEntity(x, y, z);
-		TileEntityPneumoTube tube = tile instanceof TileEntityPneumoTube ? (TileEntityPneumoTube) tile : null;
+
+		TileEntity te = world.getTileEntity(x, y, z);
 
 		boolean nX = canConnectTo(world, x, y, z, Library.NEG_X) || canConnectToAir(world, x, y, z, Library.NEG_X);
 		boolean pX = canConnectTo(world, x, y, z, Library.POS_X) || canConnectToAir(world, x, y, z, Library.POS_X);
@@ -187,8 +212,9 @@ public class PneumoTube extends BlockContainer implements IToolable, ITooltipPro
 		boolean pY = canConnectTo(world, x, y, z, Library.POS_Y) || canConnectToAir(world, x, y, z, Library.POS_Y);
 		boolean nZ = canConnectTo(world, x, y, z, Library.NEG_Z) || canConnectToAir(world, x, y, z, Library.NEG_Z);
 		boolean pZ = canConnectTo(world, x, y, z, Library.POS_Z) || canConnectToAir(world, x, y, z, Library.POS_Z);
-		
-		if(tube != null) {
+
+		if(te instanceof TileEntityPneumoTube) {
+			TileEntityPneumoTube tube = (TileEntityPneumoTube) te;
 			nX |= tube.insertionDir == Library.NEG_X || tube.ejectionDir == Library.NEG_X;
 			pX |= tube.insertionDir == Library.POS_X || tube.ejectionDir == Library.POS_X;
 			nY |= tube.insertionDir == Library.NEG_Y || tube.ejectionDir == Library.NEG_Y;
@@ -196,7 +222,7 @@ public class PneumoTube extends BlockContainer implements IToolable, ITooltipPro
 			nZ |= tube.insertionDir == Library.NEG_Z || tube.ejectionDir == Library.NEG_Z;
 			pZ |= tube.insertionDir == Library.POS_Z || tube.ejectionDir == Library.POS_Z;
 		}
-		
+
 		this.setBlockBounds(
 				nX ? 0F : lower,
 				nY ? 0F : lower,
@@ -214,15 +240,17 @@ public class PneumoTube extends BlockContainer implements IToolable, ITooltipPro
 	}
 
 	public boolean canConnectToAir(IBlockAccess world, int x, int y, int z, ForgeDirection dir) {
+		FluidType air = Fluids.AIR;
 		TileEntity te = world.getTileEntity(x, y, z);
-		TileEntityPneumoTube tube = te instanceof TileEntityPneumoTube ? (TileEntityPneumoTube) te : null;
-		if(tube != null) {
+		if(te instanceof TileEntityPneumoTube) {
+			TileEntityPneumoTube tube = (TileEntityPneumoTube) te;
 			if(!tube.isCompressor()) return false;
 			if(tube.ejectionDir == dir || tube.insertionDir == dir) return false;
+			air = tube.compair.getTankType();
 		}
 		TileEntity tile = world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
 		if(tile instanceof TileEntityPneumoTube) return false;
-		return Library.canConnectFluid(world, x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ, dir, Fluids.AIR);
+		return Library.canConnectFluid(world, x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ, dir, air);
 	}
 
 	@Override

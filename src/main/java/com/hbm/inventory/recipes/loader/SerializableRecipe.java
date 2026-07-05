@@ -84,9 +84,12 @@ public abstract class SerializableRecipe {
 		recipeHandlers.add(new AmmoPressRecipes());
 		//AFTER Assembler
 		recipeHandlers.add(new AnvilRecipes());
+		recipeHandlers.add(new AlkylationRecipes());
+		recipeHandlers.add(new VacuumCircuitRecipes());
 		recipeHandlers.add(new PedestalRecipes());
 		recipeHandlers.add(new AnnihilatorRecipes());
-		
+		recipeHandlers.add(new AtmosphereRecipes());
+
 		//GENERIC
 		recipeHandlers.add(CrucibleRecipes.INSTANCE);
 		recipeHandlers.add(AssemblyMachineRecipes.INSTANCE);
@@ -98,6 +101,8 @@ public abstract class SerializableRecipe {
 		recipeHandlers.add(BlastFurnaceRecipesNT.INSTANCE);
 
 		recipeHandlers.add(new MatDistribution());
+		recipeHandlers.add(new CryoRecipes());
+
 		recipeHandlers.add(new CustomMachineRecipes());
 		//AFTER MatDistribution
 		recipeHandlers.add(new ArcFurnaceRecipes());
@@ -118,7 +123,7 @@ public abstract class SerializableRecipe {
 		MainRegistry.logger.info("Starting recipe init!");
 
 		GenericRecipes.clearPools();
-		
+
 		for(SerializableRecipe recipe : recipeHandlers) {
 
 			recipe.deleteRecipes();

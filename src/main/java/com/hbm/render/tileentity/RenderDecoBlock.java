@@ -8,10 +8,13 @@ import com.hbm.main.ResourceManager;
 import com.hbm.render.model.ModelBroadcaster;
 import com.hbm.render.model.ModelRadio;
 import com.hbm.render.model.ModelSteelRoof;
+import com.hbm.tileentity.machine.TileEntityMachineGasDock;
+import com.hbm.tileentity.machine.TileEntityTransporterRocket;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
 public class RenderDecoBlock extends TileEntitySpecialRenderer {
@@ -118,12 +121,36 @@ public class RenderDecoBlock extends TileEntitySpecialRenderer {
 			ResourceManager.duchessgambit.renderAll();
 		}
 
-		if(b == ModBlocks.sat_dock) {
+		if(b == ModBlocks.sat_dock || b == ModBlocks.gas_dock) {
 			GL11.glRotatef(180, 0F, 0F, 1F);
 			GL11.glTranslatef(0, -1.5F, 0);
 
-			bindTexture(ResourceManager.satdock_tex);
+			if(b == ModBlocks.gas_dock) {
+				bindTexture(ResourceManager.gasdock_tex);
+			} else {
+				bindTexture(ResourceManager.satdock_tex);
+			}
 			ResourceManager.satDock.renderAll();
+
+			if(b == ModBlocks.gas_dock) {
+				if(tileentity instanceof TileEntityMachineGasDock && ((TileEntityMachineGasDock)tileentity).launchTicks < 100) {
+					TileEntityMachineGasDock transporter = (TileEntityMachineGasDock) tileentity;
+					GL11.glPushMatrix();
+					{
+
+						GL11.glTranslatef(0.0F, 0.75F + MathHelper.clamp_float(transporter.launchTicks + (transporter.hasRocket ? -f : f), 0, 200), 0.0F);
+						GL11.glDisable(GL11.GL_CULL_FACE);
+
+						bindTexture(ResourceManager.gasRocket_tex);
+
+						ResourceManager.minerRocket.renderAll();
+
+						GL11.glEnable(GL11.GL_CULL_FACE);
+
+					}
+					GL11.glPopMatrix();
+				}
+			}
 		}
 
 		GL11.glPopMatrix();

@@ -1,8 +1,12 @@
 package com.hbm.tileentity.machine;
 
+import com.hbm.blocks.ModBlocks;
+import com.hbm.blocks.generic.BlockBobble;
+import com.hbm.blocks.generic.BlockBobble.BobbleType;
 import com.hbm.inventory.container.ContainerMachineShredder;
 import com.hbm.inventory.gui.GUIMachineShredder;
 import com.hbm.inventory.recipes.ShredderRecipes;
+import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemBlades;
 import com.hbm.lib.Library;
 import com.hbm.main.NTMSounds;
@@ -17,6 +21,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -45,6 +50,7 @@ public class TileEntityMachineShredder extends TileEntityLoadedBase implements I
 	public int getSizeInventory() {
 		return slots.length;
 	}
+
 
 	@Override
 	public ItemStack getStackInSlot(int i) {
@@ -331,6 +337,7 @@ public class TileEntityMachineShredder extends TileEntityLoadedBase implements I
 				if(slots[inpSlot].stackSize <= 0)
 					slots[inpSlot] = null;
 			}
+
 		}
 	}
 
@@ -338,7 +345,11 @@ public class TileEntityMachineShredder extends TileEntityLoadedBase implements I
 		if(slots[27] != null && slots[28] != null && this.getGearLeft() > 0 && this.getGearLeft() < 3 && this.getGearRight() > 0 && this.getGearRight() < 3) {
 
 			for(int i = 0; i < 9; i++) {
-				if(slots[i] != null && slots[i].stackSize > 0 && hasSpace(slots[i])) {
+				if(slots[i] != null && slots[i].getItem() == Item.getItemFromBlock(ModBlocks.bobblehead)&& slots[i].getItemDamage() == BobbleType.GWEN.ordinal()) {
+					worldObj.func_147480_a(xCoord, yCoord, zCoord, false);
+					worldObj.newExplosion(null, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, 5, true, true);
+					break;
+				} else if(slots[i] != null && slots[i].stackSize > 0 && hasSpace(slots[i])) {
 					return true;
 				}
 			}

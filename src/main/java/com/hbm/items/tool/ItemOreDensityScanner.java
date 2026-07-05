@@ -1,8 +1,12 @@
 package com.hbm.items.tool;
 
+import com.hbm.dim.CelestialBody;
+import com.hbm.dim.WorldProviderCelestial;
 import com.hbm.inventory.FluidStack;
 import com.hbm.items.special.ItemBedrockOreBase;
-import com.hbm.items.special.ItemBedrockOreNew.BedrockOreType;
+import com.hbm.items.special.ItemBedrockOreNew;
+import com.hbm.items.special.ItemBedrockOreNew.CelestialBedrockOre;
+import com.hbm.items.special.ItemBedrockOreNew.CelestialBedrockOreType;
 import com.hbm.packet.PacketDispatcher;
 import com.hbm.packet.toclient.PlayerInformPacket;
 import com.hbm.util.ChatBuilder;
@@ -25,21 +29,27 @@ public class ItemOreDensityScanner extends Item {
 		EntityPlayerMP player = (EntityPlayerMP) entity;
 		
 		double totalLevel = 0D;
+
+		CelestialBody body = CelestialBody.getBody(world);
 		
-		for(BedrockOreType type : BedrockOreType.values()) {
-			double level = ItemBedrockOreBase.getOreLevel((int) Math.floor(player.posX), (int) Math.floor(player.posZ), type);
+		for(CelestialBedrockOreType type : CelestialBedrockOre.get(body.getEnum()).types) {
+			double level = ItemBedrockOreBase.getOreLevel(world, (int) Math.floor(player.posX), (int) Math.floor(player.posZ), type);
 			PacketDispatcher.wrapper.sendTo(new PlayerInformPacket(
 					ChatBuilder.startTranslation("item.bedrock_ore.type." + type.suffix + ".name")
 					.next(": " + ((int) (level * 100) / 100D) + " (")
 					.nextTranslation(translateDensity(level)).color(getColor(level))
 					.next(")").color(EnumChatFormatting.RESET).flush(),
-			777 + type.ordinal(), 4000), player);
+			777 + type.index, 4000), player);
 			totalLevel += level;
 		}
-		totalLevel /= BedrockOreType.values().length;
+		totalLevel /= CelestialBedrockOre.get(body.getEnum()).types.length;
 		
 		int tier = BedrockOre.getTier(totalLevel);
 		FluidStack boreFluid = BedrockOre.getBoreFluid(totalLevel);
+
+		if(world.provider instanceof WorldProviderCelestial && ((WorldProviderCelestial) world.provider).getBedrockAcid() != null) {
+			boreFluid = ((WorldProviderCelestial) world.provider).getBedrockAcid();
+		}
 		
 		ChatBuilder builder = ChatBuilder.start("Tier " + tier).color(EnumChatFormatting.YELLOW);
 		if(boreFluid != null) {
@@ -47,7 +57,7 @@ public class ItemOreDensityScanner extends Item {
 			.nextTranslation(boreFluid.type.getUnlocalizedName());
 		}
 		
-		PacketDispatcher.wrapper.sendTo(new PlayerInformPacket(builder.flush(), 777 + BedrockOreType.values().length, 4000), player);
+		PacketDispatcher.wrapper.sendTo(new PlayerInformPacket(builder.flush(), 777 + ItemBedrockOreNew.CelestialBedrockOre.getTotalTypeCount(), 4000), player);
 	}
 	
 	public static String translateDensity(double density) {

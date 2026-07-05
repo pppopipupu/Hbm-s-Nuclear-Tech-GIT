@@ -1,6 +1,12 @@
 package com.hbm.tileentity.machine;
 
 import com.hbm.blocks.ModBlocks;
+import com.hbm.blocks.generic.BlockPlushie.PlushieType;
+import com.hbm.blocks.generic.BlockPlushie.TileEntityPlushie;
+import com.hbm.explosion.vanillant.ExplosionVNT;
+import com.hbm.explosion.vanillant.standard.EntityProcessorCrossSmooth;
+import com.hbm.explosion.vanillant.standard.ExplosionEffectWeapon;
+import com.hbm.explosion.vanillant.standard.PlayerProcessorStandard;
 import com.hbm.inventory.container.ContainerMachinePress;
 import com.hbm.inventory.gui.GUIMachinePress;
 import com.hbm.inventory.recipes.PressRecipes;
@@ -16,8 +22,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -97,7 +105,22 @@ public class TileEntityMachinePress extends TileEntityMachineBase implements IGU
 					this.press += stampSpeed;
 
 					if(this.press >= this.maxPress) {
-						this.worldObj.playSoundEffect(this.xCoord, this.yCoord, this.zCoord, "hbm:block.pressOperate", getVolume(1.5F), 1.0F);
+						String squish = "hbm:block.pressOperate";
+						TileEntity tile = worldObj.getTileEntity(xCoord, yCoord + 1, zCoord);
+						if(tile instanceof TileEntityPlushie) {
+							TileEntityPlushie plushie = (TileEntityPlushie) tile;
+							squish = "hbm:block.squeakyPain";
+
+							if(plushie.type == PlushieType.HUNDUN) {
+								worldObj.func_147480_a(xCoord, yCoord, zCoord, false);
+								ExplosionVNT vnt = new ExplosionVNT(worldObj, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, 5);
+								vnt.setEntityProcessor(new EntityProcessorCrossSmooth(1, 50));
+								vnt.setPlayerProcessor(new PlayerProcessorStandard());
+								vnt.setSFX(new ExplosionEffectWeapon(10, 2.5F, 1F));
+								vnt.explode();
+							}
+						}
+						this.worldObj.playSoundEffect(this.xCoord, this.yCoord, this.zCoord, squish, getVolume(1.5F), 1.0F);
 						ItemStack output = PressRecipes.getOutput(slots[2], slots[1]);
 						if(slots[3] == null) {
 							slots[3] = output.copy();
@@ -151,6 +174,12 @@ public class TileEntityMachinePress extends TileEntityMachineBase implements IGU
 				--this.turnProgress;
 			} else {
 				this.renderPress = this.syncPress;
+			}
+
+			TileEntity te = worldObj.getTileEntity(xCoord, yCoord + 1, zCoord);
+			if(te instanceof TileEntityPlushie) {
+				TileEntityPlushie abuseTarget = (TileEntityPlushie) te;
+				abuseTarget.miseryFactor = MathHelper.clamp_float(((float)syncPress - 100.0F) / 100.0F, 0, 1);
 			}
 		}
 	}

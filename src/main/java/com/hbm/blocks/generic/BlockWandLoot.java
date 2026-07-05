@@ -10,6 +10,7 @@ import com.hbm.blocks.ILookOverlay;
 import com.hbm.blocks.ITooltipProvider;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.config.ServerConfig;
+import com.hbm.config.StructureConfig;
 import com.hbm.interfaces.IBomb;
 import com.hbm.interfaces.ICopiable;
 import com.hbm.itempool.ItemPool;
@@ -305,6 +306,7 @@ public class BlockWandLoot extends BlockContainer implements ILookOverlay, ITool
 			if(te instanceof IInventory) {
 				int count = minItems;
 				if(maxItems - minItems > 0) count += worldObj.rand.nextInt(maxItems - minItems);
+				count = (int)Math.floor(count * StructureConfig.lootAmountFactor);
 				WeightedRandomChestContent.generateChestContents(worldObj.rand, pool, (IInventory) te, count);
 			} else if(te instanceof BlockLoot.TileEntityLoot) {
 				LootGenerator.applyLoot(worldObj, xCoord, yCoord, zCoord, poolName);

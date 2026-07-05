@@ -29,7 +29,8 @@ import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemScraps;
 import com.hbm.items.special.ItemBedrockOreNew;
 import com.hbm.items.special.ItemBedrockOreNew.BedrockOreGrade;
-import com.hbm.items.special.ItemBedrockOreNew.BedrockOreType;
+import com.hbm.items.special.ItemBedrockOreNew.CelestialBedrockOre;
+import com.hbm.items.special.ItemBedrockOreNew.CelestialBedrockOreType;
 import com.hbm.util.Tuple.Pair;
 
 import net.minecraft.init.Items;
@@ -64,7 +65,7 @@ public class ArcFurnaceRecipes extends SerializableRecipe {
 		register(new ComparableStack(ModBlocks.sand_mix, 1, EnumSandType.QUARTZ), new ArcFurnaceRecipe().solid(new ItemStack(ModBlocks.glass_quartz)));
 		register(new OreDictStack(BORAX.dust()), new ArcFurnaceRecipe().solid(new ItemStack(ModItems.powder_boron_tiny, 3)).fluid(new MaterialStack(Mats.MAT_BORON, MaterialShapes.NUGGET.q(3))));
 
-		for(BedrockOreType type : BedrockOreType.values()) {
+		for(CelestialBedrockOreType type : CelestialBedrockOre.getAllTypes()) {
 			register(new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.SULFURIC_BYPRODUCT, type)), new ArcFurnaceRecipe().solid(ItemBedrockOreNew.make(BedrockOreGrade.SULFURIC_ARC, type, 2)));
 			register(new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.SULFURIC_ROASTED, type)), new ArcFurnaceRecipe().solid(ItemBedrockOreNew.make(BedrockOreGrade.SULFURIC_ARC, type, 4)));
 			register(new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.SOLVENT_BYPRODUCT, type)), new ArcFurnaceRecipe().solid(ItemBedrockOreNew.make(BedrockOreGrade.SOLVENT_ARC, type, 2)));
@@ -72,14 +73,12 @@ public class ArcFurnaceRecipes extends SerializableRecipe {
 			register(new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.RAD_BYPRODUCT, type)), new ArcFurnaceRecipe().solid(ItemBedrockOreNew.make(BedrockOreGrade.RAD_ARC, type, 2)));
 			register(new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.RAD_ROASTED, type)), new ArcFurnaceRecipe().solid(ItemBedrockOreNew.make(BedrockOreGrade.RAD_ARC, type, 4)));
 
-			register(new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.PRIMARY_FIRST, type)), new ArcFurnaceRecipe().fluidNull(ItemBedrockOreNew.toFluid(type.primary1, 5), ItemBedrockOreNew.toFluid(type.primary2, 2)));
-			register(new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.PRIMARY_SECOND, type)), new ArcFurnaceRecipe().fluidNull(ItemBedrockOreNew.toFluid(type.primary1, 2), ItemBedrockOreNew.toFluid(type.primary2, 5)));
-			register(new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.CRUMBS, type)), new ArcFurnaceRecipe().fluidNull(ItemBedrockOreNew.toFluid(type.primary1, 1), ItemBedrockOreNew.toFluid(type.primary2, 1)));
+			register(new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.PRIMARY_FIRST, type)), new ArcFurnaceRecipe().fluidNull(ItemBedrockOreNew.toFluid(type.primary, 5)));
+			register(new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.CRUMBS, type)), new ArcFurnaceRecipe().fluidNull(ItemBedrockOreNew.toFluid(type.primary, 1)));
 
-			int i3 = 3;
-			register(new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.SULFURIC_WASHED, type)), new ArcFurnaceRecipe().fluidNull(ItemBedrockOreNew.toFluid(type.byproductAcid1, i3), ItemBedrockOreNew.toFluid(type.byproductAcid2, i3), ItemBedrockOreNew.toFluid(type.byproductAcid3, i3)));
-			register(new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.SOLVENT_WASHED, type)), new ArcFurnaceRecipe().fluidNull(ItemBedrockOreNew.toFluid(type.byproductSolvent1, i3), ItemBedrockOreNew.toFluid(type.byproductSolvent2, i3), ItemBedrockOreNew.toFluid(type.byproductSolvent3, i3)));
-			register(new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.RAD_WASHED, type)), new ArcFurnaceRecipe().fluidNull(ItemBedrockOreNew.toFluid(type.byproductRad1, i3), ItemBedrockOreNew.toFluid(type.byproductRad2, i3), ItemBedrockOreNew.toFluid(type.byproductRad3, i3)));
+			register(new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.SULFURIC_WASHED, type)), new ArcFurnaceRecipe().fluidNull(ItemBedrockOreNew.toFluid(type.byproductAcid, 3)));
+			register(new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.SOLVENT_WASHED, type)), new ArcFurnaceRecipe().fluidNull(ItemBedrockOreNew.toFluid(type.byproductSolvent, 3)));
+			register(new ComparableStack(ItemBedrockOreNew.make(BedrockOreGrade.RAD_WASHED, type)), new ArcFurnaceRecipe().fluidNull(ItemBedrockOreNew.toFluid(type.byproductRad, 3)));
 		}
 
 		// Autogen for simple single type items

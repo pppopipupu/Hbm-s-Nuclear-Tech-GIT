@@ -5,7 +5,7 @@ import java.util.Random;
 
 import com.hbm.blocks.IBlockMulti;
 import com.hbm.blocks.ITooltipProvider;
-import com.hbm.main.NTMSounds;
+import com.hbm.items.ModItems;
 import com.hbm.world.gen.nbt.INBTTileEntityTransformable;
 import com.hbm.world.gen.nbt.INBTBlockTransformable;
 
@@ -76,7 +76,10 @@ public class BlockPlushie extends BlockContainer implements IBlockMulti, IToolti
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(Item item, CreativeTabs tab, List list) {
-		for(int i = 1; i < PlushieType.values().length; i++) list.add(new ItemStack(item, 1, i));
+		for(int i = 1; i < PlushieType.values().length; i++) {
+			if(PlushieType.values()[i] == PlushieType.FATO) continue;
+			list.add(new ItemStack(item, 1, i));
+		}
 	}
 
 	@Override
@@ -96,16 +99,25 @@ public class BlockPlushie extends BlockContainer implements IBlockMulti, IToolti
 
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
-
 		TileEntityPlushie plushie = (TileEntityPlushie) world.getTileEntity(x, y, z);
+
+		ItemStack held = player.getHeldItem();
+
+		if(plushie.type == PlushieType.TETO && held != null && held.getItem() == ModItems.butter) {
+			plushie.type = PlushieType.FATO;
+			plushie.squishTimer = 11;
+			plushie.markDirty();
+			player.getHeldItem().stackSize--;
+			world.playSoundEffect(x + 0.5, y + 0.5, z + 0.5, "hbm:player.groan", 1F, 2F);
+			return true;
+		}
+
 		if(world.isRemote) {
 			plushie.squishTimer = 11;
 			return true;
 		} else {
-			if(plushie.type == PlushieType.HUNDUN) {
-				world.playSoundEffect(x + 0.5, y + 0.5, z + 0.5, NTMSounds.BLOCK_HUNDUNS_MAGNIFICENT_HOWL, 100F, 1F);
-			} else {
-				world.playSoundEffect(x + 0.5, y + 0.5, z + 0.5, NTMSounds.BLOCK_PLUSHY, 0.25F, 1F);
+			if(plushie != null) {
+				world.playSoundEffect(x + 0.5, y + 0.5, z + 0.5, plushie.type.sound, 0.25F, plushie.type == PlushieType.FATO ? 0.5F : 1F);
 			}
 			return true;
 		}
@@ -120,10 +132,13 @@ public class BlockPlushie extends BlockContainer implements IBlockMulti, IToolti
 
 		public PlushieType type = PlushieType.NONE;
 		public int squishTimer;
+		public float miseryFactor;
+		public float lastMiseryFactor;
 
 		@Override
 		public void updateEntity() {
 			if(squishTimer > 0) squishTimer--;
+			lastMiseryFactor = miseryFactor;
 		}
 
 		@Override
@@ -157,18 +172,24 @@ public class BlockPlushie extends BlockContainer implements IBlockMulti, IToolti
 	}
 
 	public static enum PlushieType {
-		NONE(		"NONE",				null),
-		YOMI(		"Yomi",				"Hi! Can I be your rabbit friend?"),
-		NUMBERNINE(	"Number Nine",		"None of y'all deserve coal."),
-		HUNDUN(		"Hundun",			"混沌"),
-		DERG(		"Dragon",			"Squeeze him."); // blerg
+		NONE(		"NONE",				null, null),
+		YOMI(		"Yomi",				"Hi! Can I be your rabbit friend?", "hbm:block.squeakyToy"),
+		NUMBERNINE(	"Number Nine",		"None of y'all deserve coal.", "hbm:block.squeakyToy"),
+		HUNDUN(		"Hundun",			"混沌", "hbm:block.hunduns_magnificent_howl"),
+		TETO(		"Kasane Teto",		"please help I've been trapped in her basement for da-", "hbm:block.teto"),
+		MIKU(		"Hatsune Miku",		"In your wifi, and your heart.", "hbm:block.miku"),
+		NERU(		"Akita Neru",		"Careful, she might electrocute you.", "hbm:block.akita"),
+		DERG(		"Dragon",			"Squeeze him.", "hbm:block.squeakyToy"), // blerg
+		FATO(		"FAT TETO",			"pls don't bully me", "hbm:block.teto");
 
 		public String label;
 		public String inscription;
+		public String sound;
 
-		private PlushieType(String label, String inscription) {
+		private PlushieType(String label, String inscription, String sound) {
 			this.label = label;
 			this.inscription = inscription;
+			this.sound = sound;
 		}
 	}
 

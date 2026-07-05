@@ -17,6 +17,7 @@ import com.hbm.module.machine.ModuleMachineFusion;
 import com.hbm.sound.AudioWrapper;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityLoadedBase;
+import com.hbm.tileentity.machine.TileEntityMachineHTRNeo;
 import com.hbm.tileentity.machine.albion.TileEntityCooledBase;
 import com.hbm.uninos.GenNode;
 import com.hbm.uninos.INetworkProvider;

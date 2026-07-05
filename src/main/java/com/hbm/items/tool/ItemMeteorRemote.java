@@ -13,9 +13,9 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 
 public class ItemMeteorRemote extends Item {
-	
+
 	Random rand = new Random();
-	
+
 	public ItemMeteorRemote() {
 		this.canRepair = false;
 		this.setMaxDamage(2);
@@ -38,7 +38,7 @@ public class ItemMeteorRemote extends Item {
 
 		world.playSoundAtEntity(player, NTMSounds.TECH_BLEEP, 1.0F, 1.0F);
 		player.swingItem();
-		
+
 		return stack;
 	}
 }

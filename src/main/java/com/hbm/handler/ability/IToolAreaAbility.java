@@ -10,16 +10,20 @@ import com.hbm.config.ToolConfig;
 import com.hbm.explosion.ExplosionNT;
 import com.hbm.explosion.ExplosionNT.ExAttrib;
 import com.hbm.handler.ThreeInts;
+import com.hbm.inventory.OreDictManager;
 import com.hbm.items.tool.ItemToolAbility;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraftforge.oredict.OreDictionary;
 
 public interface IToolAreaAbility extends IBaseAbility {
 	// Should call tool.breakExtraBlock on a bunch of blocks.
@@ -90,8 +94,18 @@ public interface IToolAreaAbility extends IBaseAbility {
 		public boolean onDig(int level, World world, int x, int y, int z, EntityPlayer player, ItemToolAbility tool) {
 			Block b = world.getBlock(x, y, z);
 
-			if(b == Blocks.stone && !ToolConfig.recursiveStone) {
-				return false;
+			if(!ToolConfig.recursiveStone) {
+				Item item = Item.getItemFromBlock(b);
+				List<ItemStack> stone = OreDictionary.getOres(OreDictManager.KEY_STONE);
+				for(ItemStack stack : stone) {
+					if(stack.getItem() == item)
+						return false;
+				}
+				List<ItemStack> cobble = OreDictionary.getOres(OreDictManager.KEY_COBBLESTONE);
+				for(ItemStack stack : cobble) {
+					if(stack.getItem() == item)
+						return false;
+				}
 			}
 
 			if(b == Blocks.netherrack && !ToolConfig.recursiveNetherrack) {

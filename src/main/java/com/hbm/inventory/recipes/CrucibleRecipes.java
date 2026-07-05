@@ -53,7 +53,7 @@ public class CrucibleRecipes extends GenericRecipes<CrucibleRecipe> {
 	 * IMPORTANT: crucibles do not have stack size checks for the recipe's result, meaning that they can overflow if the resulting stacks are
 	 * bigger than the input stacks, so make sure that material doesn't "expand". very few things do that IRL when alloying anyway.
 	 */
-	
+
 	@Override
 	public void registerDefaults() {
 
@@ -64,7 +64,7 @@ public class CrucibleRecipes extends GenericRecipes<CrucibleRecipe> {
 		this.register(new CrucibleRecipe("crucible.steel").setup(20, new ItemStack(ModItems.ingot_steel))
 				.inputs(new MaterialStack(Mats.MAT_IRON, n), new MaterialStack(Mats.MAT_CARBON, n * 3 / 2), new MaterialStack(Mats.MAT_FLUX, n))
 				.outputs(new MaterialStack(Mats.MAT_STEEL, n)));
-		
+
 		if(Compat.isModLoaded(Compat.MOD_GT6)) {
 			this.register(new CrucibleRecipe("crucible.steelWrought").setup(20, new ItemStack(ModItems.ingot_steel))
 					.inputs(new MaterialStack(Mats.MAT_WROUGHTIRON, n * 2), new MaterialStack(Mats.MAT_CARBON, n * 3), new MaterialStack(Mats.MAT_FLUX, n))
@@ -92,7 +92,11 @@ public class CrucibleRecipes extends GenericRecipes<CrucibleRecipe> {
 		this.register(new CrucibleRecipe("crucible.hss").setup(9, new ItemStack(ModItems.ingot_dura_steel))
 				.inputs(new MaterialStack(Mats.MAT_STEEL, n * 5), new MaterialStack(Mats.MAT_TUNGSTEN, n * 3), new MaterialStack(Mats.MAT_COBALT, n * 1))
 				.outputs(new MaterialStack(Mats.MAT_DURA, n * 9)));
-		
+
+		this.register(new CrucibleRecipe("crucible.hsss").setup(12, new ItemStack(ModItems.ingot_dura_steel))
+				.inputs(new MaterialStack(Mats.MAT_STAINLESS, n * 5), new MaterialStack(Mats.MAT_TUNGSTEN, n * 3), new MaterialStack(Mats.MAT_COBALT, n * 1))
+				.outputs(new MaterialStack(Mats.MAT_DURA, i * 2)));
+
 		this.register(new CrucibleRecipe("crucible.ferro").setup(3, new ItemStack(ModItems.ingot_ferrouranium))
 				.inputs(new MaterialStack(Mats.MAT_STEEL, n * 2), new MaterialStack(Mats.MAT_U238, n))
 				.outputs(new MaterialStack(Mats.MAT_FERRO, n * 3)));
@@ -124,7 +128,15 @@ public class CrucibleRecipes extends GenericRecipes<CrucibleRecipe> {
 		this.register(new CrucibleRecipe("crucible.bscco").setup(3, new ItemStack(ModItems.ingot_bscco))
 				.inputs(new MaterialStack(Mats.MAT_BISMUTH, n * 2), new MaterialStack(Mats.MAT_STRONTIUM, n * 2), new MaterialStack(Mats.MAT_CALCIUM, n * 2), new MaterialStack(Mats.MAT_COPPER, n * 3))
 				.outputs(new MaterialStack(Mats.MAT_BSCCO, i)));
-		
+
+		this.register(new CrucibleRecipe("crucible.arse").setup(9, new ItemStack(ModItems.ingot_gaas))
+				.inputs(new MaterialStack(Mats.MAT_GALLIUM, n * 6), new MaterialStack(Mats.MAT_ARSENIC, n * 3 ))
+				.outputs(new MaterialStack(Mats.MAT_GAAS, i)));
+
+		this.register(new CrucibleRecipe("crucible.stainless").setup(2, new ItemStack(ModItems.ingot_stainless))
+				.inputs(new MaterialStack(Mats.MAT_STEEL, n), new MaterialStack(Mats.MAT_NICKEL, n))
+				.outputs(new MaterialStack(Mats.MAT_STAINLESS, n * 2)));
+
 		registerMoldsForNEI();
 	}
 
@@ -146,7 +158,7 @@ public class CrucibleRecipes extends GenericRecipes<CrucibleRecipe> {
 		String name = obj.get("name").getAsString();
 		int freq = obj.get("frequency").getAsInt();
 		ItemStack icon = this.readItemStack(obj.get("icon").getAsJsonArray());
-
+		
 		MaterialStack[] input = new MaterialStack[obj.get("input").getAsJsonArray().size()];
 		for(int i = 0; i < input.length; i++) {
 			JsonArray entry = obj.get("input").getAsJsonArray().get(i).getAsJsonArray();
@@ -154,7 +166,7 @@ public class CrucibleRecipes extends GenericRecipes<CrucibleRecipe> {
 			int amount = entry.get(1).getAsInt();
 			input[i] = new MaterialStack(Mats.matByName.get(matname), amount);
 		}
-
+		
 		MaterialStack[] output = new MaterialStack[obj.get("output").getAsJsonArray().size()];
 		for(int i = 0; i < output.length; i++) {
 			JsonArray entry = obj.get("output").getAsJsonArray().get(i).getAsJsonArray();
@@ -162,7 +174,7 @@ public class CrucibleRecipes extends GenericRecipes<CrucibleRecipe> {
 			int amount = entry.get(1).getAsInt();
 			output[i] = new MaterialStack(Mats.matByName.get(matname), amount);
 		}
-
+		
 		this.register(new CrucibleRecipe(name).setup(freq, icon).inputs(input).outputs(output));
 	}
 
@@ -173,7 +185,7 @@ public class CrucibleRecipes extends GenericRecipes<CrucibleRecipe> {
 		writer.name("frequency").value(rec.frequency);
 		writer.name("icon");
 		this.writeItemStack(rec.getIcon(), writer);
-
+		
 		writer.name("input");
 		writer.beginArray();
 		for(MaterialStack mat : rec.input) {
@@ -184,7 +196,7 @@ public class CrucibleRecipes extends GenericRecipes<CrucibleRecipe> {
 			writer.setIndent("  ");
 		}
 		writer.endArray();
-
+		
 		writer.name("output");
 		writer.beginArray();
 		for(MaterialStack mat : rec.output) {
@@ -200,7 +212,7 @@ public class CrucibleRecipes extends GenericRecipes<CrucibleRecipe> {
 	/** Returns a map containing all recipes where an item becomes a liquid material in the crucible. */
 	public static HashMap<AStack, List<ItemStack>> getSmeltingRecipes() {
 		HashMap<AStack, List<ItemStack>> map = new HashMap();
-		
+
 		for(NTMMaterial material : Mats.orderedList) {
 			int in = material.convIn;
 			int out = material.convOut;
@@ -210,7 +222,7 @@ public class CrucibleRecipes extends GenericRecipes<CrucibleRecipe> {
 				if(!shape.noAutogen) {
 					String name = shape.make(material);
 					List<ItemStack> ores = OreDictionary.getOres(name);
-					
+
 					if(!ores.isEmpty()) {
 						List<ItemStack> stacks = new ArrayList();
 						stacks.add(ItemScraps.create(new MaterialStack(convert, (int) (shape.q(1) * out / in)), true));
@@ -219,7 +231,7 @@ public class CrucibleRecipes extends GenericRecipes<CrucibleRecipe> {
 				}
 			}
 		}
-		
+
 		for(Entry<String, List<MaterialStack>> entry : Mats.materialOreEntries.entrySet()) {
 			List<ItemStack> stacks = new ArrayList();
 			for(MaterialStack mat : entry.getValue()) {
@@ -227,7 +239,7 @@ public class CrucibleRecipes extends GenericRecipes<CrucibleRecipe> {
 			}
 			map.put(new OreDictStack(entry.getKey()), stacks);
 		}
-		
+
 		for(Entry<ComparableStack, List<MaterialStack>> entry : Mats.materialEntries.entrySet()) {
 			List<ItemStack> stacks = new ArrayList();
 			for(MaterialStack mat : entry.getValue()) {
@@ -235,27 +247,27 @@ public class CrucibleRecipes extends GenericRecipes<CrucibleRecipe> {
 			}
 			map.put(entry.getKey().copy(), stacks);
 		}
-		
+
 		return map;
 	}
-	
+
 	private static List<ItemStack[]> moldRecipes = new ArrayList();
-	
+
 	public static List<ItemStack[]> getMoldRecipes() {
 		if(moldRecipes.isEmpty()) {
 			registerMoldsForNEI();
 		}
-		
+
 		return moldRecipes;
 	}
-	
+
 	private static void registerMoldsForNEI() {
-		
+
 		for(NTMMaterial material : Mats.orderedList) {
-			
+
 			if(material.smeltable != SmeltingBehavior.SMELTABLE)
 				continue;
-			
+
 			for(Mold mold : ItemMold.molds) {
 				ItemStack out = mold.getOutput(material);
 				if(out != null) {

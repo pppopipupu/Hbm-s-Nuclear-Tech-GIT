@@ -77,7 +77,7 @@ public class ItemRBMKRod extends Item {
 		this.setMaxStackSize(1);
 		this.setCreativeTab(MainRegistry.controlTab);
 	}
-
+	
 	public ItemRBMKRod setTint(int tint) {
 		this.colorTint = tint;
 		return this;
@@ -107,7 +107,7 @@ public class ItemRBMKRod extends Item {
 		this.depFunc = func;
 		return this;
 	}
-
+	
 	public ItemRBMKRod setHeatCoeff(double start, double length) {
 		this.heatCoeffStart = start;
 		this.heatCoeffLength = length;
@@ -171,7 +171,7 @@ public class ItemRBMKRod extends Item {
 
 		double mult = 1D;
 		double coreHeat = this.getCoreHeat(stack);
-
+		
 		if(this.heatCoeffStart != 0) {
 			if(coreHeat >= this.heatCoeffStart) {
 				double prog = (coreHeat - this.heatCoeffStart) / this.heatCoeffLength;
@@ -179,7 +179,7 @@ public class ItemRBMKRod extends Item {
 				mult = Math.sin((prog * Math.PI + Math.PI) / 2);
 			}
 		}
-
+		
 		double outFlux = reactivityFunc(inFlux, getEnrichment(stack) * mult) * RBMKDials.getReactivityMod(world);
 		double outFluxOri = reactivityFunc(inFlux, 1) * RBMKDials.getReactivityMod(world);
 		efficiency = outFlux / outFluxOri;
@@ -272,6 +272,7 @@ public class ItemRBMKRod extends Item {
 		SQUARE_ROOT(EnumChatFormatting.YELLOW + "MEDIUM / SQUARE ROOT"),	//sqrt(x) * 10 * reactivity
 		LINEAR(EnumChatFormatting.RED + "DANGEROUS / LINEAR"),				//x * reactivity
 		QUADRATIC(EnumChatFormatting.RED + "DANGEROUS / QUADRATIC"),		//x^2 / 100 * reactivity
+		SLOW_LINEAR(EnumChatFormatting.YELLOW + "MEDIUM / SLOW LINEAR"),  
 		EXPERIMENTAL(EnumChatFormatting.RED + "EXPERIMENTAL / SINE SLOPE");		//x * (sin(x) + 1)
 
 		public String title = "";
@@ -299,6 +300,7 @@ public class ItemRBMKRod extends Item {
 		case LINEAR: return flux / 100D * reactivity;
 		case QUADRATIC: return flux * flux / 10000D * reactivity;
 		case EXPERIMENTAL: return flux * (Math.sin(flux) + 1) * reactivity;
+		case SLOW_LINEAR: return Math.sqrt(2 * flux + 30) / 10 * reactivity / 2.5;
 		}
 
 		return 0;
@@ -327,6 +329,8 @@ public class ItemRBMKRod extends Item {
 			break;
 		case EXPERIMENTAL: function = "%1$s * (sin(%1$s) + 1) * %2$s";
 			break;
+		case SLOW_LINEAR: function = "sqrt(2 * %1$s + 30) / 10 * %2$s / 2.5";
+		    break;
 		default: function = "ERROR";
 		}
 
@@ -371,7 +375,8 @@ public class ItemRBMKRod extends Item {
 		RAISING_SLOPE,	//for breeding fuels such as MEU, maximum of 110% at 28% depletion
 		BOOSTED_SLOPE,	//for strong breeding fuels such Th232, maximum of 132% at 64% depletion
 		GENTLE_SLOPE,	//recommended for most fuels, maximum barely over the start, near the beginning
-		STATIC;			//for arcade-style neutron sources
+		STATIC, 		//for arcade-style neutron sources
+		CF_SLOPE;       //newguy thing, very strong and intended to simulate californium buildup in curium rods, caps at ~193% around 60% depletion
 	}
 
 	public double reactivityModByEnrichment(double enrichment) {
@@ -383,6 +388,7 @@ public class ItemRBMKRod extends Item {
 		case BOOSTED_SLOPE: return enrichment + Math.sin((enrichment - 1) * (enrichment - 1) * Math.PI); //x + sin([x - 1]^2 * pi) works
 		case RAISING_SLOPE: return enrichment + (Math.sin(enrichment * Math.PI) / 2D); //x + (sin(x * pi) / 2) actually works
 		case GENTLE_SLOPE: return enrichment + (Math.sin(enrichment * Math.PI) / 3D); //x + (sin(x * pi) / 3) also works
+		case CF_SLOPE: return enrichment + (Math.sin(enrichment * Math.PI)) * 1.4;
 		}
 	}
 

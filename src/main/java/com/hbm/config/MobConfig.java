@@ -9,7 +9,7 @@ public class MobConfig {
 	public static int maskmanChance = 3;
 	public static int maskmanMinRad = 50;
 	public static boolean maskmanUnderground = true;
-
+	
 	public static boolean enableRaids = false;
 	public static int raidDelay = 30 * 60 * 60;
 	public static int raidChance = 3;
@@ -24,12 +24,13 @@ public class MobConfig {
 	public static int elementalChance = 2;
 	public static int elementalAmount = 10;
 	public static int elementalDistance = 32;
-
+	
 	public static boolean enableDucks = true;
 	public static boolean enableMobGear = true;
 	public static boolean enableMobWeapons = true;
+	public static boolean enableMunCows = true;
 	public static double mobWeaponSootReduction = 0;
-
+	
 	public static boolean enableHives = true;
 	public static int hiveSpawn = 256;
 	public static double scoutThreshold = 5;
@@ -72,11 +73,11 @@ public class MobConfig {
 	public static boolean trueRam() {
 		return rampantMode && rampantNaturalScoutSpawn && scoutThreshold <= 0.1 && rampantExtendedTargetting && rampantDig && rampantGlyphidGuidance;
 	}
-
+	
 	public static void loadFromConfig(Configuration config) {
 
 		final String CATEGORY = CommonConfig.CATEGORY_MOBS;
-
+		
 		enableMaskman = CommonConfig.createConfigBool(config, CATEGORY, "12.M00_enableMaskman", "Whether mask man should spawn", true);
 		maskmanDelay = CommonConfig.createConfigInt(config, CATEGORY, "12.M01_maskmanDelay", "How many world ticks need to pass for a check to be performed", 60 * 60 * 60);
 		maskmanChance = CommonConfig.createConfigInt(config, CATEGORY, "12.M02_maskmanChance", "1:x chance to spawn mask man, must be at least 1", 3);
@@ -97,10 +98,11 @@ public class MobConfig {
 		elementalChance = CommonConfig.createConfigInt(config, CATEGORY, "12.E02_elementalChance", "1:x chance to spawn elementals, must be at least 1", 2);
 		elementalAmount = CommonConfig.createConfigInt(config, CATEGORY, "12.E03_elementalAmount", "How many elementals are spawned each raid", 10);
 		elementalDistance = CommonConfig.createConfigInt(config, CATEGORY, "12.E04_elementalAttackDistance", "How far away elementals will spawn from the targeted player", 32);
-
+		
 		enableDucks = CommonConfig.createConfigBool(config, CATEGORY, "12.D00_enableDucks", "Whether pressing O should allow the player to duck", true);
 		enableMobGear = CommonConfig.createConfigBool(config, CATEGORY, "12.D01_enableMobGear", "Whether zombies and skeletons should have additional gear when spawning", false);
 		enableMobWeapons = CommonConfig.createConfigBool(config, CATEGORY, "12.D02_enableMobWeapons", "Whether skeletons should have bows replaced with guns when spawning at higher soot levels", true);
+		enableMunCows = CommonConfig.createConfigBool(config, CATEGORY, "12.D03_enableMunCows", "Whether Mun Cows should spawn on the Mun", true);
 		mobWeaponSootReduction = CommonConfig.createConfigDouble(config, CATEGORY, "12.D03_mobWeaponSootReduction", "Reduces the amount of soot needed for skeleton guns to appear", 0D);
 
 		enableHives = CommonConfig.createConfigBool(config, CATEGORY, "12.G00_enableHives", "Whether glyphid hives should spawn", false);

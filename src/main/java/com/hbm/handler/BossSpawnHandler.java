@@ -30,6 +30,7 @@ import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldProviderSurface;
 import net.minecraftforge.event.ForgeEventFactory;
 
 public class BossSpawnHandler {
@@ -197,7 +198,7 @@ public class BossSpawnHandler {
 
 				EntityPlayer p = (EntityPlayer)world.playerEntities.get(meteorRand.nextInt(world.playerEntities.size()));
 
-				if(p != null && p.dimension == 0) {
+				if(p != null && p.worldObj.provider instanceof WorldProviderSurface) {
 
 					boolean repell = false;
 					boolean strike = true;

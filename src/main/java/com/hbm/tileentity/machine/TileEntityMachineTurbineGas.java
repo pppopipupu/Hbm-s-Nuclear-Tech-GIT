@@ -272,6 +272,11 @@ public class TileEntityMachineTurbineGas extends TileEntityMachineBase implement
 
 	private void startup() {
 
+		if(!breatheAir(0)) {
+			state = 0;
+			return;
+		}
+
 		counter++;
 
 		if(counter <= 20) //rpm gauge 0-100-0
@@ -373,6 +378,11 @@ public class TileEntityMachineTurbineGas extends TileEntityMachineBase implement
 		double consumption = idleConsumption + consMax * throttle / 100;
 
 		fuelToConsume += consumption;
+
+		if(!breatheAir((int) Math.floor(fuelToConsume))) {
+			state = 0;
+			return;
+		}
 
 		tanks[0].setFill(tanks[0].getFill() - (int) Math.floor(fuelToConsume));
 		fuelToConsume -= (int) Math.floor(fuelToConsume);
@@ -757,7 +767,7 @@ public class TileEntityMachineTurbineGas extends TileEntityMachineBase implement
 				PREFIX_FUNCTION + "setstate" + NAME_SEPARATOR + "state"
 		};
 	}
-
+	
 	@Override
 	public String provideRORValue(String name) {
 		if((PREFIX_VALUE + "turbinepercent").equals(name))	return	"" + (int) (this.powerSliderPos * 100D / 60D);

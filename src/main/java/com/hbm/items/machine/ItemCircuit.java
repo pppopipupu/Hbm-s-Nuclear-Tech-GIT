@@ -35,11 +35,21 @@ public class ItemCircuit extends ItemEnumMulti {
 		list.add(new ItemStack(item, 1, EnumCircuitType.ADVANCED.ordinal()));
 		list.add(new ItemStack(item, 1, EnumCircuitType.CAPACITOR_BOARD.ordinal()));
 		list.add(new ItemStack(item, 1, EnumCircuitType.BISMOID.ordinal()));
+		list.add(new ItemStack(item, 1, EnumCircuitType.AVIONICS.ordinal()));
+		list.add(new ItemStack(item, 1, EnumCircuitType.AERO.ordinal()));
+		list.add(new ItemStack(item, 1, EnumCircuitType.GAAS.ordinal()));
 		list.add(new ItemStack(item, 1, EnumCircuitType.QUANTUM.ordinal()));
 		list.add(new ItemStack(item, 1, EnumCircuitType.CONTROLLER_CHASSIS.ordinal()));
 		list.add(new ItemStack(item, 1, EnumCircuitType.CONTROLLER.ordinal()));
 		list.add(new ItemStack(item, 1, EnumCircuitType.CONTROLLER_ADVANCED.ordinal()));
 		list.add(new ItemStack(item, 1, EnumCircuitType.CONTROLLER_QUANTUM.ordinal()));
+		list.add(new ItemStack(item, 1, EnumCircuitType.CAPACITOR_LANTHANIUM.ordinal()));
+		list.add(new ItemStack(item, 1, EnumCircuitType.PROCESST1.ordinal()));
+		list.add(new ItemStack(item, 1, EnumCircuitType.PROCESST2.ordinal()));
+		list.add(new ItemStack(item, 1, EnumCircuitType.PROCESST3.ordinal()));
+		list.add(new ItemStack(item, 1, EnumCircuitType.GASCHIP.ordinal()));
+		list.add(new ItemStack(item, 1, EnumCircuitType.HFCHIP.ordinal()));
+		list.add(new ItemStack(item, 1, EnumCircuitType.MOLYCHIP.ordinal()));
 	}
 
 	public static enum EnumCircuitType {
@@ -48,6 +58,7 @@ public class ItemCircuit extends ItemEnumMulti {
 		CAPACITOR_TANTALIUM,
 		PCB,
 		SILICON,
+		GAAS,
 		CHIP,
 		CHIP_BISMOID,
 		ANALOG,
@@ -55,6 +66,8 @@ public class ItemCircuit extends ItemEnumMulti {
 		ADVANCED,
 		CAPACITOR_BOARD,
 		BISMOID,
+		AVIONICS,
+		AERO,
 		CONTROLLER_CHASSIS,
 		CONTROLLER,
 		CONTROLLER_ADVANCED,
@@ -62,13 +75,20 @@ public class ItemCircuit extends ItemEnumMulti {
 		CHIP_QUANTUM,
 		CONTROLLER_QUANTUM,
 		ATOMIC_CLOCK,
+		CAPACITOR_LANTHANIUM,
+		PROCESST1,
+		PROCESST2,
+		PROCESST3,
+		GASCHIP,
+		HFCHIP,
+		MOLYCHIP,
 		NUMITRON,
 	}
-	
+
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean bool) {
 		/*List<String> lines = new ArrayList();
-		
+
 		switch(stack.getItemDamage()) {
 		case 0: lines.add("We taught this filament how to think."); break;
 		case 1: lines.add("3300µF"); break;
@@ -83,7 +103,7 @@ public class ItemCircuit extends ItemEnumMulti {
 		case 10: lines.add("Uses that exceptionally stanky 90s yellow PCB."); break;
 		case 11: lines.add("Can do up to three different things (instead of two)!"); break;
 		}
-		
+
 		for(String line : lines) {
 			list.add(EnumChatFormatting.ITALIC + line);
 		}*/

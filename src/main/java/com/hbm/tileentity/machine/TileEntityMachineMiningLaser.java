@@ -1,12 +1,20 @@
 package com.hbm.tileentity.machine;
 
+import static com.hbm.inventory.OreDictManager.KEY_COBBLESTONE;
+import static com.hbm.inventory.OreDictManager.KEY_SAND;
+import static com.hbm.inventory.OreDictManager.KEY_STONE;
+
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
-import com.google.common.collect.Sets;
 import com.hbm.blocks.ModBlocks;
+import com.hbm.blocks.generic.BlockOreFluid;
+import com.hbm.dim.SolarSystem;
 import com.hbm.inventory.UpgradeManagerNT;
+import com.hbm.inventory.RecipesCommon.AStack;
+import com.hbm.inventory.RecipesCommon.ComparableStack;
+import com.hbm.inventory.RecipesCommon.OreDictStack;
 import com.hbm.inventory.container.ContainerMiningLaser;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTank;
@@ -42,6 +50,7 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
@@ -337,19 +346,28 @@ public class TileEntityMachineMiningLaser extends TileEntityMachineBase implemen
 		breakProgress = 0;
 	}
 
-	private static final Set<Item> bad = Sets.newHashSet(new Item[] {
-			Item.getItemFromBlock(Blocks.dirt),
-			Item.getItemFromBlock(Blocks.stone),
-			Item.getItemFromBlock(Blocks.cobblestone),
-			Item.getItemFromBlock(Blocks.sand),
-			Item.getItemFromBlock(Blocks.sandstone),
-			Item.getItemFromBlock(Blocks.gravel),
-			Item.getItemFromBlock(ModBlocks.basalt),
-			Item.getItemFromBlock(ModBlocks.stone_gneiss),
-			Items.flint,
-			Items.snowball,
-			Items.wheat_seeds
-			});
+	private static final List<AStack> bad = Arrays.asList(new AStack[] {
+		new ComparableStack(Blocks.dirt),
+		new OreDictStack(KEY_STONE),
+		new OreDictStack(KEY_COBBLESTONE),
+		new OreDictStack(KEY_SAND),
+		new ComparableStack(Blocks.sandstone),
+		new ComparableStack(Blocks.gravel),
+		new ComparableStack(ModBlocks.basalt),
+		new ComparableStack(ModBlocks.stone_gneiss),
+		new ComparableStack(Items.flint),
+		new ComparableStack(Items.snowball),
+		new ComparableStack(Items.wheat_seeds),
+		new ComparableStack(ModBlocks.tektite),
+	});
+
+	private boolean isBad(ItemStack stack) {
+		for(AStack mj : bad) {
+			if(mj.matchesRecipe(stack, true)) return true;
+		}
+
+		return false;
+	}
 
 	//hahahahahahahaha he said "suck"
 	private void suckDrops() {
@@ -367,36 +385,45 @@ public class TileEntityMachineMiningLaser extends TileEntityMachineBase implemen
 				targetZ + 0.5 + rangeHor
 				));
 
-		for(EntityItem item : items) {
+		for(EntityItem entityItem : items) {
 
-			if(item.isDead) continue;
+			if(entityItem.isDead) continue;
 
-			if(nullifier && bad.contains(item.getEntityItem().getItem())) {
-				item.setDead();
-				item.delayBeforeCanPickup = 60;
+			if(nullifier && isBad(entityItem.getEntityItem())) {
+				entityItem.setDead();
+				entityItem.delayBeforeCanPickup = 60;
 				continue;
 			}
 
-			if(item.getEntityItem().getItem() == Item.getItemFromBlock(ModBlocks.ore_oil)) {
+			Item item = entityItem.getEntityItem().getItem();
+			if(item instanceof ItemBlock) {
+				Block block = ((ItemBlock) item).field_150939_a;
 
-				tank.setTankType(Fluids.OIL); //just to be sure
+				if(block instanceof BlockOreFluid) {
+					int meta = entityItem.getEntityItem().getItemDamage();
 
-				tank.setFill(tank.getFill() + 500);
-				if(tank.getFill() > tank.getMaxFill())
-					tank.setFill(tank.getMaxFill());
+					BlockOreFluid oreFluid = (BlockOreFluid) block;
 
-				item.setDead();
-				item.delayBeforeCanPickup = 60;
-				continue;
+					int toFill = oreFluid.getBlockFluidAmount(meta);
+
+					if(toFill > 0) {
+						tank.setTankType(oreFluid.getPrimaryFluid(meta));
+						tank.setFill(Math.min(tank.getFill() + toFill, tank.getMaxFill()));
+					}
+
+					entityItem.setDead();
+					entityItem.delayBeforeCanPickup = 60;
+					continue;
+				}
 			}
 
-			ItemStack stack = InventoryUtil.tryAddItemToInventory(slots, 9, 29, item.getEntityItem().copy());
+			ItemStack stack = InventoryUtil.tryAddItemToInventory(slots, 9, 29, entityItem.getEntityItem().copy());
 
 			if(stack == null) {
-				item.setDead();
-				item.delayBeforeCanPickup = 60;
+				entityItem.setDead();
+				entityItem.delayBeforeCanPickup = 60;
 			} else {
-				item.setEntityItemStack(stack.copy()); //copy is not necessary but i'm paranoid due to the kerfuffle of the old drill
+				entityItem.setEntityItemStack(stack.copy()); //copy is not necessary but i'm paranoid due to the kerfuffle of the old drill
 			}
 		}
 
@@ -593,7 +620,6 @@ public class TileEntityMachineMiningLaser extends TileEntityMachineBase implemen
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
-
 		tank.readFromNBT(nbt, "oil");
 		power = nbt.getLong("power");
 		isOn = nbt.getBoolean("isOn");
@@ -603,7 +629,6 @@ public class TileEntityMachineMiningLaser extends TileEntityMachineBase implemen
 	@Override
 	public void writeToNBT(NBTTagCompound nbt) {
 		super.writeToNBT(nbt);
-
 		tank.writeToNBT(nbt, "oil");
 		nbt.setLong("power", power);
 		nbt.setBoolean("isOn", isOn);

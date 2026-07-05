@@ -67,12 +67,16 @@ public class SolidificationRecipes extends SerializableRecipe {
 		registerRecipe(MERCURY,		125,			ModItems.ingot_mercury);
 		registerRecipe(BIOGAS,		250,			new ItemStack(ModItems.biomass_compressed, 4));
 		registerRecipe(SALIENT,		1280,			new ItemStack(ModItems.bio_wafer, 8)); //4 (food val) * 2 (sat mod) * 2 (constant) * 10 (quanta) * 8 (batch size)
+		registerRecipe(BLOOD,		1280,			new ItemStack(ModItems.flesh_wafer, 8));
 		registerRecipe(ENDERJUICE,	100,			Items.ender_pearl);
 		registerRecipe(WATZ,		1000,			ModItems.ingot_mud);
 		registerRecipe(REDMUD,		1500,			Items.iron_ingot);
 		registerRecipe(SODIUM,		100,			ModItems.powder_sodium);
 		registerRecipe(LEAD,		100,			ModItems.ingot_lead);
 		registerRecipe(SLOP,		250,			ModBlocks.ore_oil_sand);
+		registerRecipe(CARBONDIOXIDE, 1000,			ModBlocks.dry_ice);
+		registerRecipe(AQUEOUS_NICKEL, 500,		ModItems.nickel_salts);
+		registerRecipe(VINYL, 1000,				ModItems.ingot_pvc);
 
 		registerRecipe(OIL,				SF_OIL,			DictFrame.fromOne(ModItems.oil_tar, EnumTarType.CRUDE));
 		registerRecipe(CRACKOIL,		SF_CRACK,		DictFrame.fromOne(ModItems.oil_tar, EnumTarType.CRACK));

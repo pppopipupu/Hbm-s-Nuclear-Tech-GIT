@@ -47,7 +47,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEntityCompactLauncher extends TileEntityLoadedBase implements ISidedInventory, IEnergyReceiverMK2, IFluidStandardReceiverMK2, IGUIProvider, IBufPacketReceiver, IRadarCommandReceiver {
 
-	private ItemStack slots[];
+	public ItemStack slots[];
 
 	public long power;
 	public static final long maxPower = 100000;
@@ -354,8 +354,7 @@ public class TileEntityCompactLauncher extends TileEntityLoadedBase implements I
 
 		ItemCustomMissilePart fuselage = (ItemCustomMissilePart)multipart.fuselage;
 
-		float f = (Float)fuselage.attributes[1];
-		int fuel = (int)f;
+		int fuel = fuselage.getTankSize();
 
 		switch((FuelType)fuselage.attributes[0]) {
 			case KEROSENE:
@@ -372,6 +371,9 @@ public class TileEntityCompactLauncher extends TileEntityLoadedBase implements I
 			case BALEFIRE:
 				tanks[0].setFill(tanks[0].getFill() - fuel);
 				tanks[1].setFill(tanks[1].getFill() - fuel);
+				break;
+			case HYDRAZINE:
+				tanks[0].setFill(tanks[0].getFill() - fuel);
 				break;
 			case SOLID:
 				this.solid -= fuel; break;
@@ -418,7 +420,7 @@ public class TileEntityCompactLauncher extends TileEntityLoadedBase implements I
 
 		if((FuelType)fuselage.attributes[0] == FuelType.SOLID) {
 
-			if(solid >= (Float)fuselage.attributes[1])
+			if(solid >= fuselage.getTankSize())
 				return 1;
 			else
 				return 0;
@@ -441,8 +443,9 @@ public class TileEntityCompactLauncher extends TileEntityLoadedBase implements I
 			case HYDROGEN:
 			case XENON:
 			case BALEFIRE:
+			case HYDRAZINE:
 
-				if(tanks[0].getFill() >= (Float)fuselage.attributes[1])
+				if(tanks[0].getFill() >= fuselage.getTankSize())
 					return 1;
 				else
 					return 0;
@@ -466,7 +469,7 @@ public class TileEntityCompactLauncher extends TileEntityLoadedBase implements I
 			case HYDROGEN:
 			case BALEFIRE:
 
-				if(tanks[1].getFill() >= (Float)fuselage.attributes[1])
+				if(tanks[1].getFill() >= fuselage.getTankSize())
 					return 1;
 				else
 					return 0;
@@ -500,6 +503,9 @@ public class TileEntityCompactLauncher extends TileEntityLoadedBase implements I
 			case BALEFIRE:
 				tanks[0].setTankType(Fluids.BALEFIRE);
 				tanks[1].setTankType(Fluids.PEROXIDE);
+				break;
+			case HYDRAZINE:
+				tanks[0].setTankType(Fluids.HYDRAZINE);
 				break;
 			default: break;
 		}

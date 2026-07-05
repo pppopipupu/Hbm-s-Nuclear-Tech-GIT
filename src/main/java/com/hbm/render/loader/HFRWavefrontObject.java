@@ -295,6 +295,7 @@ public class HFRWavefrontObject implements IModelCustomNamed {
 			throw new ModelFormatException("Error parsing entry ('" + line + "'" + ", line " + lineCount + ") in file '" + fileName + "' - Incorrect format");
 		}
 
+		
 		return vertex;
 	}
 

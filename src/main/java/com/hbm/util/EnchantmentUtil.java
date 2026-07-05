@@ -5,7 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 public class EnchantmentUtil {
-	
+
 	/**
 	 * Adds an enchantment of the given level to the supplied itemstack
 	 * @param stack
@@ -13,42 +13,43 @@ public class EnchantmentUtil {
 	 * @param level
 	 */
 	public static void addEnchantment(ItemStack stack, Enchantment enchantment, int level) {
+		if(stack == null) return;
 		stack.addEnchantment(enchantment, level);
 	}
-	
+
 	/**
 	 * Removes an enchantment from the given itemstack, regardless of level
 	 * @param stack
 	 * @param enchantment
 	 */
 	public static void removeEnchantment(ItemStack stack, Enchantment enchantment) {
-		
-		if(stack.getEnchantmentTagList() == null) return;
-		
+
+		if(stack == null || stack.getEnchantmentTagList() == null) return;
+
 		int i = 0;
 		for( ; i < stack.getEnchantmentTagList().tagCount(); i++) {
 			if(stack.getEnchantmentTagList().getCompoundTagAt(i).getShort("id") == enchantment.effectId)
 				break;
 		}
-		
+
 		if(i < stack.getEnchantmentTagList().tagCount())
 			stack.getEnchantmentTagList().removeTag(i);
-		
+
 		if(stack.getEnchantmentTagList().tagCount() == 0)
 			stack.getTagCompound().removeTag("ench");
 	}
-	
+
 	public static int getEnchantmentLevel(ItemStack stack, Enchantment enchantment) {
 		if(stack.getEnchantmentTagList() == null) return 0;
-		
+
 		for(int i = 0; i < stack.getEnchantmentTagList().tagCount(); i++) {
 			if(stack.getEnchantmentTagList().getCompoundTagAt(i).getShort("id") == enchantment.effectId)
 				return stack.getEnchantmentTagList().getCompoundTagAt(i).getShort("lvl");
 		}
-		
+
 		return 0;
 	}
-	
+
 	/**
 	 * Returns the size of the XP bar for the given level
 	 * @param level
@@ -59,26 +60,26 @@ public class EnchantmentUtil {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param targetXp
 	 * @return
 	 */
     public static int getLevelForExperience(int xp) {
-    	
+
 		int level = 0;
-		
+
 		while (true) {
-			
+
 			int xpCap = xpBarCap(level);
-			
+
 			if (xp < xpCap)
 				return level;
-			
+
 			xp -= xpCap;
 			level++;
 		}
 	}
-    
+
     /**
      * Identical to EntityPlayer.addExperience but without increasing the player's score
      * @param player
@@ -122,18 +123,18 @@ public class EnchantmentUtil {
 			player.experienceTotal = 0;
 		}
 	}
-	
+
 	/** Fun fact: experienceTotal lies and has no actual purpose other than misleading people! */
 	public static int getTotalExperience(EntityPlayer player) {
 		int xp = 0;
-		
+
 		/* count only completed levels */
 		for(int i = 0; i < player.experienceLevel; i++) {
 			xp += xpBarCap(i);
 		}
-		
+
 		xp += xpBarCap(player.experienceLevel) * player.experience;
-		
+
 		return xp;
 	}
 }

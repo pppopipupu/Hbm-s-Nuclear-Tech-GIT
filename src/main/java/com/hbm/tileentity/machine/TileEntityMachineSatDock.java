@@ -29,7 +29,7 @@ import net.minecraft.world.World;
 import java.util.List;
 
 public class TileEntityMachineSatDock extends TileEntity implements ISidedInventory, IGUIProvider {
-	
+
 	private ItemStack[] slots;
 	private static final int[] access = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
 
@@ -131,7 +131,7 @@ public class TileEntityMachineSatDock extends TileEntity implements ISidedInvent
 			}
 		}
 		nbt.setTag("items", list);
-		
+
 		if (customName != null) {
 			nbt.setString("name", customName);
 		}
@@ -144,17 +144,16 @@ public class TileEntityMachineSatDock extends TileEntity implements ISidedInvent
 	@Override
 	public void updateEntity() {
 		if(!worldObj.isRemote) {
-			SatelliteSavedData data = SatelliteSavedData.getData(worldObj);
+			SatelliteSavedData data = SatelliteSavedData.getData(worldObj, xCoord, zCoord);
 
 			if(slots[15] != null) {
 				int freq = ISatChip.getFreqS(slots[15]);
-
+				data = SatelliteSavedData.getDataFromFreq(worldObj, xCoord, zCoord, freq);
 				Satellite sat = data.getSatFromFreq(freq);
-
-				int delay = 10 * 60 * 1000;
 
 				if(sat instanceof SatelliteMiner) {
 					SatelliteMiner miner = (SatelliteMiner) sat;
+					int delay = 10 * 60 * 1000;
 
 					if(miner.lastOp + delay < System.currentTimeMillis()) {
 						EntityMinerRocket rocket = new EntityMinerRocket(worldObj);
@@ -167,26 +166,23 @@ public class TileEntityMachineSatDock extends TileEntity implements ISidedInvent
 						miner.lastOp = System.currentTimeMillis();
 						data.markDirty();
 					}
-				}
-			}
 
-			@SuppressWarnings("unchecked")
-			List<Entity> list = worldObj.getEntitiesWithinAABBExcludingEntity(null,
-					AxisAlignedBB.getBoundingBox(xCoord - 0.25 + 0.5, yCoord + 0.75, zCoord - 0.25 + 0.5, xCoord + 0.25 + 0.5, yCoord + 2, zCoord + 0.25 + 0.5),
-					entity -> entity instanceof EntityMinerRocket);
+					@SuppressWarnings("unchecked")
+					List<Entity> list = worldObj.getEntitiesWithinAABBExcludingEntity(null,
+							AxisAlignedBB.getBoundingBox(xCoord - 0.25 + 0.5, yCoord + 0.75, zCoord - 0.25 + 0.5, xCoord + 0.25 + 0.5, yCoord + 2, zCoord + 0.25 + 0.5),
+							entity -> entity instanceof EntityMinerRocket);
 
-			for(Entity ent : list) {
-				if(ent instanceof EntityMinerRocket) {
-					EntityMinerRocket minerRocket = (EntityMinerRocket) ent;
-                    if (slots[15] != null && ISatChip.getFreqS(slots[15]) != minerRocket.getDataWatcher().getWatchableObjectInt(17)) {
-						minerRocket.setDead();
-						ExplosionNukeSmall.explode(worldObj, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, ExplosionNukeSmall.PARAMS_TOTS);
-						break;
-					}
+					for(Entity miningRocket : list) {
+                        EntityMinerRocket rocket = (EntityMinerRocket) miningRocket;
+						if(freq != rocket.getDataWatcher().getWatchableObjectInt(17)) {
+							rocket.setDead();
+							ExplosionNukeSmall.explode(worldObj, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, ExplosionNukeSmall.PARAMS_TOTS);
+							break;
+						}
 
-					if (minerRocket.getDataWatcher().getWatchableObjectInt(16) == 1 && minerRocket.timer == 50) {
-						Satellite sat = data.getSatFromFreq(ISatChip.getFreqS(slots[15]));
-						if (sat != null) unloadCargo((SatelliteMiner) sat);
+						if(rocket.getDataWatcher().getWatchableObjectInt(16) == 1 && rocket.timer == 50) {
+							unloadCargo(miner);
+						}
 					}
 				}
 			}

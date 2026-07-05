@@ -164,30 +164,34 @@ public class TileEntityMachineTurbofan extends TileEntityMachinePolluting implem
 
 			long burnValue = 0;
 			int amount = 1 + this.afterburner;
-			int amountToBurn = Math.min(amount, this.tank.getFill());
-			
+
 			boolean redstone = false;
-			
+
 			for(DirPos pos : getConPos()) {
 				if(this.worldObj.isBlockIndirectlyGettingPowered(pos.getX(), pos.getY(), pos.getZ())) {
 					redstone = true;
 					break;
 				}
 			}
-			
+
+			int amountToBurn = 0;
+
 			if(!redstone) {
-	
+
 				if(tank.getTankType().hasTrait(FT_Combustible.class) && tank.getTankType().getTrait(FT_Combustible.class).getGrade() == FuelGrade.AERO) {
 					burnValue = tank.getTankType().getTrait(FT_Combustible.class).getCombustionEnergy() / 1_000;
 				}
-	
+
+				amountToBurn = Math.min(amount, this.tank.getFill());
+				if(amountToBurn > 0 && !breatheAir(amountToBurn)) amountToBurn = 0;
+
 				if(amountToBurn > 0) {
 					this.wasOn = true;
 					this.tank.setFill(this.tank.getFill() - amountToBurn);
 					this.output = (int) (burnValue * amountToBurn * (1 + Math.min(this.afterburner / 3D, 4)));
 					this.power += this.output;
 					this.consumption = amountToBurn;
-	
+
 					if(worldObj.getTotalWorldTime() % 20 == 0) super.pollute(tank.getTankType(), FluidTrait.FluidReleaseType.BURN, amountToBurn * 5);;
 				}
 			}
@@ -395,7 +399,7 @@ public class TileEntityMachineTurbofan extends TileEntityMachinePolluting implem
 			}
 		}
 	}
-    
+
     public boolean setFuelRC(FluidType type) {
         if(tank.getTankType().hasTrait(FT_Combustible.class) && tank.getTankType().getTrait(FT_Combustible.class).getGrade() == FuelGrade.AERO) {
             tank.setTankType(type);

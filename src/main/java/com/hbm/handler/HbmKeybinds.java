@@ -37,9 +37,10 @@ public class HbmKeybinds {
 	public static KeyBinding hudKey = new KeyBinding(category + ".toggleHUD", Keyboard.KEY_V, category);
 	public static KeyBinding dashKey = new KeyBinding(category + ".dash", Keyboard.KEY_LSHIFT, category);
 	public static KeyBinding trainKey = new KeyBinding(category + ".trainInv", Keyboard.KEY_R, category);
+	public static KeyBinding slamKey = new KeyBinding(category + ".slamkey", Keyboard.KEY_LCONTROL, category);
 
 	public static KeyBinding qmaw = new KeyBinding(category + ".qmaw", Keyboard.KEY_F1, category);
-	
+
 	public static KeyBinding abilityCycle = new KeyBinding(category + ".ability", -99, category);
 	public static KeyBinding abilityAlt = new KeyBinding(category + ".abilityAlt", Keyboard.KEY_LMENU, category);
 	public static KeyBinding copyToolAlt = new KeyBinding(category + ".copyToolAlt", Keyboard.KEY_LMENU, category);
@@ -63,7 +64,8 @@ public class HbmKeybinds {
 		ClientRegistry.registerKeyBinding(hudKey);
 		ClientRegistry.registerKeyBinding(dashKey);
 		ClientRegistry.registerKeyBinding(trainKey);
-		
+		ClientRegistry.registerKeyBinding(slamKey);
+
 		ClientRegistry.registerKeyBinding(qmaw);
 
 		ClientRegistry.registerKeyBinding(reloadKey);
@@ -88,7 +90,7 @@ public class HbmKeybinds {
 
 		/// OVERLAP HANDLING ///
 		handleOverlap(Mouse.getEventButtonState(), Mouse.getEventButton() - 100);
-		
+
 		/// KEYBIND PROPS ///
 		handleProps(Mouse.getEventButtonState(), Mouse.getEventButton() - 100);
 	}
@@ -99,17 +101,17 @@ public class HbmKeybinds {
 
 		/// OVERLAP HANDLING ///
 		handleOverlap(Keyboard.getEventKeyState(), Keyboard.getEventKey());
-		
+
 		/// KEYBIND PROPS ///
 		handleProps(Keyboard.getEventKeyState(), Keyboard.getEventKey());
-		
+
 		/// CALCULATOR ///
 		if(calculatorKey.getIsKeyPressed()) {
 			MainRegistry.proxy.me().closeScreen();
 			FMLCommonHandler.instance().showGuiScreen(new GUICalculator());
 		}
 	}
-	
+
 	/**
 	 * Shitty hack: Keybinds fire before minecraft checks right click on block, which means the tool cycle keybind would fire too.
 	 * If cycle collides with right click and a block is being used, cancel the keybind.
@@ -122,16 +124,16 @@ public class HbmKeybinds {
 		EntityPlayer player = MainRegistry.proxy.me();
 		if(player == null) return;
 		if(player.worldObj == null) return;
-		
+
 		HbmPlayerProps props = HbmPlayerProps.getData(player);
-		
+
 		// in theory, this should do the same keybind crap as the main one, but at the end of the client tick, fixing the issue
 		// of detecting when a block is being interacted with
 		// in practice, this shit doesn't fucking work. detection fails when the click is sub one tick long
 		if(Minecraft.getMinecraft().gameSettings.keyBindUseItem.getKeyCode() == abilityCycle.getKeyCode()) {
 			boolean last = props.getKeyPressed(EnumKeybind.ABILITY_CYCLE);
 			boolean current = abilityCycle.getIsKeyPressed();
-			
+
 			if(last != current) {
 				PacketDispatcher.wrapper.sendToServer(new KeybindPacket(EnumKeybind.ABILITY_CYCLE, current));
 				props.setKeyPressed(EnumKeybind.ABILITY_CYCLE, current);
@@ -139,7 +141,7 @@ public class HbmKeybinds {
 			}
 		}
 	}
-	
+
 	/** Handles keybind overlap. Make sure this runs first before referencing the keybinds set by the extprops */
 	public static void handleOverlap(boolean state, int keyCode) {
 		Minecraft mc = Minecraft.getMinecraft();
@@ -186,29 +188,29 @@ public class HbmKeybinds {
 			}
 		}
 	}
-	
+
 	public static void handleProps(boolean state, int keyCode) {
 
 		/// KEYBIND PROPS ///
 		EntityPlayer player = MainRegistry.proxy.me();
 		HbmPlayerProps props = HbmPlayerProps.getData(player);
-		
+
 		for(EnumKeybind key : EnumKeybind.values()) {
 			boolean last = props.getKeyPressed(key);
 			boolean current = MainRegistry.proxy.getIsKeyPressed(key);
-			
+
 			if(last != current) {
-				
+
 				/// ABILITY HANDLING ///
 				if(key == EnumKeybind.ABILITY_CYCLE && Minecraft.getMinecraft().gameSettings.keyBindUseItem.getKeyCode() == abilityCycle.getKeyCode()) continue;
-				
+
 				props.setKeyPressed(key, current);
 				PacketDispatcher.wrapper.sendToServer(new KeybindPacket(key, current));
 				onPressedClient(player, key, current);
 			}
 		}
 	}
-	
+
 	public static void onPressedClient(EntityPlayer player, EnumKeybind key, boolean state) {
 		// ITEM HANDLING
 		ItemStack held = player.getHeldItem();
@@ -224,6 +226,7 @@ public class HbmKeybinds {
 		TOGGLE_MAGNET,
 		TOGGLE_HEAD,
 		DASH,
+		SLAM,
 		TRAIN,
 		CRANE_UP,
 		CRANE_DOWN,

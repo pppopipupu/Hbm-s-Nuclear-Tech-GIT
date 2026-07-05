@@ -35,23 +35,23 @@ import net.minecraftforge.oredict.OreDictionary;
 public class PressRecipes extends SerializableRecipe {
 
 	public static HashMap<Pair<AStack, StampType>, ItemStack> recipes = new HashMap();
-
+	
 	public static ItemStack getOutput(ItemStack ingredient, ItemStack stamp) {
-
+		
 		if(ingredient == null || stamp == null)
 			return null;
-
+		
 		if(!(stamp.getItem() instanceof ItemStamp))
 			return null;
-
+		
 		StampType type = ((ItemStamp) stamp.getItem()).getStampType(stamp.getItem(), stamp.getItemDamage());
-
+		
 		for(Entry<Pair<AStack, StampType>, ItemStack> recipe : recipes.entrySet()) {
-
+			
 			if(recipe.getKey().getValue() == type && recipe.getKey().getKey().matchesRecipe(ingredient, true))
 				return recipe.getValue();
 		}
-
+		
 		return null;
 	}
 
@@ -76,8 +76,10 @@ public class PressRecipes extends SerializableRecipe {
 		makeRecipe(StampType.PLATE, new OreDictStack(IRON.ingot()),			ModItems.plate_iron);
 		makeRecipe(StampType.PLATE, new OreDictStack(GOLD.ingot()),			ModItems.plate_gold);
 		makeRecipe(StampType.PLATE, new OreDictStack(TI.ingot()),			ModItems.plate_titanium);
+		makeRecipe(StampType.PLATE, new OreDictStack(NI.ingot()),			ModItems.plate_nickel);
 		makeRecipe(StampType.PLATE, new OreDictStack(AL.ingot()),			ModItems.plate_aluminium);
 		makeRecipe(StampType.PLATE, new OreDictStack(STEEL.ingot()),		ModItems.plate_steel);
+		makeRecipe(StampType.PLATE, new OreDictStack(STAINLESS.ingot()),	ModItems.plate_stainless);
 		makeRecipe(StampType.PLATE, new OreDictStack(PB.ingot()),			ModItems.plate_lead);
 		makeRecipe(StampType.PLATE, new OreDictStack(CU.ingot()),			ModItems.plate_copper);
 		makeRecipe(StampType.PLATE, new OreDictStack(SA326.ingot()),		ModItems.plate_schrabidium);
@@ -99,6 +101,7 @@ public class PressRecipes extends SerializableRecipe {
 		}
 
 		makeRecipe(StampType.CIRCUIT, new OreDictStack(SI.billet()),						DictFrame.fromOne(ModItems.circuit, EnumCircuitType.SILICON));
+		makeRecipe(StampType.CIRCUIT, new OreDictStack(GAAS.billet()),						DictFrame.fromOne(ModItems.circuit, EnumCircuitType.GAAS));
 
 		makeRecipe(StampType.PRINTING1, new ComparableStack(Items.paper), DictFrame.fromOne(ModItems.page_of_, EnumPages.PAGE1));
 		makeRecipe(StampType.PRINTING2, new ComparableStack(Items.paper), DictFrame.fromOne(ModItems.page_of_, EnumPages.PAGE2));
@@ -130,11 +133,11 @@ public class PressRecipes extends SerializableRecipe {
 	@Override
 	public void readRecipe(JsonElement recipe) {
 		JsonObject obj = (JsonObject) recipe;
-
+		
 		AStack input = this.readAStack(obj.get("input").getAsJsonArray());
 		StampType stamp = StampType.valueOf(obj.get("stamp").getAsString().toUpperCase());
 		ItemStack output = this.readItemStack(obj.get("output").getAsJsonArray());
-
+		
 		if(stamp != null) {
 			makeRecipe(stamp, input, output);
 		}
@@ -143,7 +146,7 @@ public class PressRecipes extends SerializableRecipe {
 	@Override
 	public void writeRecipe(Object recipe, JsonWriter writer) throws IOException {
 		Entry<Pair<AStack, StampType>, ItemStack> entry = (Entry<Pair<AStack, StampType>, ItemStack>) recipe;
-
+		
 		writer.name("input");
 		this.writeAStack(entry.getKey().getKey(), writer);
 		writer.name("stamp").value(entry.getKey().getValue().name().toLowerCase(Locale.US));

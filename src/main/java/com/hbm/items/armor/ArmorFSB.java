@@ -67,6 +67,7 @@ public class ArmorFSB extends ItemArmor implements IArmorDisableModel {
 	public String step;
 	public String jump;
 	public String fall;
+	public boolean canSeal;
 	public double radResist = 0;
 
 	public ArmorFSB(ArmorMaterial material, int slot, String texture) {
@@ -109,12 +110,12 @@ public class ArmorFSB extends ItemArmor implements IArmorDisableModel {
 		this.hardLanding = hardLanding;
 		return this;
 	}
-	
+
 	public ArmorFSB setDashCount(int dashCount) {
 		this.dashCount = dashCount;
 		return this;
 	}
-	
+
 	public ArmorFSB setStepSize(int stepSize) {
 		this.stepSize = stepSize;
 		return this;
@@ -137,6 +138,11 @@ public class ArmorFSB extends ItemArmor implements IArmorDisableModel {
 
 	public ArmorFSB setOverlay(String path) {
 		this.overlay = new ResourceLocation(path);
+		return this;
+	}
+
+	public ArmorFSB setSealed(boolean canSeal) {
+		this.canSeal = canSeal;
 		return this;
 	}
 
@@ -171,6 +177,7 @@ public class ArmorFSB extends ItemArmor implements IArmorDisableModel {
 		this.step = original.step;
 		this.jump = original.jump;
 		this.fall = original.fall;
+		this.canSeal = original.canSeal;
 		this.setRadResist(original.radResist);
 		//overlay doesn't need to be copied because it's helmet exclusive
 		return this;
@@ -183,15 +190,19 @@ public class ArmorFSB extends ItemArmor implements IArmorDisableModel {
 
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean bool) {
-		
+
 		List toAdd = new ArrayList();
+
+		if(canSeal) {
+			list.add(EnumChatFormatting.BLUE + "" + I18nUtil.format("armor.canSeal"));
+		}
 
 		if(!effects.isEmpty()) {
 			List potionList = new ArrayList();
 			for(PotionEffect effect : effects) {
 				potionList.add(I18nUtil.format(Potion.potionTypes[effect.getPotionID()].getName()));
 			}
-			
+
 			toAdd.add(EnumChatFormatting.AQUA + String.join(", ", potionList));
 		}
 
@@ -268,10 +279,10 @@ public class ArmorFSB extends ItemArmor implements IArmorDisableModel {
 
 		EntityPlayer player = event.player;
 		boolean step = true;
-		
+
 		if(player.getUniqueID().equals(ShadyUtil.the_NCR) || player.getUniqueID().equals(ShadyUtil.Barnaby99_x)) {
 			step = false;
-			
+
 			if(player.worldObj.isRemote && player.onGround) {
 				steppy(player, "hbm:step.powered");
 			}
@@ -291,9 +302,49 @@ public class ArmorFSB extends ItemArmor implements IArmorDisableModel {
 			if(step == true && chestplate.step != null && player.worldObj.isRemote && player.onGround) {
 				steppy(player, chestplate.step);
 			}
+			/*
+			if(dashCount > 0) {
+
+				int perDash = 60;
+
+				HbmPlayerProps props = (HbmPlayerProps) player.getExtendedProperties("NTM_EXT_PLAYER");
+
+				props.setDashCount(dashCount);
+
+				int stamina = props.getStamina();
+
+				if(props.getDashCooldown() <= 0) {
+
+					if(!player.capabilities.isFlying && player.isSneaking() && stamina >= perDash) {
+
+						Vec3 lookingIn = player.getLookVec();
+						lookingIn.yCoord = 0;
+						lookingIn.normalize();
+						player.addVelocity(lookingIn.xCoord, 0, lookingIn.zCoord);
+						player.playSound("hbm:player.dash", 1.0F, 1.0F);
+
+						props.setDashCooldown(HbmPlayerProps.dashCooldownLength);
+						stamina -= perDash;
+					}
+				} else {
+					props.setDashCooldown(props.getDashCooldown() - 1);
+				}
+
+				if(stamina < props.getDashCount() * perDash) {
+					stamina++;
+
+					if(stamina % perDash == perDash-1) {
+
+						player.playSound("hbm:player.dashRecharge", 1.0F, (1.0F + ((1F/12F)*(stamina/perDash))));
+						stamina++;
+					}
+				}
+
+				props.setStamina(stamina);
+			}	*/
 		}
 	}
-	
+
 	public static void steppy(EntityPlayer player, String sound) {
 
 		try {
@@ -329,18 +380,18 @@ public class ArmorFSB extends ItemArmor implements IArmorDisableModel {
 		}
 	}
 
-	public void handleFall(EntityPlayer player) {
+	public void handleFall(EntityPlayer player, float fallDistance) {
 
 		if(ArmorFSB.hasFSBArmor(player)) {
 
 			ArmorFSB chestplate = (ArmorFSB) player.inventory.armorInventory[2].getItem();
 
-			if(chestplate.hardLanding && player.fallDistance > 10) {
+			if(chestplate.hardLanding && fallDistance > 10) {
 
 				List<Entity> entities = player.worldObj.getEntitiesWithinAABBExcludingEntity(player, player.boundingBox.expand(3, 0, 3));
 
 				for(Entity e : entities) {
-					
+
 					if(e instanceof EntityItem)
 						continue;
 
@@ -375,8 +426,10 @@ public class ArmorFSB extends ItemArmor implements IArmorDisableModel {
 			// Armor piece dosimeters indicate radiation dosage inside the armor, so reduce the counts by the effective protection
 			float mod = ContaminationUtil.calculateRadiationMod(entity);
 			float x = HbmLivingProps.getRadBuf(entity) * mod;
-			
+
 			if(x > 1E-5) {
+				if(world.rand.nextFloat() > x) return;
+
 				List<Integer> list = new ArrayList<Integer>();
 
 				if(x < 1) list.add(0);
@@ -433,17 +486,17 @@ public class ArmorFSB extends ItemArmor implements IArmorDisableModel {
 
 	private HashSet<EnumPlayerPart> hidden = new HashSet<EnumPlayerPart>();
 	private boolean needsFullSet = false;
-	
+
 	public ArmorFSB hides(EnumPlayerPart... parts) {
 		Collections.addAll(hidden, parts);
 		return this;
 	}
-	
+
 	public ArmorFSB setFullSetForHide() {
 		needsFullSet = true;
 		return this;
 	}
-	
+
 	@Override
 	public boolean disablesPart(EntityPlayer player, ItemStack stack, EnumPlayerPart part) {
 		return hidden.contains(part) && (!needsFullSet || hasFSBArmorIgnoreCharge(player));

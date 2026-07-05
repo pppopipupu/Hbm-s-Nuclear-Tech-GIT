@@ -1,6 +1,9 @@
 package com.hbm.handler;
 
+import com.hbm.dim.WorldProviderCelestial;
+import com.hbm.dim.trait.CBT_Atmosphere;
 import com.hbm.entity.grenade.*;
+import com.hbm.handler.atmosphere.ChunkAtmosphereManager;
 import com.hbm.items.ModItems;
 import com.hbm.items.tool.ItemFertilizer;
 import com.hbm.items.weapon.ItemGenericGrenade;
@@ -12,6 +15,7 @@ import net.minecraft.dispenser.BehaviorProjectileDispense;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.dispenser.IPosition;
 import net.minecraft.entity.IProjectile;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
@@ -50,7 +54,7 @@ public class DispenserBehaviorHandler {
 				return new EntityGrenadeBouncyGeneric(world, position.getX(), position.getY(), position.getZ()).setType((ItemGenericGrenade) ModItems.stick_dynamite_fishing);
 			}
 		});
-		
+
 		BlockDispenser.dispenseBehaviorRegistry.putObject(ModItems.powder_fertilizer, new BehaviorDefaultDispenseItem() {
 
 			private boolean dispenseSound = true;
@@ -72,5 +76,29 @@ public class DispenserBehaviorHandler {
 				}
 			}
 		});
+
+		// Override water dispensing behaviour to handle vacuums
+		BehaviorDefaultDispenseItem bucketDispense = (BehaviorDefaultDispenseItem)BlockDispenser.dispenseBehaviorRegistry.getObject(Items.water_bucket);
+		BehaviorDefaultDispenseItem newBucketDispense = new BehaviorDefaultDispenseItem() {
+			@Override
+			public ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
+				World world = source.getWorld();
+				if(world.provider instanceof WorldProviderCelestial) {
+					EnumFacing facing = BlockDispenser.func_149937_b(source.getBlockMetadata());
+					int x = source.getXInt() + facing.getFrontOffsetX();
+					int y = source.getYInt() + facing.getFrontOffsetY();
+					int z = source.getZInt() + facing.getFrontOffsetZ();
+
+					CBT_Atmosphere atmosphere = ChunkAtmosphereManager.proxy.getAtmosphere(world, x, y, z);
+					if(ChunkAtmosphereManager.proxy.hasLiquidPressure(atmosphere)) {
+						world.provider.isHellWorld = false;
+					}
+				}
+
+				return bucketDispense.dispense(source, stack);
+			}
+		};
+
+		BlockDispenser.dispenseBehaviorRegistry.putObject(Items.water_bucket, newBucketDispense);
 	}
 }

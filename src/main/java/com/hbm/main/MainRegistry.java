@@ -12,6 +12,7 @@ import com.hbm.entity.EntityMappings;
 import com.hbm.entity.logic.IChunkLoader;
 import com.hbm.entity.mob.siege.SiegeTier;
 import com.hbm.handler.*;
+import com.hbm.handler.atmosphere.ChunkAtmosphereManager;
 import com.hbm.handler.ae2.AE2CompatHandler;
 import com.hbm.handler.imc.*;
 import com.hbm.handler.microblocks.MicroBlocksCompatHandler;
@@ -53,7 +54,6 @@ import cpw.mods.fml.common.*;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.Mod.Metadata;
-import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCEvent;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
 import cpw.mods.fml.common.event.FMLMissingMappingsEvent.MissingMapping;
@@ -91,6 +91,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
+
+import com.hbm.dim.SolarSystem;
+import com.hbm.dim.WorldProviderCelestial;
+import com.hbm.dim.WorldTypeTeleport;
+import com.hbm.dim.trait.CBT_Atmosphere;
+import com.hbm.world.ModBiomes;
+import com.hbm.world.PlanetGen;
+
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLMissingMappingsEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartedEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 @Mod(modid = RefStrings.MODID, name = RefStrings.NAME, version = RefStrings.VERSION)
 public class MainRegistry {
@@ -193,6 +207,7 @@ public class MainRegistry {
 	public static Achievement digammaKnow;
 	public static Achievement digammaKauaiMoho;
 	public static Achievement digammaUpOnTop;
+	public static Achievement rotConsum;
 
 	public static Achievement achBurnerPress;
 	public static Achievement achBlastFurnace;
@@ -224,6 +239,7 @@ public class MainRegistry {
 	public static Achievement achBismuth;
 	public static Achievement achBreeding;
 	public static Achievement achFusion;
+	public static Achievement achDriveFail;
 
 	public static int generalOverride = 0;
 	public static int polaroidID = 1;
@@ -266,6 +282,7 @@ public class MainRegistry {
 		proxy.registerPreRenderInfo();
 		ModBlocks.mainRegistry();
 		ModItems.mainRegistry();
+		ModBiomes.init();
 		proxy.registerRenderInfo();
 		HbmWorld.mainRegistry();
 		GameRegistry.registerFuelHandler(new FuelHandler());
@@ -278,6 +295,8 @@ public class MainRegistry {
 		HazardRegistry.registerItems();
 		HazardRegistry.registerTrafos();
 		XWeaponModManager.init();
+
+		SolarSystem.init();
 
 		OreDictManager oreMan = new OreDictManager();
 		MinecraftForge.EVENT_BUS.register(oreMan); //OreRegisterEvent
@@ -346,6 +365,10 @@ public class MainRegistry {
 			@Override
 			public void ticketsLoaded(List<Ticket> tickets, World world) {
 				for(Ticket ticket : tickets) {
+					if(ticket.getType() == ForgeChunkManager.Type.NORMAL) {
+						ChunkLoaderManager.loadTicket(world, ticket);
+						return;
+					}
 
 					if(ticket.getEntity() instanceof IChunkLoader) {
 						((IChunkLoader) ticket.getEntity()).init(ticket);
@@ -406,6 +429,7 @@ public class MainRegistry {
 		digammaKnow = new Achievement("achievement.digammaKnow", "digammaKnow", 3, 8, DictFrame.fromOne(ModItems.achievement_icon, EnumAchievementType.DIGAMMAKNOW), digammaFeel).initIndependentStat().registerStat().setSpecial();
 		digammaKauaiMoho = new Achievement("achievement.digammaKauaiMoho", "digammaKauaiMoho", 5, 8, DictFrame.fromOne(ModItems.achievement_icon, EnumAchievementType.DIGAMMAKAUAIMOHO), digammaKnow).initIndependentStat().registerStat().setSpecial();
 		digammaUpOnTop = new Achievement("achievement.digammaUpOnTop", "digammaUpOnTop", 7, 8, DictFrame.fromOne(ModItems.achievement_icon, EnumAchievementType.DIGAMMAUPONTOP), digammaKauaiMoho).initIndependentStat().registerStat().setSpecial();
+		//rotConsum = new Achievement("achievement.rotConsum", "rotConsum", 7, 8, ModItems.rot_consumes, null).initIndependentStat().registerStat().setSpecial();
 
 		//progression achieves
 		achBurnerPress = new Achievement("achievement.burnerPress", "burnerPress", 0, 0, new ItemStack(ModBlocks.machine_press), null).initIndependentStat().registerStat();
@@ -419,6 +443,7 @@ public class MainRegistry {
 		achTantalum = new Achievement("achievement.tantalum", "tantalum", 7, 3, ModItems.gem_tantalium, achChemplant).initIndependentStat().setSpecial().registerStat();
 		achGasCent = new Achievement("achievement.gasCent", "gasCent", 13, 2, ModItems.ingot_uranium_fuel, achDesh).initIndependentStat().registerStat();
 		achCentrifuge = new Achievement("achievement.centrifuge", "centrifuge", 12, -2, new ItemStack(ModBlocks.machine_centrifuge), achPolymer).initIndependentStat().registerStat();
+		achDriveFail = new Achievement("achievement.driveFail", "driveFail", 8, -3, new ItemStack(ModItems.full_drive), achPolymer).initIndependentStat().setSpecial().registerStat();
 		achFOEQ = new Achievement("achievement.FOEQ", "FOEQ", 5, 5, ModItems.sat_foeq, achDesh).initIndependentStat().setSpecial().registerStat();
 		achSoyuz = new Achievement("achievement.soyuz", "soyuz", 7, 6, Items.baked_potato, achDesh).initIndependentStat().setSpecial().registerStat();
 		achSpace = new Achievement("achievement.space", "space", 9, 7, ModItems.missile_soyuz, achDesh).initIndependentStat().setSpecial().registerStat();
@@ -484,6 +509,7 @@ public class MainRegistry {
 			achTantalum,
 			achGasCent,
 			achCentrifuge,
+			achDriveFail,
 			achFOEQ,
 			achSoyuz,
 			achSpace,
@@ -502,7 +528,7 @@ public class MainRegistry {
 			achBreeding,
 			achFusion,
 			achRedBalloons,
-			achManhattan
+			achManhattan,
 		}));
 
 		// MUST be initialized AFTER achievements!!
@@ -511,6 +537,8 @@ public class MainRegistry {
 		IMCHandler.registerHandler("blastfurnace", new IMCBlastFurnace());
 		IMCHandler.registerHandler("crystallizer", new IMCCrystallizer());
 		IMCHandler.registerHandler("centrifuge", new IMCCentrifuge());
+
+		PlanetGen.init();
 
 		if (Loader.isModLoaded("NotEnoughItems")){
 			if (Loader.instance().getIndexedModList().get("NotEnoughItems").getVersion().contains("GTNH")) {
@@ -594,18 +622,56 @@ public class MainRegistry {
 		MinecraftForge.EVENT_BUS.register(new SchistStratum()); //DecorateBiomeEvent.Pre
 		//MinecraftForge.EVENT_BUS.register(new DeepLayer()); //DecorateBiomeEvent.Pre
 
-		if(WorldConfig.enableSulfurCave) new OreCave(ModBlocks.stone_resource, 0).setThreshold(1.5D).setRangeMult(20).setYLevel(30).setMaxRange(20).withFluid(ModBlocks.sulfuric_acid_block);	//sulfur
-		if(WorldConfig.enableAsbestosCave) new OreCave(ModBlocks.stone_resource, 1).setThreshold(1.75D).setRangeMult(20).setYLevel(25).setMaxRange(20);											//asbestos
-		if(WorldConfig.enableHematite) new OreLayer3D(ModBlocks.stone_resource, EnumStoneType.HEMATITE.ordinal()).setScaleH(0.04D).setScaleV(0.25D).setThreshold(230);
-		if(WorldConfig.enableBauxite) new OreLayer3D(ModBlocks.stone_resource, EnumStoneType.BAUXITE.ordinal()).setScaleH(0.03D).setScaleV(0.15D).setThreshold(300);
-		if(WorldConfig.enableMalachite) new OreLayer3D(ModBlocks.stone_resource, EnumStoneType.MALACHITE.ordinal()).setScaleH(0.1D).setScaleV(0.15D).setThreshold(275);
-		//new BiomeCave().setThreshold(1.5D).setRangeMult(20).setYLevel(40).setMaxRange(20);
-		//new OreLayer(Blocks.coal_ore, 0.2F).setThreshold(4).setRangeMult(3).setYLevel(70);
+		// Global caves + layers
+		// Sulfur caves can't be defined globally due to vacuums evaporating fluids
+		if(WorldConfig.enableHematite) new OreLayer3D(ModBlocks.stone_resource, EnumStoneType.HEMATITE.ordinal()).setGlobal(true).setScaleH(0.04D).setScaleV(0.25D).setThreshold(230);
+		if(WorldConfig.enableBauxite) new OreLayer3D(ModBlocks.stone_resource, EnumStoneType.BAUXITE.ordinal()).setGlobal(true).setScaleH(0.03D).setScaleV(0.15D).setThreshold(300);
+		if(WorldConfig.enableMalachite) new OreLayer3D(ModBlocks.stone_resource, EnumStoneType.MALACHITE.ordinal()).setGlobal(true).setScaleH(0.1D).setScaleV(0.15D).setThreshold(275);
+
+
+		// Earth caves + layers
+		if(WorldConfig.enableSulfurCave) new OreCave(ModBlocks.stone_resource, EnumStoneType.SULFUR.ordinal()).setThreshold(1.5D).setRangeMult(20).setYLevel(30).setMaxRange(20).withFluid(ModBlocks.sulfuric_acid_block);
+		if(WorldConfig.enableAsbestosCave) new OreCave(ModBlocks.stone_resource, EnumStoneType.ASBESTOS.ordinal()).setThreshold(1.75D).setRangeMult(20).setYLevel(25).setMaxRange(20);
+
+		// Moon caves + layers
+		if(WorldConfig.enableSulfurCave) new OreCave(ModBlocks.stone_resource, EnumStoneType.SULFUR.ordinal()).setDimension(SpaceConfig.moonDimension).setThreshold(1.5D).setRangeMult(20).setYLevel(30).setMaxRange(20);
+		new OreLayer3D(ModBlocks.stone_resource, EnumStoneType.CONGLOMERATE.ordinal()).setDimension(SpaceConfig.moonDimension).setScaleH(0.04D).setScaleV(0.25D).setThreshold(220);
+
+		// Duna caves + layers
+		if(WorldConfig.enableSulfurCave) new OreCave(ModBlocks.stone_resource, EnumStoneType.SULFUR.ordinal()).setDimension(SpaceConfig.dunaDimension).setThreshold(1.5D).setRangeMult(20).setYLevel(30).setMaxRange(20);
+
+		// Ike caves + layers
+		if(WorldConfig.enableSulfurCave) new OreCave(ModBlocks.stone_resource, EnumStoneType.SULFUR.ordinal()).setDimension(SpaceConfig.ikeDimension).setThreshold(1.5D).setRangeMult(20).setYLevel(30).setMaxRange(20);
+		new OreLayer3D(ModBlocks.stone_resource, EnumStoneType.CONGLOMERATE.ordinal()).setDimension(SpaceConfig.ikeDimension).setScaleH(0.04D).setScaleV(0.25D).setThreshold(220);
+
+		// Eve caves + layers
+		if(WorldConfig.enableSulfurCave) new OreCave(ModBlocks.stone_resource, EnumStoneType.SULFUR.ordinal()).setDimension(SpaceConfig.eveDimension).setThreshold(1.5D).setRangeMult(20).setYLevel(30).setMaxRange(20).withFluid(ModBlocks.sulfuric_acid_block);
+		new OreCave(ModBlocks.basalt, 0).setDimension(SpaceConfig.eveDimension).setThreshold(0.15D).setRangeMult(40).setYLevel(54).setMaxRange(24).setBlockOverride(ModBlocks.eve_silt).setIgnoreWater(true).setStalagmites(false);
+
+		// Moho caves + layers
+		if(WorldConfig.enableSulfurCave) new OreCave(ModBlocks.stone_resource, EnumStoneType.SULFUR.ordinal()).setDimension(SpaceConfig.mohoDimension).setThreshold(1.5D).setRangeMult(20).setYLevel(30).setMaxRange(20);
+
+		// Minmus caves + layers
+		if(WorldConfig.enableSulfurCave) new OreCave(ModBlocks.stone_resource, EnumStoneType.SULFUR.ordinal()).setDimension(SpaceConfig.minmusDimension).setThreshold(1.5D).setRangeMult(20).setYLevel(30).setMaxRange(20);
+		new OreLayer3D(ModBlocks.minmus_regolith, 0).setDimension(SpaceConfig.minmusDimension).setScaleH(0.06D).setScaleV(0.25D).setThreshold(220);
+		new OreLayer3D(ModBlocks.minmus_smooth, 0).setDimension(SpaceConfig.minmusDimension).setScaleH(0.05D).setScaleV(0.15D).setThreshold(280);
+		new OreLayer3D(ModBlocks.stone_resource, EnumStoneType.CONGLOMERATE.ordinal()).setDimension(SpaceConfig.minmusDimension).setScaleH(0.04D).setScaleV(0.25D).setThreshold(220);
+
+		// Laythe caves + layers
+		if(WorldConfig.enableSulfurCave) new OreCave(ModBlocks.stone_resource, EnumStoneType.SULFUR.ordinal()).setDimension(SpaceConfig.laytheDimension).setThreshold(1.5D).setRangeMult(20).setYLevel(30).setMaxRange(20).withFluid(ModBlocks.sulfuric_acid_block);
+		if(WorldConfig.enableAsbestosCave) new OreCave(ModBlocks.stone_resource, EnumStoneType.ASBESTOS.ordinal()).setDimension(SpaceConfig.laytheDimension).setThreshold(1.75D).setRangeMult(20).setYLevel(25).setMaxRange(20);
+		new OreCave(ModBlocks.tumor).setDimension(SpaceConfig.laytheDimension).setThreshold(0.3D).setRangeMult(20).setYLevel(25).setMaxRange(70);
+		new OreCave(ModBlocks.laythe_silt, 6).setDimension(SpaceConfig.laytheDimension).setThreshold(0.25D).setRangeMult(80).setYLevel(54).setMaxRange(24).setBlockOverride(ModBlocks.laythe_silt).setIgnoreWater(true).setStalagmites(false);
+		new OreCave(ModBlocks.laythe_silt, 3).setDimension(SpaceConfig.laytheDimension).setThreshold(0.2D).setRangeMult(60).setYLevel(58).setMaxRange(14).setBlockOverride(ModBlocks.laythe_silt).setIgnoreWater(true).setStalagmites(false);
+
 		BedrockOre.init();
+		PlanetGen.overrideOverworldProvider(); // Doing it as late as possible
 
 		Compat.handleRailcraftNonsense();
 		SuicideThreadDump.register();
 		CommandReloadClient.register();
+
+		WorldTypeTeleport.init();
 
 		//ExplosionTests.runTest();
 	}
@@ -639,6 +705,14 @@ public class MainRegistry {
 		DamageResistanceHandler dmgHandler = new DamageResistanceHandler();
 		MinecraftForge.EVENT_BUS.register(dmgHandler);
 
+		ChunkAtmosphereManager atmosphere = new ChunkAtmosphereManager();
+		MinecraftForge.EVENT_BUS.register(atmosphere);
+		FMLCommonHandler.instance().bus().register(atmosphere);
+
+		CelestialNukeShockHandler celestialNukeShockHandler = new CelestialNukeShockHandler();
+		MinecraftForge.EVENT_BUS.register(celestialNukeShockHandler);
+		FMLCommonHandler.instance().bus().register(celestialNukeShockHandler);
+
 		NeutronHandler neutronHandler = new NeutronHandler();
 		MinecraftForge.EVENT_BUS.register(neutronHandler);
 		FMLCommonHandler.instance().bus().register(neutronHandler);
@@ -663,9 +737,11 @@ public class MainRegistry {
 		event.registerServerCommand(new CommandDebugChunkLoad());
 		event.registerServerCommand(new CommandSatellites());
 		event.registerServerCommand(new CommandRadiation());
+		event.registerServerCommand(new CommandStations());
 		event.registerServerCommand(new CommandPacketInfo());
 		event.registerServerCommand(new CommandReloadServer());
 		event.registerServerCommand(new CommandLocate());
+		event.registerServerCommand(new CommandTotalTime());
 		event.registerServerCommand(new CommandCustomize());
 		event.registerServerCommand(new CommandReapNetworks());
 		ArcFurnaceRecipes.registerFurnaceSmeltables(); // because we have to wait for other mods to take their merry ass time to register recipes
@@ -696,6 +772,7 @@ public class MainRegistry {
 		WeaponConfig.loadFromConfig(config);
 		MobConfig.loadFromConfig(config);
 		StructureConfig.loadFromConfig(config);
+		SpaceConfig.loadFromConfig(config);
 
 		config.save();
 
@@ -712,8 +789,8 @@ public class MainRegistry {
 		} catch(ClassNotFoundException e) { }
 	}
 
-	private static HashSet<String> ignoreMappings = new HashSet();
-	private static HashMap<String, Item> remapItems = new HashMap();
+	private static HashSet<String> ignoreMappings = new HashSet<String>();
+	private static HashMap<String, Item> remapItems = new HashMap<String, Item>();
 
 
 	@EventHandler
@@ -1058,7 +1135,6 @@ public class MainRegistry {
 		ignoreMappings.add("hbm:tile.ore_meteor_lithium");
 		ignoreMappings.add("hbm:tile.ore_meteor_starmetal");
 		ignoreMappings.add("hbm:tile.machine_generator");
-		ignoreMappings.add("hbm:item.v1");
 		ignoreMappings.add("hbm:item.arc_electrode_desh");
 		ignoreMappings.add("hbm:tile.sand_gold");
 		ignoreMappings.add("hbm:tile.sand_gold198");
@@ -1392,6 +1468,8 @@ public class MainRegistry {
 		ignoreMappings.add("hbm:tile.machine_nuke_furnace_off");
 		ignoreMappings.add("hbm:tile.machine_nuke_furnace_on");
 		ignoreMappings.add("hbm:item.singularity_micro");
+		ignoreMappings.add("hbm:item.alloy_knife");
+		ignoreMappings.add("hbm:tile.hazmat");
 		ignoreMappings.add("hbm:item.gun_cryocannon");
 		ignoreMappings.add("hbm:item.gun_cryolator_ammo");
 		ignoreMappings.add("hbm:item.canteen_fab");
@@ -1429,6 +1507,9 @@ public class MainRegistry {
 		ignoreMappings.add("hbm:item.mp_f_20");
 		ignoreMappings.add("hbm:item.mp_thruster_10_kerosene_tec");
 		ignoreMappings.add("hbm:item.mp_thruster_15_kerosene_tec");
+		ignoreMappings.add("hbm:item.powder_platnium");
+		ignoreMappings.add("hbm:item.ingot_platnium");
+		ignoreMappings.add("hbm:item.nugget_platnium");
 		ignoreMappings.add("hbm:item.t45_kit");
 		ignoreMappings.add("hbm:item.fusion_core_infinite");
 		ignoreMappings.add("hbm:item.fluid_identifier");
@@ -1518,6 +1599,7 @@ public class MainRegistry {
 		ignoreMappings.add("hbm:item.redcoil_capacitor");
 		ignoreMappings.add("hbm:item.euphemium_capacitor");
 		ignoreMappings.add("hbm:item.toolbox_legacy");
+		ignoreMappings.add("hbm:tile.rbmk_burner");
 		ignoreMappings.add("hbm:item.crucible_template");
 		ignoreMappings.add("hbm:tile.absorber");
 		ignoreMappings.add("hbm:tile.absorber_red");
@@ -1629,7 +1711,7 @@ public class MainRegistry {
 		ignoreMappings.add("hbm:item.blades_advanced_alloy");
 		ignoreMappings.add("hbm:tile.machine_minirtg");
 		ignoreMappings.add("hbm:tile.machine_powerrtg");
-
+		
 		/// REMAP ///
 		remapItems.put("hbm:item.gadget_explosive8", ModItems.early_explosive_lenses);
 		remapItems.put("hbm:item.man_explosive8", ModItems.explosive_lenses);

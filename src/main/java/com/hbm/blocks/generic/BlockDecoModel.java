@@ -135,4 +135,5 @@ public class BlockDecoModel extends BlockEnumMulti implements INBTBlockTransform
 		//genuinely like. why did i do that
 		return (rot << 2) | type; //To accommodate for BlockDecoModel's shift in the rotation bits; otherwise, simply bit-shift right and or any non-rotation meta after
 	}
+
 }

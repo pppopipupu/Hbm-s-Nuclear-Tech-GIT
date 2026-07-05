@@ -21,18 +21,27 @@ import net.minecraft.item.ItemStack;
 public class ElectrolyserFluidRecipes extends SerializableRecipe {
 
 	public static HashMap<FluidType, ElectrolysisRecipe> recipes = new HashMap();
-
+	
 	@Override
 	public void registerDefaults() {
 		recipes.put(Fluids.WATER, new ElectrolysisRecipe(1_000, new FluidStack(Fluids.HYDROGEN, 1600), new FluidStack(Fluids.OXYGEN, 800), 20));
 		recipes.put(Fluids.HEAVYWATER, new ElectrolysisRecipe(1_000, new FluidStack(Fluids.DEUTERIUM, 1600), new FluidStack(Fluids.OXYGEN, 800), 20));
 		recipes.put(Fluids.VITRIOL, new ElectrolysisRecipe(1_000, new FluidStack(Fluids.SULFURIC_ACID, 500), new FluidStack(Fluids.CHLORINE, 500), new ItemStack(ModItems.powder_iron), new ItemStack(ModItems.ingot_mercury)));
 		recipes.put(Fluids.SLOP, new ElectrolysisRecipe(1_000, new FluidStack(Fluids.MERCURY, 250), new FluidStack(Fluids.NONE, 0), new ItemStack(ModItems.niter, 2), new ItemStack(ModItems.powder_limestone, 2), new ItemStack(ModItems.sulfur)));
+
+		recipes.put(Fluids.BRINE, new ElectrolysisRecipe(400, new FluidStack(Fluids.HYDROGEN, 200), new FluidStack(Fluids.OXYGEN, 200),40, new ItemStack(ModItems.powder_sodium, 2)));
+		recipes.put(Fluids.AQUEOUS_NICKEL, new ElectrolysisRecipe(300, new FluidStack(Fluids.NONE, 0), new FluidStack(Fluids.NONE, 0),40, new ItemStack(ModItems.powder_nickel, 2),new ItemStack(ModItems.powder_iron, 2),new ItemStack(ModItems.sulfur, 4)));
+		recipes.put(Fluids.COPPERSULFATE, new ElectrolysisRecipe(200, new FluidStack(Fluids.NONE, 0), new FluidStack(Fluids.OXYGEN, 50),40, new ItemStack(ModItems.powder_copper, 2),new ItemStack(ModItems.sulfur, 2)));
+
 		recipes.put(Fluids.REDMUD, new ElectrolysisRecipe(1_500, new FluidStack(Fluids.MERCURY, 150), new FluidStack(Fluids.LYE, 100), new ItemStack(ModItems.powder_titanium, 3), new ItemStack(ModItems.powder_iron, 3), new ItemStack(ModItems.powder_aluminium, 2)));
 		recipes.put(Fluids.ALUMINA, new ElectrolysisRecipe(1_000, new FluidStack(Fluids.SODIUM, 200), new FluidStack(Fluids.NONE, 0),40, new ItemStack(ModItems.powder_aluminium, 7), new ItemStack(ModItems.fluorite, 2)));
 
 		recipes.put(Fluids.POTASSIUM_CHLORIDE, new ElectrolysisRecipe(250, new FluidStack(Fluids.CHLORINE, 125), new FluidStack(Fluids.NONE, 0), new ItemStack(ModItems.dust)));
 		recipes.put(Fluids.CALCIUM_CHLORIDE, new ElectrolysisRecipe(250, new FluidStack(Fluids.CHLORINE, 125), new FluidStack(Fluids.CALCIUM_SOLUTION, 125)));
+		recipes.put(Fluids.HCL, new ElectrolysisRecipe(1_000, new FluidStack(Fluids.HYDROGEN, 500), new FluidStack(Fluids.CHLORINE, 500), 40));
+
+		recipes.put(Fluids.LITHCARBONATE, new ElectrolysisRecipe(1_000, new FluidStack(Fluids.OXYGEN, 12_000), new FluidStack(Fluids.NONE, 0), 10, new ItemStack(ModItems.powder_lithium, 1), new ItemStack(ModItems.ingot_graphite, 1)));
+
 	}
 
 	public static HashMap getRecipes() {
