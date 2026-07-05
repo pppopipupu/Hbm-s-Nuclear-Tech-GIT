@@ -7254,3 +7254,126 @@ desc.gui.upgrade.effectiveness= * §aEffectiveness§r: Stacks to level 3
 desc.gui.upgrade.overdrive= * §7Overdrive§r: Stacks to level 3
 desc.gui.upgrade.power= * §1Power-Saving§r: Stacks to level 3
 desc.gui.upgrade.speed= * §4Speed§r: Stacks to level 3
+
+# NTMC Addon Strings
+
+# Old Chemplant Recipes
+chem.FP_CHLOROCALCITE_MIX=Mixed Chlorocalcite Solution Fractionating
+chem.FP_BAUXITE_SOLUTION=Bauxite Solution Fractionating
+chem.FP_COALOIL=Coal Oil Fractionating
+chem.FP_COALCREOSOTE=Coal Tar Creosote Fractionating
+chem.FP_EGG=Dissolved Egg Fractionating
+chem.FP_GAS_COKER=Coker Gas Fractionating
+chem.FP_HEAVYOIL=Heavy Oil Fractionating
+chem.FP_HEAVYOIL_VACUUM=Vacuum Heavy Oil Fractionating
+chem.FP_LIGHTOIL=Light Oil Fractionating
+chem.FP_LIGHTOIL_DS=Desulfurized Light Oil Fractionating
+chem.FP_LIGHTOIL_CRACK=Cracked Light Oil Fractionating
+chem.FP_LIGHTOIL_VACUUM=Vacuum Light Oil Fractionating
+chem.FP_NAPHTHA=Naphtha Fractionating
+chem.FP_NAPHTHA_DS=Desulfurized Naphtha Fractionating
+chem.FP_NAPHTHA_COKER=Coker Naphtha Fractionating
+chem.FP_NAPHTHA_CRACK=Cracked Naphtha Fractionating
+chem.FP_OIL_COKER=Coker Oil Fractionating
+chem.FP_REFORMATE=Reformate Fractionating
+chem.FP_SMEAR=Industrial Oil Fractionating
+
+chem.CRYOLITE=Cryolite Production
+chem.FULLERENE_PRODUCTION=Raw Fullerene Production
+chem.NITROGEN=Liquid Nitrogen Separation
+
+# New Chemical Plant Recipes
+chem.fp_heavyoil=Heavy Oil Fractionating
+chem.fp_heavyoil_vacuum=Vacuum Heavy Oil Fractionating
+chem.fp_smear=Industrial Oil Fractionating
+chem.fp_naphtha=Naphtha Fractionating
+chem.fp_naphtha_ds=Desulfurized Naphtha Fractionating
+chem.fp_naphtha_crack=Cracked Naphtha Fractionating
+chem.fp_naphtha_coker=Coker Naphtha Fractionating
+chem.fp_oil_coker=Coker Oil Fractionating
+chem.fp_gas_coker=Coker Gas Fractionating
+chem.fp_lightoil=Light Oil Fractionating
+chem.fp_lightoil_ds=Desulfurized Light Oil Fractionating
+chem.fp_lightoil_crack=Cracked Light Oil Fractionating
+chem.fp_lightoil_vacuum=Vacuum Light Oil Fractionating
+chem.fp_coalcreosote=Coal Tar Creosote Fractionating
+chem.fp_coaloil=Coal Oil Fractionating
+chem.fp_reformate=Reformate Fractionating
+chem.fp_egg=Dissolved Egg Fractionating
+chem.fp_chlorocalcite_mix=Mixed Chlorocalcite Solution Fractionating
+chem.fp_bauxite_solution=Bauxite Solution Fractionating
+
+chem.cryolite=Cryolite Production
+chem.btx2soot=Raw Fullerene Production
+chem.ln2=Liquid Nitrogen Separation
+chem.electrolysis_h2o=Water Cryo-Electrolysis
+chem.electrolysis_d2o=Heavy Water Cryo-Electrolysis
+
+hbmfluid.colloid_hot=Hot Colloid
+hbmfluid.cryogel_mod=Modifed Cryogel
+hbmfluid.cryogel_mod_hot=Hot Modified Cryogel
+hbmfluid.nitrogen=Liquid Nitrogen
+
+item.drillbit_cmb.name=CMB Steel Drillbit
+item.drillbit_cmb_diamond.name=CMB Steel Drillbit (Diamond-tipped)
+item.ingot_neodymium.name=Neodymium Ingot
+item.ingot_sodium.name=Sodium Ingot
+item.ingot_strontium.name=Strontium Ingot
+item.night_vision_mk2.name=Self-Charging Night Vision Goggles
+item.night_vision_mk2.description.item=Grants you night vision (does not require electric set)
+item.spawn_maskman.name=Mask Man
+
+item.billet_rs1.name=Research RBMK Fuel Billet Tier 1
+item.billet_rs2.name=Research RBMK Fuel Billet Tier 2
+item.billet_rs3.name=Research RBMK Fuel Billet Tier 3
+item.rbmk_fuel_rs1.name=Research RBMK Fuel Rod Tier 1
+item.rbmk_fuel_rs2.name=Research RBMK Fuel Rod Tier 2
+item.rbmk_fuel_rs3.name=Research RBMK Fuel Rod Tier 3
+item.rbmk_pellet_rs1.name=Research RBMK Fuel Pellet Tier 1
+item.rbmk_pellet_rs2.name=Research RBMK Fuel Pellet Tier 2
+item.rbmk_pellet_rs3.name=Research RBMK Fuel Pellet Tier 3
+
+tile.block_neodymium.name=Block of Neodymium
+tile.block_sodium.name=Block of Sodium
+tile.block_strontium.name=Block of Strontium
+
+tile.rbmk.dodd.fluxNeeded=Flux Needed
+
+fluid.sulfuric_acid_fluid=Sulfuric Acid
+
+wiring.connection.type0=Error
+wiring.connection.type1=Single
+wiring.connection.type2=Triple
+wiring.connection.type3=Quad
+
+# Machine abbreviations used in Fluid Identifiers' on-click chat
+chat.machine.fluid.changetype=Changed type to %s!
+
+chat.fluid_pump.abbr=Flow Pump
+chat.machine_autosaw.abbr=Auto Saw
+chat.machine_bat9000.abbr=BAT 9000
+chat.machine_catalytic_cracker.abbr=Cracking Tower
+chat.machine_catalytic_reformer.abbr=Reformer
+chat.machine_combustion_engine.abbr=Combustion GEN
+chat.machine_crystallizer.abbr=Acidizer
+chat.machine_diesel.abbr=Diesel GEN
+chat.machine_drain.abbr=Drain
+chat.machine_electrolyser.abbr=Electrolyser
+chat.machine_excavator.abbr=Excavator
+chat.machine_fraction_tower.abbr=Fraction Tower
+chat.machine_gascent.abbr=Gas Cent
+chat.machine_hephaestus.abbr=Geo Heater
+chat.machine_mixer.abbr=Mixer
+chat.machine_orbus.abbr=Magnetic Tank
+chat.machine_pyrooven.abbr=Pyro Oven
+chat.machine_radiolysis.abbr=Radiolyser
+chat.machine_soldering_station.abbr=Solderer
+chat.machine_turbinegas.abbr=CCGT
+chat.machine_vacuum_distill.abbr=Vac Refinery
+chat.pa_detector.abbr=PA Detector
+chat.pa_dipole.abbr=PA Dipole
+chat.pa_quadrupole.abbr=PA Quadrupole
+chat.pa_source.abbr=PA Source
+chat.pwr.abbr=PWR
+chat.rbmk_heater.abbr=RBMK Heatex
+chat.refueler.abbr=Refueler
