@@ -215,7 +215,7 @@ public class ChemicalPlantRecipes extends GenericRecipes<GenericRecipe> {
 				.inputItems(new OreDictStack(COAL.dust(), 2), new OreDictStack(F.dust()))
 				.inputFluids(new FluidStack(Fluids.PETROLEUM, 1_000, GeneralConfig.enable528PressurizedRecipes ? 1 : 0))
 				.outputItems(new ItemStack(ModItems.ingot_polymer, 4)));
-		
+
 		this.register(new GenericRecipe("chem.bakelite").setup(100, 100)
 				.inputFluids(new FluidStack(Fluids.AROMATICS, 500, GeneralConfig.enable528PressurizedRecipes ? 1 : 0), new FluidStack(Fluids.PETROLEUM, 500, GeneralConfig.enable528PressurizedRecipes ? 1 : 0))
 				.outputItems(new ItemStack(ModItems.ingot_bakelite)));
@@ -254,9 +254,9 @@ public class ChemicalPlantRecipes extends GenericRecipes<GenericRecipe> {
 				.outputFluids(new FluidStack(Fluids.ENDERJUICE, 100)));
 
 		this.register(new GenericRecipe("chem.meatprocessing").setupNamed(200, 200).setIcon(ModItems.glyphid_meat)
-				.inputItems(new OreDictStack(KEY_GLYPHID_MEAT, 3))
+				.inputItems(new OreDictStack(KEY_GLYPHID_MEAT, 1))
 				.inputFluids(new FluidStack(Fluids.WATER, 1_000))
-				.outputItems(new ItemStack(ModItems.sulfur, 4), new ItemStack(ModItems.niter, 3))
+				.outputItems(new ItemStack(ModItems.sulfur, 12), new ItemStack(ModItems.niter, 9), new ItemStack(Items.coal, 6))
 				.outputFluids(new FluidStack(Fluids.SALIENT, 250)));
 
 		this.register(new GenericRecipe("chem.rustysteel").setup(40, 100)
@@ -362,7 +362,7 @@ public class ChemicalPlantRecipes extends GenericRecipes<GenericRecipe> {
 				.inputItems(new ComparableStack(ModItems.canister_empty))
 				.inputFluids(new FluidStack(Fluids.GASOLINE, 100), new FluidStack(Fluids.AROMATICS, 50)) // aromatics to emulate polystyrene
 				.outputItems(new ItemStack(ModItems.canister_napalm, 1)));
-		
+
 		/// GLASS ///
 		this.register(new GenericRecipe("chem.laminate").setup(20, 100)
 				.inputFluids(new FluidStack(Fluids.XYLENE, 50), new FluidStack(Fluids.PHOSGENE, 50))
