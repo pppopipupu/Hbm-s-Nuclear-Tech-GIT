@@ -60,15 +60,26 @@ public class AchievementHandler {
 		ComparableStack comp = new ComparableStack(stack).makeSingular();
 		Achievement achievement = craftingAchievements.get(comp);
 		if(achievement != null) {
-			grantAchievement(player, achievement);
-			if(achievement == MainRegistry.achPPPOP) {
+			boolean unlockedNow = grantAchievement(player, achievement);
+			if(achievement == MainRegistry.achPPPOP && !unlockedNow) {
 				ExplosionNukeSmall.explode(player.worldObj, player.posX, player.posY, player.posZ, ExplosionNukeSmall.PARAMS_MEDIUM);
 			}
 		}
 	}
 
-	public static void grantAchievement(EntityPlayer player, Achievement achievement) {
-		if(player == null || player.worldObj.isRemote) return;
+	public static boolean grantAchievement(EntityPlayer player, Achievement achievement) {
+		if(player == null || player.worldObj.isRemote) return false;
+		boolean unlockedNow = false;
+		if(player instanceof EntityPlayerMP) {
+			EntityPlayerMP playerMP = (EntityPlayerMP) player;
+			if(playerMP.func_147099_x() != null && !playerMP.func_147099_x().hasAchievementUnlocked(achievement)) {
+				unlockedNow = true;
+			}
+		}
 		player.triggerAchievement(achievement);
+		if(unlockedNow && achievement == MainRegistry.achPPPOP) {
+			ExplosionNukeSmall.explode(player.worldObj, player.posX, player.posY, player.posZ, ExplosionNukeSmall.PARAMS_MEDIUM);
+		}
+		return unlockedNow;
 	}
 }
