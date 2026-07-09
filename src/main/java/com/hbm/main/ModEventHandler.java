@@ -838,43 +838,45 @@ public class ModEventHandler {
 			for(Object e : loadedEntityList) {
 				if(time % tickrate == 0) {
 
-				if(e instanceof EntityPlayer) {
-					EntityPlayer player = (EntityPlayer) e;
+					if(e instanceof EntityPlayer) {
+						EntityPlayer player = (EntityPlayer) e;
 
-					// handle dismount events, or our players will splat upon leaving tall rockets
-					if(player.ridingEntity != null && player.ridingEntity instanceof EntityRideableRocket && player.isSneaking()) {
-						EntityRideableRocket rocket = (EntityRideableRocket) player.ridingEntity;
+						// handle dismount events, or our players will splat upon leaving tall rockets
+						if(player.ridingEntity != null && player.ridingEntity instanceof EntityRideableRocket && player.isSneaking()) {
+							EntityRideableRocket rocket = (EntityRideableRocket) player.ridingEntity;
 
-						if(player.isSneaking()) {
-							// Prevent leaving a rocket in motion, for safety
-							if(rocket.canExitCapsule() || rocket.forceExitTimer >= 60) {
-								boolean inOrbit = event.world.provider instanceof WorldProviderOrbit;
-								Entity ridingEntity = player.ridingEntity;
-								float prevHeight = ridingEntity.height;
+							if(player.isSneaking()) {
+								// Prevent leaving a rocket in motion, for safety
+								if(rocket.canExitCapsule() || rocket.forceExitTimer >= 60) {
+									boolean inOrbit = event.world.provider instanceof WorldProviderOrbit;
+									Entity ridingEntity = player.ridingEntity;
+									float prevHeight = ridingEntity.height;
 
-								ridingEntity.height = inOrbit ? ridingEntity.height + 1.0F : 1.0F;
-								player.mountEntity(null);
-								if(!inOrbit) player.setPositionAndUpdate(player.posX + 2, player.posY, player.posZ);
-								ridingEntity.height = prevHeight;
+									ridingEntity.height = inOrbit ? ridingEntity.height + 1.0F : 1.0F;
+									player.mountEntity(null);
+									if(!inOrbit) player.setPositionAndUpdate(player.posX + 2, player.posY, player.posZ);
+									ridingEntity.height = prevHeight;
+								} else {
+									rocket.forceExitTimer++;
+								}
+
+								player.setSneaking(false);
 							} else {
-								rocket.forceExitTimer++;
+								rocket.forceExitTimer = 0;
 							}
+						}
+					}
 
-							player.setSneaking(false);
-						} else {
-							rocket.forceExitTimer = 0;
+					if(event.phase == Phase.END && event.world.getTotalWorldTime() % tickrate == 0) {
+						if(e instanceof EntityItem) {
+							EntityItem item = (EntityItem) e;
+							HazardSystem.updateDroppedItem(item);
 						}
 					}
 				}
-
-				if(event.phase == Phase.END && event.world.getTotalWorldTime() % tickrate == 0) {
-					if(e instanceof EntityItem) {
-						EntityItem item = (EntityItem) e;
-						HazardSystem.updateDroppedItem(item);
-					}
-				}
-				EntityRailCarBase.updateMotion(world);
 			}
+
+			EntityRailCarBase.updateMotion(world);
 			
 			if(time % 20 == 0) {
 				BlockPedestal.checkPedestalEntries(world.provider.dimensionId, time);
@@ -917,7 +919,6 @@ public class ModEventHandler {
 				}
 			}
         }
-	}
 	}
 
 	private void updateWaterOpacity(World world) {
