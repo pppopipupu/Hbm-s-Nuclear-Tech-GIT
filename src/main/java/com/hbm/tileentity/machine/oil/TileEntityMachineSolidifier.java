@@ -81,6 +81,12 @@ public class TileEntityMachineSolidifier extends TileEntityMachineBase implement
             this.processTime = processTimeBase * (4 - speed) / 4 / over;
             this.usage = usageBase * (speed + 1) * over / (power + 1);
 
+			if(upgradeManager.ultimateCount > 0) {
+				int speedFactor = 1 + upgradeManager.ultimateCount * 4;
+				this.processTime = Math.max(this.processTime / speedFactor, 1);
+				this.usage = (int) (this.usage * Math.pow(0.5D, upgradeManager.ultimateCount));
+			}
+
 			if(this.canProcess())
 				this.process();
 			else
@@ -142,7 +148,8 @@ public class TileEntityMachineSolidifier extends TileEntityMachineBase implement
 			if(slots[0].getItemDamage() != stack.getItemDamage())
 				return false;
 
-			if(slots[0].stackSize + stack.stackSize > slots[0].getMaxStackSize())
+			int mult = 1 << upgradeManager.ultimateCount;
+			if(slots[0].stackSize + stack.stackSize * mult > slots[0].getMaxStackSize())
 				return false;
 		}
 
@@ -162,10 +169,12 @@ public class TileEntityMachineSolidifier extends TileEntityMachineBase implement
 			ItemStack stack = out.getValue();
 			tank.setFill(tank.getFill() - req);
 
+			int mult = 1 << upgradeManager.ultimateCount;
 			if(slots[0] == null) {
 				slots[0] = stack.copy();
+				slots[0].stackSize *= mult;
 			} else {
-				slots[0].stackSize += stack.stackSize;
+				slots[0].stackSize += stack.stackSize * mult;
 			}
 
 			progress = 0;

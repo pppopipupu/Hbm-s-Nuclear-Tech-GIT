@@ -80,6 +80,12 @@ public class TileEntityMachineLiquefactor extends TileEntityMachineBase implemen
 			this.processTime = processTimeBase * (4 - speed) / 4 / over;
 			this.usage = usageBase * (speed + 1) * over / (power + 1);
 
+			if(upgradeManager.ultimateCount > 0) {
+				int speedFactor = 1 + upgradeManager.ultimateCount * 4;
+				this.processTime = Math.max(this.processTime / speedFactor, 1);
+				this.usage = (int) (this.usage * Math.pow(0.5D, upgradeManager.ultimateCount));
+			}
+
 			if(this.canProcess())
 				this.process();
 			else
@@ -133,7 +139,8 @@ public class TileEntityMachineLiquefactor extends TileEntityMachineBase implemen
 
 		if(out == null) return false;
 		if(out.type != tank.getTankType() && tank.getFill() > 0) return false;
-		if(out.fill + tank.getFill() > tank.getMaxFill()) return false;
+		int mult = 1 << upgradeManager.ultimateCount;
+		if(out.fill * mult + tank.getFill() > tank.getMaxFill()) return false;
 
 		return true;
 	}
@@ -148,7 +155,8 @@ public class TileEntityMachineLiquefactor extends TileEntityMachineBase implemen
 
 			FluidStack out = LiquefactionRecipes.getOutput(slots[0]);
 			tank.setTankType(out.type);
-			tank.setFill(tank.getFill() + out.fill);
+			int mult = 1 << upgradeManager.ultimateCount;
+			tank.setFill(tank.getFill() + out.fill * mult);
 			this.decrStackSize(0, 1);
 
 			progress = 0;

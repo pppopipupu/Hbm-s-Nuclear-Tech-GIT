@@ -14,7 +14,17 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 
+import com.hbm.render.shader.Shader;
+import com.hbm.inventory.fluid.Fluids;
+import com.hbm.lib.RefStrings;
+import com.hbm.entity.grenade.EntityGrenadeBouncyGeneric;
+import com.hbm.items.special.ItemQGPMiningBomb;
+import net.minecraft.init.Blocks;
+
 public class RenderGenericGrenade extends Render {
+
+	private static Shader qgpShader;
+	private static Shader rainbowTntShader;
 
 	@Override
 	public void doRender(Entity entity, double x, double y, double z, float f0, float f1) {
@@ -39,10 +49,43 @@ public class RenderGenericGrenade extends Render {
 				
 			} else {
 				IGenericGrenade grenade = (IGenericGrenade) entity;
-				iicon = grenade.getGrenade().getIconFromDamage(i);
+				if(grenade.getGrenade() instanceof ItemQGPMiningBomb) {
+					iicon = Blocks.tnt.getIcon(2, 0);
+				} else {
+					iicon = grenade.getGrenade().getIconFromDamage(i);
+				}
 			}
 	
 			if(iicon != null) {
+				boolean isQGP = false;
+				boolean isRainbowTNT = false;
+				if(disperser && i == 1 && entity instanceof EntityDisperserCanister) {
+					EntityDisperserCanister canister = (EntityDisperserCanister) entity;
+					if(canister.getFluid() == Fluids.QGP) {
+						isQGP = true;
+					}
+				}
+				if(entity instanceof EntityGrenadeBouncyGeneric) {
+					EntityGrenadeBouncyGeneric bouncy = (EntityGrenadeBouncyGeneric) entity;
+					if(bouncy.getGrenade() instanceof ItemQGPMiningBomb) {
+						isRainbowTNT = true;
+					}
+				}
+				if(isQGP) {
+					if(qgpShader == null) {
+						qgpShader = new Shader(new ResourceLocation(RefStrings.MODID, "shaders/qgp.vert"), new ResourceLocation(RefStrings.MODID, "shaders/qgp.frag"));
+					}
+					qgpShader.use();
+					qgpShader.setUniform1f("iTime", (System.currentTimeMillis() % 100000) / 1000.0F);
+				}
+				if(isRainbowTNT) {
+					if(rainbowTntShader == null) {
+						rainbowTntShader = new Shader(new ResourceLocation(RefStrings.MODID, "shaders/qgp.vert"), new ResourceLocation(RefStrings.MODID, "shaders/rainbow_tnt.frag"));
+					}
+					rainbowTntShader.use();
+					rainbowTntShader.setUniform1f("iTime", (System.currentTimeMillis() % 100000) / 1000.0F);
+				}
+
 				GL11.glPushMatrix();
 				GL11.glTranslatef((float) x, (float) y, (float) z);
 				GL11.glEnable(GL12.GL_RESCALE_NORMAL);
@@ -53,6 +96,13 @@ public class RenderGenericGrenade extends Render {
 				this.renderItem(tessellator, iicon);
 				GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 				GL11.glPopMatrix();
+
+				if(isQGP) {
+					qgpShader.stop();
+				}
+				if(isRainbowTNT) {
+					rainbowTntShader.stop();
+				}
 			}
 			
 			GL11.glColor3f(1F, 1F, 1F);
@@ -61,6 +111,12 @@ public class RenderGenericGrenade extends Render {
 
 	@Override
 	protected ResourceLocation getEntityTexture(Entity entity) {
+		if(entity instanceof EntityGrenadeBouncyGeneric) {
+			EntityGrenadeBouncyGeneric bouncy = (EntityGrenadeBouncyGeneric) entity;
+			if(bouncy.getGrenade() instanceof ItemQGPMiningBomb) {
+				return TextureMap.locationBlocksTexture;
+			}
+		}
 		return TextureMap.locationItemsTexture;
 	}
 
