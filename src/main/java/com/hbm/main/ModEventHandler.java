@@ -18,6 +18,7 @@ import com.hbm.blocks.IStepTickReceiver;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.generic.BlockAshes;
 import com.hbm.blocks.machine.BlockBeamBase;
+import com.hbm.blocks.generic.BlockPedestal;
 import com.hbm.config.GeneralConfig;
 import com.hbm.config.MobConfig;
 import com.hbm.config.RadiationConfig;
@@ -660,7 +661,7 @@ public class ModEventHandler {
 	public void onLivingUpdate(LivingUpdateEvent event) {
 
 		if(event.entityLiving instanceof EntityCreeper && event.entityLiving.getEntityData().getBoolean("hfr_defused")) {
-			ItemModDefuser.defuse((EntityCreeper) event.entityLiving, null, false);
+			ItemModDefuser.castrateCreeper((EntityCreeper) event.entityLiving, null, false);
 		}
 
 		if(!event.entity.worldObj.isRemote && event.entityLiving.isPotionActive(HbmPotion.slippery.id)) {
@@ -812,11 +813,14 @@ public class ModEventHandler {
 	@SubscribeEvent
 	public void worldTick(WorldTickEvent event) {
 
-		if(event.world != null && !event.world.isRemote) {
+		World world = event.world;
+		long time = world.getTotalWorldTime();
+
+		if(world != null && !world.isRemote) {
 
 			if(reference != null) {
-				for(Object player : event.world.playerEntities) {
-					if(((EntityPlayer) player).ridingEntity != null && event.world.getTotalWorldTime() % (1 * 60 * 20) == 0) {
+				for(Object player : world.playerEntities) {
+					if(((EntityPlayer) player).ridingEntity != null && time % (1 * 60 * 20) == 0) {
 						((EntityPlayer) player).mountEntity(null);
 						didSit = true;
 					}
@@ -832,6 +836,9 @@ public class ModEventHandler {
 			int tickrate = Math.max(1, ServerConfig.ITEM_HAZARD_DROP_TICKRATE.get());
 
 			for(Object e : loadedEntityList) {
+				if(time % tickrate == 0) {
+					List loadedEntityList = new ArrayList();
+					loadedEntityList.addAll(event.world.loadedEntityList); // ConcurrentModificationException my balls
 
 				if(e instanceof EntityPlayer) {
 					EntityPlayer player = (EntityPlayer) e;
@@ -868,6 +875,11 @@ public class ModEventHandler {
 						HazardSystem.updateDroppedItem(item);
 					}
 				}
+				EntityRailCarBase.updateMotion(world);
+			}
+			
+			if(time % 20 == 0) {
+				BlockPedestal.checkPedestalEntries(world.provider.dimensionId, time);
 			}
 
 			if(event.phase == Phase.END) {
@@ -934,6 +946,8 @@ public class ModEventHandler {
 	public void onGenerateOre(GenerateMinable event) {
 		if(event.world.provider instanceof WorldProviderCelestial && event.world.provider.dimensionId != 0) {
 			WorldGeneratorCelestial.onGenerateOre(event);
+			BossSpawnHandler.rollTheDice(world);
+			TimedGenerator.automaton(world, 100);
 		}
 	}
 
