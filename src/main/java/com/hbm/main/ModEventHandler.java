@@ -837,8 +837,6 @@ public class ModEventHandler {
 
 			for(Object e : loadedEntityList) {
 				if(time % tickrate == 0) {
-					List loadedEntityList = new ArrayList();
-					loadedEntityList.addAll(event.world.loadedEntityList); // ConcurrentModificationException my balls
 
 				if(e instanceof EntityPlayer) {
 					EntityPlayer player = (EntityPlayer) e;
@@ -918,17 +916,8 @@ public class ModEventHandler {
 					item.motionZ *= 0.9D;
 				}
 			}
-		}
-		//if(event.phase == Phase.END) {
-			//CelestialBody body = CelestialBody.getBody(event.world);
-			//CBT_Invasion alien = body.getTrait(CBT_Invasion.class);
-
-			//if(alien == null) return;
-			//alien.SpawnAttempt(event.world);
-
-			//body.modifyTraits(alien);
-		//}
-
+        }
+	}
 	}
 
 	private void updateWaterOpacity(World world) {
