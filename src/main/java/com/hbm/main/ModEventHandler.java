@@ -940,14 +940,15 @@ public class ModEventHandler {
 
 		Blocks.water.setLightOpacity(waterOpacity);
 		Blocks.flowing_water.setLightOpacity(waterOpacity);
+
+        BossSpawnHandler.rollTheDice(world);
+        TimedGenerator.automaton(world, 100);
 	}
 
 	@SubscribeEvent
 	public void onGenerateOre(GenerateMinable event) {
 		if(event.world.provider instanceof WorldProviderCelestial && event.world.provider.dimensionId != 0) {
 			WorldGeneratorCelestial.onGenerateOre(event);
-			BossSpawnHandler.rollTheDice(world);
-			TimedGenerator.automaton(world, 100);
 		}
 	}
 
