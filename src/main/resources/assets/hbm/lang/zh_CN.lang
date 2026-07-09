@@ -6515,31 +6515,6 @@ desc.gui.upgrade.speed=*§4速度§r：堆叠至3级
 
 # NTMC Addon Strings
 
-# Old Chemplant Recipes
-chem.FP_CHLOROCALCITE_MIX=混合氯方解石溶液分馏
-chem.FP_BAUXITE_SOLUTION=铝土矿溶液分馏
-chem.FP_COALOIL=煤液化油分馏
-chem.FP_COALCREOSOTE=煤焦杂酚油分馏
-chem.FP_EGG=蛋溶解液分馏
-chem.FP_GAS_COKER=焦化气分馏
-chem.FP_HEAVYOIL=重油分馏
-chem.FP_HEAVYOIL_VACUUM=减压重油分馏
-chem.FP_LIGHTOIL=轻油分馏
-chem.FP_LIGHTOIL_DS=脱硫轻油分馏
-chem.FP_LIGHTOIL_CRACK=裂化轻油分馏
-chem.FP_LIGHTOIL_VACUUM=减压轻油分馏
-chem.FP_NAPHTHA=石脑油分馏
-chem.FP_NAPHTHA_DS=脱硫石脑油分馏
-chem.FP_NAPHTHA_COKER=焦化石脑油分馏
-chem.FP_NAPHTHA_CRACK=裂化石脑油分馏
-chem.FP_OIL_COKER=焦化油分馏
-chem.FP_REFORMATE=重整油分馏
-chem.FP_SMEAR=工业油分馏
-
-chem.CRYOLITE=冰晶石生产
-chem.FULLERENE_PRODUCTION=粗富勒烯生产
-chem.NITROGEN=液氮分离
-
 # New Chemical Plant Recipes
 chem.fp_heavyoil=重油分馏
 chem.fp_heavyoil_vacuum=减压重油分馏
@@ -6566,6 +6541,7 @@ chem.btx2soot=粗制富勒烯生产
 chem.ln2=液氮分离
 chem.electrolysis_h2o=电解水
 chem.electrolysis_d2o=电解重水
+chem.tungsten_carbide=碳化钨合成
 
 hbmfluid.colloid_hot=热胶体
 hbmfluid.cryogel_mod=改性冷凝胶
