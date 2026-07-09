@@ -544,14 +544,12 @@ public class Fluids {
 		LITHYDRO =				new FluidType("LITHYDRO",			0xD1CEBE, 0, 0, 0, EnumSymbol.NONE).addTraits(GASEOUS);
 		LITHCARBONATE =			new FluidType("LITHCARBONATE",		0xD1CEBE, 0, 0, 0, EnumSymbol.NONE).addTraits(GASEOUS);
 		AIRBLAST =				new FluidType("AIRBLAST",			0xFFDADA, 0, 3, 0, EnumSymbol.NONE).setTemp(1_200).addTraits(GASEOUS);
-		FLUE =					new FluidType("FLUE",				0x131313, 1, 4, 1, EnumSymbol.NONE).addContainers(new CD_Gastank(0xFF4545, 0xFFE97F)).addTraits(new FT_Flammable(10_000), GASEOUS, new FT_Polluting().burn(PollutionType.SOOT, SOOT_GAS).release(PollutionType.SOOT, SOOT_GAS * 25));
+		FLUE =					new FluidType("FLUE",				0x131313, 1, 4, 1, EnumSymbol.NONE).addContainers(new CD_Gastank(0xFF4545, 0xFFE97F)).addTraits(new FT_Flammable(25_000), GASEOUS, new FT_Polluting().burn(PollutionType.SOOT, SOOT_GAS).release(PollutionType.SOOT, SOOT_GAS * 25));
 
 		//NTMC-only fluids, whose IDs start from 512
 		COLLOID_HOT =			new FluidType(512, "COLLOID_HOT",	0x967878, 0, 0, 0, EnumSymbol.NONE).setTemp(120).addTraits(LIQUID, VISCOUS);
 		CRYOGEL_MOD =			new FluidType(513, "CRYOGEL_MOD",	0x9683DF, 0, 0, 0, EnumSymbol.NONE).setTemp(15).addTraits(LIQUID, VISCOUS);
 		CRYOGEL_MOD_HOT =		new FluidType(514, "CRYOGEL_MOD_HOT",0xD7A2FF, 4, 0, 0, EnumSymbol.NONE).setTemp(2000).addTraits(GASEOUS);
-		//NITROGEN =				new FluidType(515, "NITROGEN",		0x86b699, 0, 0, 0, EnumSymbol.CROYGENIC).setTemp(-200).addContainers(new CD_Gastank(0x86b699, 0xffffff)).addTraits(LIQUID, EVAP);
-
 
 		// ^ ^ ^ ^ ^ ^ ^ ^
 		//ADD NEW FLUIDS HERE

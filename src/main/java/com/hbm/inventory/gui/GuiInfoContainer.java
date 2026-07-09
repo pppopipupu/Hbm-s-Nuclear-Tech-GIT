@@ -355,7 +355,24 @@ public abstract class GuiInfoContainer extends GuiContainer implements INEIGuiHa
 	@Override
 	@Optional.Method(modid = "NotEnoughItems")
 	public boolean handleDragNDrop(GuiContainer gui, int x, int y, ItemStack stack, int button) {
-		if(gui instanceof GuiInfoContainer && stack != null){
+		// BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD!
+		// BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD!
+		// BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD!
+		// BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD!
+		// BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD!
+		// BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD!
+		// BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD!
+		// BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD!
+		// BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD!
+		// BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD!
+		// BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD!
+		// BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD!
+		// BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD!
+		// BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD!
+		// BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD!
+		// BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD! BALD!
+		
+		/*if(gui instanceof GuiInfoContainer && stack != null){
 			Slot slot = getSlotAtPosition(x,y);
 			if(slot instanceof SlotPattern){
 				if(inventorySlots instanceof ContainerBase) {
@@ -371,7 +388,7 @@ public abstract class GuiInfoContainer extends GuiContainer implements INEIGuiHa
 					return true;
 				}
 			}
-		}
+		}*/
 		return false;
 	}
 	//all credits for impl to GTNH's EnderCore fork
