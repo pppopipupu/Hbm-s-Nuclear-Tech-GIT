@@ -124,7 +124,7 @@ public class TileEntityMachineSchrabidiumTransmutator extends TileEntityMachineB
 
     public boolean canProcess() {
         //&& (slots[2].getItem() == ModItems.redcoil_capacitor && slots[2].getItemDamage() < slots[2].getMaxDamage() || slots[2].getItem() == ModItems.euphemium_capacitor)
-		int mult = upgradeManager.hasUltimate ? 2 : 1;
+		int mult = 1 << upgradeManager.ultimateCount;
         return power >= consumption // if the power is enough
                 && slots[0] != null && MachineRecipes.mODE(slots[0], OreDictManager.U.ingot())  // if the input is uranium ingot
                 // && slots[2] != null // and originally if the capacitor slot has item (deprecated)
@@ -150,7 +150,7 @@ public class TileEntityMachineSchrabidiumTransmutator extends TileEntityMachineB
                 slots[0] = null;
             }
 
-            int mult = upgradeManager.hasUltimate ? 2 : 1;
+            int mult = 1 << upgradeManager.ultimateCount;
             if (slots[1] == null) {
                 slots[1] = new ItemStack(VersatileConfig.getTransmutatorItem(), mult);
             } else {
@@ -182,9 +182,10 @@ public class TileEntityMachineSchrabidiumTransmutator extends TileEntityMachineB
             progress = baseProgress * (4 - speedLevel) / 4 / (overLevel * overLevel + 1);
             consumption = baseConsumption * (speedLevel + 1) * (overLevel * overLevel + 1);
 
-			if(upgradeManager.hasUltimate) {
-				progress = Math.max(baseProgress / 5, 1);
-				consumption = baseConsumption / 2;
+			if(upgradeManager.ultimateCount > 0) {
+				int speedFactor = 1 + upgradeManager.ultimateCount * 4;
+				progress = Math.max(progress / speedFactor, 1);
+				consumption = (int) (consumption * Math.pow(0.5D, upgradeManager.ultimateCount));
 			}
             /*
              *   speed: 1.33/2/4 for speed, 2/5/10 fpr overdrive

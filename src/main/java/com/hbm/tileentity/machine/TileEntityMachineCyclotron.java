@@ -181,7 +181,7 @@ public class TileEntityMachineCyclotron extends TileEntityMachineBase implements
 			if(out == null)
 				continue;
 
-			int mult = upgradeManager.hasUltimate ? 2 : 1;
+			int mult = 1 << upgradeManager.ultimateCount;
 			if(slots[i + 6] == null)
 				return true;
 
@@ -206,7 +206,7 @@ public class TileEntityMachineCyclotron extends TileEntityMachineBase implements
 			if(out == null)
 				continue;
 
-			int mult = upgradeManager.hasUltimate ? 2 : 1;
+			int mult = 1 << upgradeManager.ultimateCount;
 			if(slots[i + 6] == null) {
 
 				this.decrStackSize(i, 1);
@@ -234,23 +234,31 @@ public class TileEntityMachineCyclotron extends TileEntityMachineBase implements
 	}
 
 	public int getSpeed() {
-		if(upgradeManager.hasUltimate) return 5;
 		int red = upgradeManager.getLevel(UpgradeType.SPEED) + 1;
 		int black = ItemMachineUpgrade.OverdriveSpeeds[upgradeManager.getLevel(UpgradeType.OVERDRIVE)];
-		return red * black;
+		int speed = red * black;
+		if(upgradeManager.ultimateCount > 0) {
+			speed = speed == 1 ? (1 + upgradeManager.ultimateCount * 4) : (speed + upgradeManager.ultimateCount * 4);
+		}
+		return speed;
 	}
 
 	public int getConsumption() {
-		if(upgradeManager.hasUltimate) return (int) (consumption * 0.5D * 5);
 		int efficiency = upgradeManager.getLevel(UpgradeType.POWER);
-		return (consumption - 250_000 * efficiency) * getSpeed();
+		int base = (consumption - 250_000 * efficiency);
+		if(upgradeManager.ultimateCount > 0) {
+			return (int) (base * Math.pow(0.5D, upgradeManager.ultimateCount) * getSpeed());
+		}
+		return base * getSpeed();
 	}
 
 	public int getCoolantConsumption() {
-		if(upgradeManager.hasUltimate) return (int) (500 * 0.5D * 5);
 		int efficiency = upgradeManager.getLevel(UpgradeType.EFFECT);
-		//half a small tower's worth
-		return 500 / (efficiency + 1) * getSpeed();
+		int base = 500 / (efficiency + 1);
+		if(upgradeManager.ultimateCount > 0) {
+			return (int) (base * Math.pow(0.5D, upgradeManager.ultimateCount) * getSpeed());
+		}
+		return base * getSpeed();
 	}
 
 	public long getPowerScaled(long i) {

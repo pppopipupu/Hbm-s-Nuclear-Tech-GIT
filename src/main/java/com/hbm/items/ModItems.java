@@ -2260,6 +2260,7 @@ public class ModItems {
 	public static Item bucket_bromine;
 	public static Item bucket_ccl;
 	public static Item bucket_qgp;
+	public static Item qgp_mining_bomb;
 
 	public static Item door_metal;
 	public static Item door_office;
@@ -4895,6 +4896,7 @@ public class ModItems {
 		bucket_bromine = new ItemModBucket(ModBlocks.bromine_block).setUnlocalizedName("bucket_bromine").setContainerItem(Items.bucket).setCreativeTab(MainRegistry.blockTab).setTextureName(RefStrings.MODID + ":bucket_bromine");
 		bucket_ccl = new ItemModBucket(ModBlocks.ccl_block).setUnlocalizedName("bucket_ccl").setContainerItem(Items.bucket).setCreativeTab(MainRegistry.blockTab).setTextureName(RefStrings.MODID + ":bucket_ccl");
 		bucket_qgp = new ItemQGPBucket(ModBlocks.qgp_block).setUnlocalizedName("bucket_qgp").setContainerItem(Items.bucket).setCreativeTab(MainRegistry.controlTab);
+		qgp_mining_bomb = new ItemQGPMiningBomb(4).setUnlocalizedName("qgp_mining_bomb").setTextureName("tnt_side").setCreativeTab(MainRegistry.weaponTab);
 
 		door_metal = new ItemModDoor().setUnlocalizedName("door_metal").setCreativeTab(MainRegistry.blockTab).setTextureName(RefStrings.MODID + ":door_metal");
 		door_office = new ItemModDoor().setUnlocalizedName("door_office").setCreativeTab(MainRegistry.blockTab).setTextureName(RefStrings.MODID + ":door_office");
@@ -7231,6 +7233,7 @@ public class ModItems {
 		GameRegistry.registerItem(bucket_bromine, bucket_bromine.getUnlocalizedName());
 		GameRegistry.registerItem(bucket_ccl, bucket_ccl.getUnlocalizedName());
 		GameRegistry.registerItem(bucket_qgp, bucket_qgp.getUnlocalizedName());
+		GameRegistry.registerItem(qgp_mining_bomb, qgp_mining_bomb.getUnlocalizedName());
 
 		//Door Items
 		GameRegistry.registerItem(door_metal, door_metal.getUnlocalizedName());

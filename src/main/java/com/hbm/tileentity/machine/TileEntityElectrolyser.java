@@ -149,11 +149,11 @@ public class TileEntityElectrolyser extends TileEntityMachineBase implements IEn
             this.processFluidTime = this.processFluidTime * ((4 - speedLevel) / 4);
 
 			int count = ItemMachineUpgrade.OverdriveSpeeds[overLevel];
-			if(upgradeManager.hasUltimate) {
-				usageOre = (int)(usageOreBase * 0.5D);
-				usageFluid = (int)(usageFluidBase * 0.5D);
+			if(upgradeManager.ultimateCount > 0) {
+				usageOre = (int)(usageOre * Math.pow(0.5D, upgradeManager.ultimateCount));
+				usageFluid = (int)(usageFluid * Math.pow(0.5D, upgradeManager.ultimateCount));
 				this.updateDuration();
-				count = 5;
+				count = count == 1 ? (1 + upgradeManager.ultimateCount * 4) : (count + upgradeManager.ultimateCount * 4);
 			}
 
             for(int i = 0; i < count; i++) {
@@ -298,7 +298,7 @@ public class TileEntityElectrolyser extends TileEntityMachineBase implements IEn
 
 		if(recipe == null) return false;
 		if(recipe.amount > tanks[0].getFill()) return false;
-		int mult = upgradeManager.hasUltimate ? 2 : 1;
+		int mult = 1 << upgradeManager.ultimateCount;
 		if(recipe.output1.type == tanks[1].getTankType() && recipe.output1.fill * mult + tanks[1].getFill() > tanks[1].getMaxFill()) return false;
 		if(recipe.output2.type == tanks[2].getTankType() && recipe.output2.fill * mult + tanks[2].getFill() > tanks[2].getMaxFill()) return false;
 
@@ -323,7 +323,7 @@ public class TileEntityElectrolyser extends TileEntityMachineBase implements IEn
 		tanks[0].setFill(tanks[0].getFill() - recipe.amount);
 		tanks[1].setTankType(recipe.output1.type);
 		tanks[2].setTankType(recipe.output2.type);
-		int mult = upgradeManager.hasUltimate ? 2 : 1;
+		int mult = 1 << upgradeManager.ultimateCount;
 		tanks[1].setFill(tanks[1].getFill() + recipe.output1.fill * mult);
 		tanks[2].setFill(tanks[2].getFill() + recipe.output2.fill * mult);
 
@@ -352,7 +352,7 @@ public class TileEntityElectrolyser extends TileEntityMachineBase implements IEn
 		ElectrolysisMetalRecipe recipe = ElectrolyserMetalRecipes.getRecipe(slots[14]);
 		if(recipe == null) return false;
 
-		int mult = upgradeManager.hasUltimate ? 2 : 1;
+		int mult = 1 << upgradeManager.ultimateCount;
 		if(leftStack != null && recipe.output1 != null) {
 			if(recipe.output1.material != leftStack.material) return false;
 			if(recipe.output1.amount * mult + leftStack.amount > this.maxMaterial) return false;
@@ -381,7 +381,7 @@ public class TileEntityElectrolyser extends TileEntityMachineBase implements IEn
 	public void processMetal() {
 
 		ElectrolysisMetalRecipe recipe = ElectrolyserMetalRecipes.getRecipe(slots[14]);
-		int mult = upgradeManager.hasUltimate ? 2 : 1;
+		int mult = 1 << upgradeManager.ultimateCount;
 		if(recipe.output1 != null)
 			if(leftStack == null) {
 				leftStack = new MaterialStack(recipe.output1.material, recipe.output1.amount * mult);

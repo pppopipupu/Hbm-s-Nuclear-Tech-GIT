@@ -84,8 +84,8 @@ public class TileEntityMachineMixer extends TileEntityMachineBase implements ICo
 			this.consumption -= this.consumption * powerLevel / 4;
 			this.consumption *= over;
 
-			if(upgradeManager.hasUltimate) {
-				this.consumption = 25;
+			if(upgradeManager.ultimateCount > 0) {
+				this.consumption = (int) (this.consumption * Math.pow(0.5D, upgradeManager.ultimateCount));
 			}
 
 			for(DirPos pos : getConPos()) {
@@ -103,8 +103,9 @@ public class TileEntityMachineMixer extends TileEntityMachineBase implements ICo
 				this.processTime -= this.processTime * speedLevel / 4;
 				this.processTime /= over;
 
-				if(upgradeManager.hasUltimate) {
-					this.processTime = Math.max(this.processTime / 5, 1);
+				if(upgradeManager.ultimateCount > 0) {
+					int speedFactor = 1 + upgradeManager.ultimateCount * 4;
+					this.processTime = Math.max(this.processTime / speedFactor, 1);
 				}
 
 				if(processTime <= 0) this.processTime = 1;
@@ -196,7 +197,7 @@ public class TileEntityMachineMixer extends TileEntityMachineBase implements ICo
 		/* simplest check would usually go first, but fluid checks also do the setup and we want that to happen even without power */
 		if(this.power < getConsumption()) return false;
 
-		int mult = upgradeManager.hasUltimate ? 2 : 1;
+		int mult = 1 << upgradeManager.ultimateCount;
 		if(recipe.output * mult + tanks[2].getFill() > tanks[2].getMaxFill()) return false;
 
 		if(recipe.solidInput != null) {
@@ -218,7 +219,7 @@ public class TileEntityMachineMixer extends TileEntityMachineBase implements ICo
 		if(recipe.input1 != null) tanks[0].setFill(tanks[0].getFill() - recipe.input1.fill);
 		if(recipe.input2 != null) tanks[1].setFill(tanks[1].getFill() - recipe.input2.fill);
 		if(recipe.solidInput != null) this.decrStackSize(1, recipe.solidInput.stacksize);
-		int mult = upgradeManager.hasUltimate ? 2 : 1;
+		int mult = 1 << upgradeManager.ultimateCount;
 		tanks[2].setFill(tanks[2].getFill() + recipe.output * mult);
 	}
     

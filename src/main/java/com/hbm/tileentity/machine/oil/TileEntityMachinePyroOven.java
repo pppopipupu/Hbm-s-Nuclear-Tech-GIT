@@ -109,9 +109,10 @@ public class TileEntityMachinePyroOven extends TileEntityMachinePolluting implem
 				PyroOvenRecipe recipe = getMatchingRecipe();
 				float step = 1F / Math.max((recipe.duration - speed * (recipe.duration / 4)) / ItemMachineUpgrade.OverdriveSpeeds[overdrive], 1);
 				int cost = this.getConsumption(speed + overdrive * 2, powerSaving);
-				if(upgradeManager.hasUltimate) {
-					step = 5F / recipe.duration;
-					cost = (int)(consumption * 0.5D * 5);
+				if(upgradeManager.ultimateCount > 0) {
+					int speedFactor = 1 + upgradeManager.ultimateCount * 4;
+					step = step * speedFactor;
+					cost = (int) (cost * Math.pow(0.5D, upgradeManager.ultimateCount) * speedFactor);
 				}
 				this.progress += step;
 				this.isProgressing = true;
@@ -222,8 +223,9 @@ public class TileEntityMachinePyroOven extends TileEntityMachinePolluting implem
 		int speed = upgradeManager.getLevel(UpgradeType.SPEED);
 		int powerSaving = upgradeManager.getLevel(UpgradeType.POWER);
 		int cost = this.getConsumption(speed, powerSaving);
-		if(upgradeManager.hasUltimate) {
-			cost = (int)(consumption * 0.5D * 5);
+		if(upgradeManager.ultimateCount > 0) {
+			int speedFactor = 1 + upgradeManager.ultimateCount * 4;
+			cost = (int)(cost * Math.pow(0.5D, upgradeManager.ultimateCount) * speedFactor);
 		}
 		if(power < cost) return false; // not enough power
 
@@ -231,7 +233,7 @@ public class TileEntityMachinePyroOven extends TileEntityMachinePolluting implem
 		if(recipe == null) return false; // no matching recipe
 		if(recipe.inputFluid != null && tanks[0].getFill() < recipe.inputFluid.fill) return false; // not enough input fluid
 		if(recipe.inputItem != null && slots[1].stackSize < recipe.inputItem.stacksize) return false; // not enough input item
-		int mult = upgradeManager.hasUltimate ? 2 : 1;
+		int mult = 1 << upgradeManager.ultimateCount;
 		if(recipe.outputFluid != null && recipe.outputFluid.fill * mult + tanks[1].getFill() > tanks[1].getMaxFill() && recipe.outputFluid.type == tanks[1].getTankType()) return false; // too much output fluid
 		if(recipe.outputItem != null && slots[2] != null && recipe.outputItem.stackSize * mult + slots[2].stackSize > slots[2].getMaxStackSize()) return false; // too much output item
 		if(recipe.outputItem != null && slots[2] != null && recipe.outputItem.getItem() != slots[2].getItem()) return false; // output item doesn't match

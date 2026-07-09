@@ -28,6 +28,7 @@ public class UpgradeManagerNT {
 	private UpgradeType mutexType;
 	public HashMap<UpgradeType, Integer> upgrades = new HashMap<>();
 	public boolean hasUltimate = false;
+	public int ultimateCount = 0;
 
 	public UpgradeManagerNT(TileEntity te) { this.owner = te; }
 	@Deprecated public UpgradeManagerNT() { }
@@ -49,6 +50,7 @@ public class UpgradeManagerNT {
 
 		upgrades.clear();
 		hasUltimate = false;
+		ultimateCount = 0;
 
 		for (int i = 0; i <= end - start; i++) {
 
@@ -56,6 +58,7 @@ public class UpgradeManagerNT {
 				
 				if(upgradeSlots[i].getItem() == com.hbm.items.ModItems.upgrade_ultimate) {
 					hasUltimate = true;
+					ultimateCount++;
 				}
 
 				ItemMachineUpgrade item = (ItemMachineUpgrade) upgradeSlots[i].getItem();

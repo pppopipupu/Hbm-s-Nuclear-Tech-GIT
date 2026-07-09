@@ -572,6 +572,7 @@ public class ClientProxy extends ServerProxy {
 
 		MinecraftForgeClient.registerItemRenderer(ModItems.gun_pppop, new ItemRenderPPPOP());
 		MinecraftForgeClient.registerItemRenderer(ModItems.bucket_qgp, new ItemRenderQGPBucket());
+		MinecraftForgeClient.registerItemRenderer(ModItems.qgp_mining_bomb, new ItemRenderQGPMiningBomb());
 		MinecraftForgeClient.registerItemRenderer(ModItems.upgrade_ultimate, new ItemRenderUltimateUpgrade());
 		MinecraftForgeClient.registerItemRenderer(ModItems.disperser_canister, new ItemRenderQGPDisperser());
 

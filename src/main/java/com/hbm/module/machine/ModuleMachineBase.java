@@ -32,6 +32,7 @@ public abstract class ModuleMachineBase {
 	public boolean markDirty = false;
 	public boolean restrictedMode = false;
 	public boolean hasUltimate = false;
+	public int ultimateCount = 0;
 
 	public ModuleMachineBase(int index, IEnergyHandlerMK2 battery, ItemStack[] slots) {
 		this.index = index;
@@ -97,7 +98,7 @@ public abstract class ModuleMachineBase {
 	/** Whether (and how many times) the machine can hold the output produced by the recipe */
 	protected int fitOutput(GenericRecipe recipe, int count) {
 		
-		int factor = this.hasUltimate ? 2 : 1;
+		int factor = 1 << this.ultimateCount;
 		if(recipe.outputItem != null) {
 			for(int i = 0; i < Math.min(recipe.outputItem.length, outputSlots.length); i++) {
 				ItemStack stack = slots[outputSlots[i]];
@@ -166,11 +167,11 @@ public abstract class ModuleMachineBase {
 	/** Part 2 of the process completion, generated output */
 	protected void produceItem(GenericRecipe recipe, int multi) {
 		
-		int mult = multi * (this.hasUltimate ? 2 : 1);
+		int mult = multi * (1 << this.ultimateCount);
 		if(recipe.outputItem != null) {
 			for(int i = 0; i < Math.min(recipe.outputItem.length, outputSlots.length); i++) {
 				ItemStack collapse = recipe.outputItem[i].collapse();
-                if(collapse != null) collapse.stackSize *= (this.hasUltimate ? 2 : 1);
+                if(collapse != null) collapse.stackSize *= (1 << this.ultimateCount);
 				if(slots[outputSlots[i]] == null) {
 					slots[outputSlots[i]] = collapse;
 				} else {

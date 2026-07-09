@@ -144,7 +144,7 @@ public class TileEntityMachineCentrifuge extends TileEntityMachineBase implement
 			if(out[i] == null)
 				continue;
 
-			int mult = upgradeManager.hasUltimate ? 2 : 1;
+			int mult = 1 << upgradeManager.ultimateCount;
 			if(slots[i + 2].isItemEqual(out[i]) && slots[i + 2].stackSize + out[i].stackSize * mult <= out[i].getMaxStackSize())
 				continue;
 
@@ -156,7 +156,7 @@ public class TileEntityMachineCentrifuge extends TileEntityMachineBase implement
 
 	private void processItem() {
 		ItemStack[] out = CentrifugeRecipes.getOutput(slots[0]);
-		int mult = upgradeManager.hasUltimate ? 2 : 1;
+		int mult = 1 << upgradeManager.ultimateCount;
 
 		for(int i = 0; i < Math.min(4, out.length); i++) {
 
@@ -207,9 +207,9 @@ public class TileEntityMachineCentrifuge extends TileEntityMachineBase implement
 
 			consumption /= (1 + upgradeManager.getLevel(UpgradeType.POWER));
 
-			if(upgradeManager.hasUltimate) {
-				speed = 5;
-				consumption = baseConsumption / 2;
+			if(upgradeManager.ultimateCount > 0) {
+				speed = (speed + upgradeManager.ultimateCount * 4);
+				consumption = (int) (consumption * Math.pow(0.5D, upgradeManager.ultimateCount));
 			}
 
 			if(hasPower() && isProcessing()) {

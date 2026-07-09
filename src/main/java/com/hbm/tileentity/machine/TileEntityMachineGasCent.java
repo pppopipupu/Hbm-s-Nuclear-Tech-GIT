@@ -146,7 +146,7 @@ public class TileEntityMachineGasCent extends TileEntityMachineBase implements I
 
 		this.progress = 0;
 		inputTank.setFill(inputTank.getFill() - inputTank.getTankType().getFluidConsumed());
-		int mult = upgradeManager.hasUltimate ? 2 : 1;
+		int mult = 1 << upgradeManager.ultimateCount;
 		outputTank.setFill(outputTank.getFill() + inputTank.getTankType().getFluidProduced() * mult);
 
 		for(byte i = 0; i < output.length; i++) {
@@ -212,9 +212,9 @@ public class TileEntityMachineGasCent extends TileEntityMachineBase implements I
 			int overSpeed = (int)Math.pow(2, over);
 			int consumption = 200 * overSpeed * (speedLevel + 1);
 
-			if(upgradeManager.hasUltimate) {
-				overSpeed = 5;
-				consumption = 100;
+			if(upgradeManager.ultimateCount > 0) {
+				overSpeed = overSpeed == 1 ? (1 + upgradeManager.ultimateCount * 4) : (overSpeed + upgradeManager.ultimateCount * 4);
+				consumption = (int) (consumption * Math.pow(0.5D, upgradeManager.ultimateCount));
 			}
 
 			if(canEnrich()) {

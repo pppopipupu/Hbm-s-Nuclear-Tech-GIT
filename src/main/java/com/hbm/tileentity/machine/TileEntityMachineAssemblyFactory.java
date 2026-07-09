@@ -195,16 +195,13 @@ public class TileEntityMachineAssemblyFactory extends TileEntityMachineBase impl
 			pow *= ItemMachineUpgrade.OverdriveSpeeds[overLevel];
             if(overLevel > 3) pow *= 10;
 
-			if(upgradeManager.hasUltimate) {
-				speed = 2.5D;
-				pow = 0.25D;
-				for(int i = 0; i < 4; i++) {
-					this.assemblerModule[i].hasUltimate = true;
-				}
-			} else {
-				for(int i = 0; i < 4; i++) {
-					this.assemblerModule[i].hasUltimate = false;
-				}
+			for(int i = 0; i < 4; i++) {
+				this.assemblerModule[i].hasUltimate = upgradeManager.hasUltimate;
+				this.assemblerModule[i].ultimateCount = upgradeManager.ultimateCount;
+			}
+			if(upgradeManager.ultimateCount > 0) {
+				speed = speed * (1.0D + upgradeManager.ultimateCount * 1.5D);
+				pow = pow * Math.pow(0.25D, upgradeManager.ultimateCount);
 			}
 
 			boolean markDirty = false;

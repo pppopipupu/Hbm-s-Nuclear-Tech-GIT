@@ -161,9 +161,9 @@ public class TileEntityMachineMiningLaser extends TileEntityMachineBase implemen
 						- (this.consumption * upgradeManager.getLevel(UpgradeType.POWER) / 16)
 						+ (this.consumption * upgradeManager.getLevel(UpgradeType.SPEED) / 16);
 
-				if(upgradeManager.hasUltimate) {
-					cycles = 5;
-					consumption = this.consumption / 2;
+				if(upgradeManager.ultimateCount > 0) {
+					cycles = cycles == 1 ? (1 + upgradeManager.ultimateCount * 4) : (cycles + upgradeManager.ultimateCount * 4);
+					consumption = (int) (consumption * Math.pow(0.5D, upgradeManager.ultimateCount));
 				}
 
 				for(int i = 0; i < cycles; i++) {
@@ -401,7 +401,7 @@ public class TileEntityMachineMiningLaser extends TileEntityMachineBase implemen
 			}
 
 			Item item = entityItem.getEntityItem().getItem();
-			int mult = upgradeManager.hasUltimate ? 2 : 1;
+			int mult = 1 << upgradeManager.ultimateCount;
 			if(item instanceof ItemBlock) {
 				Block block = ((ItemBlock) item).field_150939_a;
 

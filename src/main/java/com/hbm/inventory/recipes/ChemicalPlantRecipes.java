@@ -631,7 +631,7 @@ public class ChemicalPlantRecipes extends GenericRecipes<GenericRecipe> {
                 .outputItems(new ItemStack(ModItems.powder_magic)));
 
 		this.register(new GenericRecipe("chem.ams_base").setup(200, 5000)
-				.inputItems(new ComparableStack(ModItems.gun_pppop, 1), new ComparableStack(ModItems.gun_pppop, 1), new ComparableStack(ModItems.glyphid_meat, 16))
+				.inputItems(new ComparableStack(ModItems.gun_pppop, 1), new ComparableStack(ModItems.gun_pppop, 1), new ComparableStack(ModItems.glyphid_meat, 16), new ComparableStack(ModItems.singularity_spark, 1))
 				.inputFluids(new FluidStack(Fluids.PEROXIDE, 4000), new FluidStack(Fluids.ESTRADIOL, 4000))
 				.outputItems(new ItemStack(ModBlocks.ams_base, 1)));
 
