@@ -630,6 +630,12 @@ public class ChemicalPlantRecipes extends GenericRecipes<GenericRecipe> {
                 .inputFluids(new FluidStack(Fluids.XPJUICE, 25))
                 .outputItems(new ItemStack(ModItems.powder_magic)));
 
+        // Moved from pyrolysis oven
+        this.register(new GenericRecipe("chem.tungsten_carbide").setup(240, 10_000)
+                .inputItems(new OreDictStack(W.dust()))
+                .inputFluids(new FluidStack(Fluids.SYNGAS, 2000))
+                .outputItems(new ItemStack(ModItems.ingot_tungsten_carbide))
+                .outputFluids(new FluidStack(Fluids.SPENTSTEAM, 1_000)));
 		this.register(new GenericRecipe("chem.ams_base").setup(200, 5000)
 				.inputItems(new ComparableStack(ModItems.gun_pppop, 1), new ComparableStack(ModItems.gun_pppop, 1), new ComparableStack(ModItems.glyphid_meat, 16), new ComparableStack(ModItems.singularity_spark, 1))
 				.inputFluids(new FluidStack(Fluids.PEROXIDE, 4000), new FluidStack(Fluids.ESTRADIOL, 4000))
