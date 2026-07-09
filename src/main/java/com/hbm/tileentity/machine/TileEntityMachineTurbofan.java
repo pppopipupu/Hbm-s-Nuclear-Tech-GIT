@@ -178,8 +178,14 @@ public class TileEntityMachineTurbofan extends TileEntityMachinePolluting implem
 
 			if(!redstone) {
 
-				if(tank.getTankType().hasTrait(FT_Combustible.class) && tank.getTankType().getTrait(FT_Combustible.class).getGrade() == FuelGrade.AERO) {
-					burnValue = tank.getTankType().getTrait(FT_Combustible.class).getCombustionEnergy() / 1_000;
+				if(tank.getTankType().hasTrait(FT_Combustible.class)) {
+					FT_Combustible comb = tank.getTankType().getTrait(FT_Combustible.class);
+					if(comb.getGrade() == FuelGrade.AERO || comb.getGrade() == FuelGrade.QGP) {
+						burnValue = comb.getCombustionEnergy() / 1_000;
+						if(comb.getGrade() == FuelGrade.QGP) {
+							burnValue *= 3;
+						}
+					}
 				}
 
 				amountToBurn = Math.min(amount, this.tank.getFill());
@@ -401,7 +407,7 @@ public class TileEntityMachineTurbofan extends TileEntityMachinePolluting implem
 	}
 
     public boolean setFuelRC(FluidType type) {
-        if(tank.getTankType().hasTrait(FT_Combustible.class) && tank.getTankType().getTrait(FT_Combustible.class).getGrade() == FuelGrade.AERO) {
+        if(type.hasTrait(FT_Combustible.class) && (type.getTrait(FT_Combustible.class).getGrade() == FuelGrade.AERO || type.getTrait(FT_Combustible.class).getGrade() == FuelGrade.QGP)) {
             tank.setTankType(type);
             return true;
         }

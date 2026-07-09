@@ -110,6 +110,11 @@ public class TileEntityMachineExposureChamber extends TileEntityMachineBase impl
 			this.processTime /= overdrive;
 			this.consumption *= overdrive;
 
+			if(upgradeManager.hasUltimate) {
+				this.processTime = Math.max(this.processTimeBase / 5, 1);
+				this.consumption = this.consumptionBase / 2;
+			}
+
 			if(slots[1] == null && slots[0] != null && slots[3] != null && this.savedParticles <= 0) {
 				ExposureChamberRecipe recipe = this.getRecipe(slots[0], slots[3]);
 
@@ -141,7 +146,8 @@ public class TileEntityMachineExposureChamber extends TileEntityMachineBase impl
 			if(slots[1] != null && this.savedParticles > 0 && this.power >= this.consumption) {
 				ExposureChamberRecipe recipe = this.getRecipe(slots[1], slots[3]);
 
-				if(recipe != null && (slots[4] == null || (slots[4].getItem() == recipe.output.getItem() && slots[4].getItemDamage() == recipe.output.getItemDamage() && slots[4].stackSize + recipe.output.stackSize <= slots[4].getMaxStackSize()))) {
+				int mult = upgradeManager.hasUltimate ? 2 : 1;
+				if(recipe != null && (slots[4] == null || (slots[4].getItem() == recipe.output.getItem() && slots[4].getItemDamage() == recipe.output.getItemDamage() && slots[4].stackSize + recipe.output.stackSize * mult <= slots[4].getMaxStackSize()))) {
 					this.progress++;
 					this.power -= this.consumption;
 					this.isOn = true;
@@ -151,10 +157,12 @@ public class TileEntityMachineExposureChamber extends TileEntityMachineBase impl
 						this.savedParticles--;
 						this.decrStackSize(3, 1);
 
+						mult = upgradeManager.hasUltimate ? 2 : 1;
 						if(slots[4] == null) {
 							slots[4] = recipe.output.copy();
+							slots[4].stackSize *= mult;
 						} else {
-							slots[4].stackSize += recipe.output.stackSize;
+							slots[4].stackSize += recipe.output.stackSize * mult;
 						}
 					}
 

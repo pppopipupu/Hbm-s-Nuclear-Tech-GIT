@@ -46,7 +46,8 @@ public class FT_Combustible extends FluidTrait {
 		MEDIUM("Medium"),	//petroil									< diesel generator
 		HIGH("High"),		//diesel, gasoline							< HP engine
 		AERO("Aviation"),	//kerosene and other light aviation fuels	< turbofan
-		GAS("Gaseous");		//fuel gasses like NG, PG and syngas		< gas turbine
+		GAS("Gaseous"),		//fuel gasses like NG, PG and syngas		< gas turbine
+		QGP("Quark-Gluon");
 		
 		private String grade;
 		

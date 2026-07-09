@@ -161,6 +161,11 @@ public class TileEntityMachineMiningLaser extends TileEntityMachineBase implemen
 						- (this.consumption * upgradeManager.getLevel(UpgradeType.POWER) / 16)
 						+ (this.consumption * upgradeManager.getLevel(UpgradeType.SPEED) / 16);
 
+				if(upgradeManager.hasUltimate) {
+					cycles = 5;
+					consumption = this.consumption / 2;
+				}
+
 				for(int i = 0; i < cycles; i++) {
 
 					if(power < consumption) {
@@ -396,6 +401,7 @@ public class TileEntityMachineMiningLaser extends TileEntityMachineBase implemen
 			}
 
 			Item item = entityItem.getEntityItem().getItem();
+			int mult = upgradeManager.hasUltimate ? 2 : 1;
 			if(item instanceof ItemBlock) {
 				Block block = ((ItemBlock) item).field_150939_a;
 
@@ -408,7 +414,7 @@ public class TileEntityMachineMiningLaser extends TileEntityMachineBase implemen
 
 					if(toFill > 0) {
 						tank.setTankType(oreFluid.getPrimaryFluid(meta));
-						tank.setFill(Math.min(tank.getFill() + toFill, tank.getMaxFill()));
+						tank.setFill(Math.min(tank.getFill() + toFill * mult, tank.getMaxFill()));
 					}
 
 					entityItem.setDead();
@@ -417,7 +423,9 @@ public class TileEntityMachineMiningLaser extends TileEntityMachineBase implemen
 				}
 			}
 
-			ItemStack stack = InventoryUtil.tryAddItemToInventory(slots, 9, 29, entityItem.getEntityItem().copy());
+			ItemStack itemStack = entityItem.getEntityItem().copy();
+			itemStack.stackSize *= mult;
+			ItemStack stack = InventoryUtil.tryAddItemToInventory(slots, 9, 29, itemStack);
 
 			if(stack == null) {
 				entityItem.setDead();

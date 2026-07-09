@@ -629,6 +629,28 @@ public class ChemicalPlantRecipes extends GenericRecipes<GenericRecipe> {
                 .inputItems(new ComparableStack(ModItems.powder_lapis))
                 .inputFluids(new FluidStack(Fluids.XPJUICE, 25))
                 .outputItems(new ItemStack(ModItems.powder_magic)));
+
+		this.register(new GenericRecipe("chem.ams_base").setup(200, 5000)
+				.inputItems(new ComparableStack(ModItems.gun_pppop, 1), new ComparableStack(ModItems.gun_pppop, 1), new ComparableStack(ModItems.glyphid_meat, 16))
+				.inputFluids(new FluidStack(Fluids.PEROXIDE, 4000), new FluidStack(Fluids.ESTRADIOL, 4000))
+				.outputItems(new ItemStack(ModBlocks.ams_base, 1)));
+
+		this.register(new GenericRecipe("chem.ams_emitter").setup(150, 4000)
+				.inputItems(new ComparableStack(ModItems.gun_pppop, 1), new ComparableStack(ModItems.glyphid_meat, 8))
+				.inputFluids(new FluidStack(Fluids.PEROXIDE, 2000), new FluidStack(Fluids.ESTRADIOL, 2000))
+				.outputItems(new ItemStack(ModBlocks.ams_emitter, 1)));
+
+		this.register(new GenericRecipe("chem.ams_limiter").setup(120, 3000)
+				.inputItems(new ComparableStack(ModItems.gun_pppop, 1), new ComparableStack(ModItems.glyphid_meat, 4))
+				.inputFluids(new FluidStack(Fluids.PEROXIDE, 2000), new FluidStack(Fluids.ESTRADIOL, 2000))
+				.outputItems(new ItemStack(ModBlocks.ams_limiter, 1)));
+
+		this.register(new GenericRecipe("chem.upgrade_ultimate").setup(400, 1000)
+				.inputItems(new ComparableStack(ModItems.upgrade_overdrive_3, 1),
+						new ComparableStack(ModItems.upgrade_speed_3, 1),
+						new ComparableStack(ModItems.upgrade_effect_3, 1))
+				.inputFluids(new FluidStack(Fluids.QGP, 10000))
+				.outputItems(new ItemStack(ModItems.upgrade_ultimate, 1)));
 	}
 
 	public static HashMap getRecipes() {

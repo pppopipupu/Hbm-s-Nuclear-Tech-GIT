@@ -14,7 +14,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 
+import com.hbm.render.shader.Shader;
+import com.hbm.inventory.fluid.Fluids;
+import com.hbm.lib.RefStrings;
+
 public class RenderGenericGrenade extends Render {
+
+	private static Shader qgpShader;
 
 	@Override
 	public void doRender(Entity entity, double x, double y, double z, float f0, float f1) {
@@ -43,6 +49,21 @@ public class RenderGenericGrenade extends Render {
 			}
 	
 			if(iicon != null) {
+				boolean isQGP = false;
+				if(disperser && i == 1 && entity instanceof EntityDisperserCanister) {
+					EntityDisperserCanister canister = (EntityDisperserCanister) entity;
+					if(canister.getFluid() == Fluids.QGP) {
+						isQGP = true;
+					}
+				}
+				if(isQGP) {
+					if(qgpShader == null) {
+						qgpShader = new Shader(new ResourceLocation(RefStrings.MODID, "shaders/qgp.vert"), new ResourceLocation(RefStrings.MODID, "shaders/qgp.frag"));
+					}
+					qgpShader.use();
+					qgpShader.setUniform1f("iTime", (System.currentTimeMillis() % 100000) / 1000.0F);
+				}
+
 				GL11.glPushMatrix();
 				GL11.glTranslatef((float) x, (float) y, (float) z);
 				GL11.glEnable(GL12.GL_RESCALE_NORMAL);
@@ -53,6 +74,10 @@ public class RenderGenericGrenade extends Render {
 				this.renderItem(tessellator, iicon);
 				GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 				GL11.glPopMatrix();
+
+				if(isQGP) {
+					qgpShader.stop();
+				}
 			}
 			
 			GL11.glColor3f(1F, 1F, 1F);

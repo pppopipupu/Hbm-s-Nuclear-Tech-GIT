@@ -122,6 +122,14 @@ public class TileEntityMachineChemicalPlant extends TileEntityMachineBase implem
 			pow *= speedLevel + 1D;
 			pow *= over;
 
+			if(upgradeManager.hasUltimate) {
+				speed = 5.0D;
+				pow = 0.5D;
+				this.chemplantModule.hasUltimate = true;
+			} else {
+				this.chemplantModule.hasUltimate = false;
+			}
+
 			this.chemplantModule.update(speed, pow, true, slots[1]);
 			this.didProcess = this.chemplantModule.didProcess;
 			if(this.chemplantModule.markDirty) this.markDirty();

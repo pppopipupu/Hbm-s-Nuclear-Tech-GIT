@@ -146,10 +146,14 @@ public class TileEntityMachineGasCent extends TileEntityMachineBase implements I
 
 		this.progress = 0;
 		inputTank.setFill(inputTank.getFill() - inputTank.getTankType().getFluidConsumed());
-		outputTank.setFill(outputTank.getFill() + inputTank.getTankType().getFluidProduced());
+		int mult = upgradeManager.hasUltimate ? 2 : 1;
+		outputTank.setFill(outputTank.getFill() + inputTank.getTankType().getFluidProduced() * mult);
 
-		for(byte i = 0; i < output.length; i++)
-			InventoryUtil.tryAddItemToInventory(slots, 0, 3, output[i].copy()); //reference types almost got me again
+		for(byte i = 0; i < output.length; i++) {
+			ItemStack stack = output[i].copy();
+			stack.stackSize *= mult;
+			InventoryUtil.tryAddItemToInventory(slots, 0, 3, stack);
+		}
 	}
 
 	private void attemptConversion() {
@@ -207,6 +211,11 @@ public class TileEntityMachineGasCent extends TileEntityMachineBase implements I
 			this.progressNeeded = processingTime * (4 - speedLevel) / 4;
 			int overSpeed = (int)Math.pow(2, over);
 			int consumption = 200 * overSpeed * (speedLevel + 1);
+
+			if(upgradeManager.hasUltimate) {
+				overSpeed = 5;
+				consumption = 100;
+			}
 
 			if(canEnrich()) {
 

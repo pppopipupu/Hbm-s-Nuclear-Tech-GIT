@@ -117,6 +117,14 @@ public class TileEntityMachineAssemblyMachine extends TileEntityMachineBase impl
 			pow *= speedLevel + 1D;
 			pow *= over;
 
+			if(upgradeManager.hasUltimate) {
+				speed = 5.0D;
+				pow = 0.5D;
+				this.assemblerModule.hasUltimate = true;
+			} else {
+				this.assemblerModule.hasUltimate = false;
+			}
+
 			this.assemblerModule.update(speed, pow, true, slots[1]);
 			this.didProcess = this.assemblerModule.didProcess;
 			if(this.assemblerModule.markDirty) this.markDirty();

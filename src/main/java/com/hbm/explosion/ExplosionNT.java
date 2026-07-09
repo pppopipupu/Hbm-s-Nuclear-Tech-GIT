@@ -66,6 +66,7 @@ public class ExplosionNT extends Explosion {
 	}
 
 	public void explode() {
+		if (ExplosionFilter.shouldBlock(worldObj, explosionX, explosionY, explosionZ)) return;
 		doExplosionA();
 		doExplosionB(false);
 	}
