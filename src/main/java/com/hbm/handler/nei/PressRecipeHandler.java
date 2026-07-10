@@ -40,22 +40,23 @@ public class PressRecipeHandler extends TemplateRecipeHandler implements ICompat
 	public String getRecipeID() {
 		return "pressing";
 	}
+	public LinkedList<RecipeTransferRect> transferRectsRec = new LinkedList<RecipeTransferRect>();
 	public LinkedList<RecipeTransferRect> transferRectsPress = new LinkedList<RecipeTransferRect>();
 	public LinkedList<RecipeTransferRect> transferRectsEPress = new LinkedList<RecipeTransferRect>();
+	public LinkedList<Class<? extends GuiContainer>> guiRec = new LinkedList<Class<? extends GuiContainer>>();
 	public LinkedList<Class<? extends GuiContainer>> guiPress = new LinkedList<Class<? extends GuiContainer>>();
 	public LinkedList<Class<? extends GuiContainer>> guiEPress = new LinkedList<Class<? extends GuiContainer>>();
 
 	public class SmeltingSet extends TemplateRecipeHandler.CachedRecipe {
 		PositionedStack input;
-		PositionedStack stamp;
 		PositionedStack result;
+		PositionedStack stamp;
 
-		public SmeltingSet(ItemStack input, ItemStack stamp, ItemStack result) {
-			input.stackSize = 1;
-			this.input = new PositionedStack(input, 38 + 9, 6 + 18);
-			if(stamp != null)
-				this.stamp = new PositionedStack(stamp, 38 + 9, 6);
-			this.result = new PositionedStack(result, 107 + 9, 6 + 18);
+		public SmeltingSet(Object stamp, AStack input, ItemStack result) {
+			input.stacksize = 1;
+			this.input = new PositionedStack(input.extractForNEI(), 83 - 35, 5 + 36 + 1);
+			this.result = new PositionedStack(result, 83 + 28, 5 + 18 + 1);
+			this.stamp = new PositionedStack(stamp, 83 - 35, 6, false);
 		}
 
 		@Override
